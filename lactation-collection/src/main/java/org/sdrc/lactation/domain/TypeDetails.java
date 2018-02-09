@@ -46,6 +46,14 @@ public class TypeDetails {
 	
 	@UpdateTimestamp
 	private Timestamp updatedDate;
+	
+	public TypeDetails() {
+		
+	}
+
+	public TypeDetails(Integer id) {
+		this.id = id;
+	}
 
 	public Integer getId() {
 		return id;

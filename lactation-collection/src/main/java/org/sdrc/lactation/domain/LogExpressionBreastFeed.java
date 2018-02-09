@@ -8,13 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -34,9 +35,12 @@ public class LogExpressionBreastFeed {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn
-	private Patient babyId;
+	@JoinColumn(nullable = false)
+	private Patient patientId;
 
+	private String babyCode;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp timeOfExpression;
 
 	@ManyToOne
@@ -47,13 +51,13 @@ public class LogExpressionBreastFeed {
 	@JoinColumn
 	private TypeDetails expressionOccuredLocation;
 
-	@Min(0)
 	@Max(300)
-	private Integer milkExpressedFromRightBreast;
+	@Digits(integer = 3, fraction = 2)
+	private Double milkExpressedFromRightBreast;
 
-	@Min(0)
 	@Max(300)
-	private Integer milkExpressedFromLeftBreast;
+	@Digits(integer = 3, fraction = 2)
+	private Double milkExpressedFromLeftBreast;
 
 	@CreationTimestamp
 	private Timestamp createdDate;
@@ -61,16 +65,24 @@ public class LogExpressionBreastFeed {
 	@UpdateTimestamp
 	private Timestamp updatedDate;
 
-	public Integer getId() {
-		return id;
+	private String createdBy;
+
+	private String updatedBy;
+
+	public Patient getPatientId() {
+		return patientId;
 	}
 
-	public Patient getBabyId() {
-		return babyId;
+	public void setPatientId(Patient patientId) {
+		this.patientId = patientId;
 	}
 
-	public void setBabyId(Patient babyId) {
-		this.babyId = babyId;
+	public String getBabyCode() {
+		return babyCode;
+	}
+
+	public void setBabyCode(String babyCode) {
+		this.babyCode = babyCode;
 	}
 
 	public Timestamp getTimeOfExpression() {
@@ -97,20 +109,40 @@ public class LogExpressionBreastFeed {
 		this.expressionOccuredLocation = expressionOccuredLocation;
 	}
 
-	public Integer getMilkExpressedFromRightBreast() {
+	public Double getMilkExpressedFromRightBreast() {
 		return milkExpressedFromRightBreast;
 	}
 
-	public void setMilkExpressedFromRightBreast(Integer milkExpressedFromRightBreast) {
+	public void setMilkExpressedFromRightBreast(Double milkExpressedFromRightBreast) {
 		this.milkExpressedFromRightBreast = milkExpressedFromRightBreast;
 	}
 
-	public Integer getMilkExpressedFromLeftBreast() {
+	public Double getMilkExpressedFromLeftBreast() {
 		return milkExpressedFromLeftBreast;
 	}
 
-	public void setMilkExpressedFromLeftBreast(Integer milkExpressedFromLeftBreast) {
+	public void setMilkExpressedFromLeftBreast(Double milkExpressedFromLeftBreast) {
 		this.milkExpressedFromLeftBreast = milkExpressedFromLeftBreast;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 }

@@ -13,12 +13,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 6th February 2018 13:10. This
- *         domain will be used for registering new user in the system. 
+ *         domain will be used for registering new user in the system.
  */
 
 @Entity
@@ -28,6 +29,7 @@ public class LactationUser {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Integer id;
 
 	private String firstName;
@@ -35,6 +37,9 @@ public class LactationUser {
 	private String lastName;
 
 	private String email;
+
+	@JsonIgnore
+	private String password;
 
 	@ManyToOne
 	@JoinColumn
@@ -84,6 +89,14 @@ public class LactationUser {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Area getCountry() {

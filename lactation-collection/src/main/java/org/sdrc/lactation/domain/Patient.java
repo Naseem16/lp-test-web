@@ -1,7 +1,6 @@
 package org.sdrc.lactation.domain;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -11,9 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 
@@ -26,63 +28,78 @@ public class Patient {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
+	private Integer patientId;
+
 	@Column(nullable = false, unique = true)
-	private String babyId;
-	
+	private String babyCode;
+
 	private Integer mothersAge;
-	
-	private Timestamp deliveryDate;
-	
-	private Time deliveryTime;
-	
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+	private Timestamp deliveryDateAndTime;
+
 	@ManyToOne
 	@JoinColumn(name = "delivery_method")
 	private TypeDetails deliveryMethod;
-	
-	private Integer babyWeight;
-	
+
+	@Digits(integer = 4, fraction = 2)
+	private Double babyWeight;
+
 	private Integer gestationalAgeInWeek;
-	
-	private Integer mothersParentalIntent;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "parents_knowledge_on_hm_lactation")
+	@JoinColumn
+	private TypeDetails mothersParentalIntent;
+
+	@ManyToOne
+	@JoinColumn
 	private TypeDetails parentsKnowledgeOnHmAndLactation;
-	
+
 	private Double timeTillFirstExpression;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "inpatient_or_outpatient")
+	@JoinColumn
 	private TypeDetails inpatientOrOutPatient;
-	
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date admissionDateForOutdoorPatients;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "baby_admitted_to")
+	@JoinColumn
 	private TypeDetails babyAdmittedTo;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "nicu_admission_reason")
+	@JoinColumn
 	private TypeDetails nicuAdmissionReason;
-	
+
 	@CreationTimestamp
 	private Timestamp createdDate;
-	
+
 	@UpdateTimestamp
 	private Timestamp updatedDate;
 
-	public Integer getId() {
-		return id;
+	private String createdBy;
+
+	private String updatedBy;
+
+	public Patient() {
+
 	}
 
-	public String getBabyId() {
-		return babyId;
+	public Patient(Integer patientId) {
+		this.patientId = patientId;
 	}
 
-	public void setBabyId(String babyId) {
-		this.babyId = babyId;
+	public Integer getPatientId() {
+		return patientId;
+	}
+	
+	public String getBabyCode() {
+		return babyCode;
+	}
+
+	public void setBabyCode(String babyCode) {
+		this.babyCode = babyCode;
 	}
 
 	public Integer getMothersAge() {
@@ -93,20 +110,12 @@ public class Patient {
 		this.mothersAge = mothersAge;
 	}
 
-	public Timestamp getDeliveryDate() {
-		return deliveryDate;
+	public Timestamp getDeliveryDateAndTime() {
+		return deliveryDateAndTime;
 	}
 
-	public void setDeliveryDate(Timestamp deliveryDate) {
-		this.deliveryDate = deliveryDate;
-	}
-
-	public Time getDeliveryTime() {
-		return deliveryTime;
-	}
-
-	public void setDeliveryTime(Time deliveryTime) {
-		this.deliveryTime = deliveryTime;
+	public void setDeliveryDateAndTime(Timestamp deliveryDateAndTime) {
+		this.deliveryDateAndTime = deliveryDateAndTime;
 	}
 
 	public TypeDetails getDeliveryMethod() {
@@ -117,11 +126,11 @@ public class Patient {
 		this.deliveryMethod = deliveryMethod;
 	}
 
-	public Integer getBabyWeight() {
+	public Double getBabyWeight() {
 		return babyWeight;
 	}
 
-	public void setBabyWeight(Integer babyWeight) {
+	public void setBabyWeight(Double babyWeight) {
 		this.babyWeight = babyWeight;
 	}
 
@@ -133,11 +142,11 @@ public class Patient {
 		this.gestationalAgeInWeek = gestationalAgeInWeek;
 	}
 
-	public Integer getMothersParentalIntent() {
+	public TypeDetails getMothersParentalIntent() {
 		return mothersParentalIntent;
 	}
 
-	public void setMothersParentalIntent(Integer mothersParentalIntent) {
+	public void setMothersParentalIntent(TypeDetails mothersParentalIntent) {
 		this.mothersParentalIntent = mothersParentalIntent;
 	}
 
@@ -193,16 +202,24 @@ public class Patient {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Timestamp createdDate) {
-		this.createdDate = createdDate;
-	}
-
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Timestamp updatedDate) {
-		this.updatedDate = updatedDate;
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 }

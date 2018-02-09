@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -33,9 +34,12 @@ public class LogBreastFeedingSupportivePractice {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn
-	private Patient babyId;
+	@JoinColumn(nullable = false)
+	private Patient patientId;
 
+	private String babyCode;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfBFSP;
 
 	@ManyToOne
@@ -55,20 +59,24 @@ public class LogBreastFeedingSupportivePractice {
 	@UpdateTimestamp
 	private Timestamp updatedDate;
 
-	public Integer getId() {
-		return id;
+	private String createdBy;
+
+	private String updatedBy;
+
+	public Patient getPatientId() {
+		return patientId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setPatientId(Patient patientId) {
+		this.patientId = patientId;
 	}
 
-	public Patient getBabyId() {
-		return babyId;
+	public String getBabyCode() {
+		return babyCode;
 	}
 
-	public void setBabyId(Patient babyId) {
-		this.babyId = babyId;
+	public void setBabyCode(String babyCode) {
+		this.babyCode = babyCode;
 	}
 
 	public Timestamp getDateAndTimeOfBFSP() {
@@ -95,28 +103,40 @@ public class LogBreastFeedingSupportivePractice {
 		this.personWhoPerformedBFSP = personWhoPerformedBFSP;
 	}
 
-	public Double getBsfpDuration() {
+	public Double getBfspDuration() {
 		return bfspDuration;
 	}
 
-	public void setBsfpDuration(Double bfspDuration) {
+	public void setBfspDuration(Double bfspDuration) {
 		this.bfspDuration = bfspDuration;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Timestamp createdDate) {
-		this.createdDate = createdDate;
-	}
-
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
-	}
-
-	public void setUpdatedDate(Timestamp updatedDate) {
-		this.updatedDate = updatedDate;
 	}
 
 }

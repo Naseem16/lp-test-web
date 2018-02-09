@@ -8,8 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Digits;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -26,7 +31,14 @@ public class LogFeed {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Integer id;
+
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Patient patientId;
+
+	private String babyCode;
 
 	private Timestamp dateAndTimeOfFeed;
 
@@ -34,13 +46,42 @@ public class LogFeed {
 	@JoinColumn
 	private TypeDetails feedMethod;
 
-	private Integer ommVolume;
-	private Integer dhmVolume;
-	private Integer formulaVolume;
-	private Integer otherVolume;
+	@Digits(integer = 4, fraction = 2)
+	private Double ommVolume;
 
-	public Integer getId() {
-		return id;
+	@Digits(integer = 4, fraction = 2)
+	private Double dhmVolume;
+
+	@Digits(integer = 4, fraction = 2)
+	private Double formulaVolume;
+
+	@Digits(integer = 4, fraction = 2)
+	private Double otherVolume;
+
+	@CreationTimestamp
+	private Timestamp createdDate;
+
+	@UpdateTimestamp
+	private Timestamp updatedDate;
+
+	private String createdBy;
+
+	private String updatedBy;
+
+	public Patient getPatientId() {
+		return patientId;
+	}
+
+	public void setPatientId(Patient patientId) {
+		this.patientId = patientId;
+	}
+
+	public String getBabyCode() {
+		return babyCode;
+	}
+
+	public void setBabyCode(String babyCode) {
+		this.babyCode = babyCode;
 	}
 
 	public Timestamp getDateAndTimeOfFeed() {
@@ -59,36 +100,64 @@ public class LogFeed {
 		this.feedMethod = feedMethod;
 	}
 
-	public Integer getOmmVolume() {
+	public Double getOmmVolume() {
 		return ommVolume;
 	}
 
-	public void setOmmVolume(Integer ommVolume) {
+	public void setOmmVolume(Double ommVolume) {
 		this.ommVolume = ommVolume;
 	}
 
-	public Integer getDhmVolume() {
+	public Double getDhmVolume() {
 		return dhmVolume;
 	}
 
-	public void setDhmVolume(Integer dhmVolume) {
+	public void setDhmVolume(Double dhmVolume) {
 		this.dhmVolume = dhmVolume;
 	}
 
-	public Integer getFormulaVolume() {
+	public Double getFormulaVolume() {
 		return formulaVolume;
 	}
 
-	public void setFormulaVolume(Integer formulaVolume) {
+	public void setFormulaVolume(Double formulaVolume) {
 		this.formulaVolume = formulaVolume;
 	}
 
-	public Integer getOtherVolume() {
+	public Double getOtherVolume() {
 		return otherVolume;
 	}
 
-	public void setOtherVolume(Integer otherVolume) {
+	public void setOtherVolume(Double otherVolume) {
 		this.otherVolume = otherVolume;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
 	}
 
 }
