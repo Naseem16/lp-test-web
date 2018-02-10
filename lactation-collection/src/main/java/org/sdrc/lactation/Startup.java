@@ -1,3 +1,7 @@
+/**
+ * @naseem please put author and purpose of this class
+ */
+
 package org.sdrc.lactation;
 
 import org.springframework.boot.SpringApplication;
@@ -17,6 +21,10 @@ public class Startup {
 		SpringApplication.run(Startup.class, args);
 	}
 	
+	/**
+	 * 
+	 * @naseem, why do we need the following method?
+	 */
 	@Bean
 	public MessageDigestPasswordEncoder passwordEncoder() {
 		return new MessageDigestPasswordEncoder("MD5");
