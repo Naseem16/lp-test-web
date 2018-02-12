@@ -1,5 +1,8 @@
 /**
- * @naseem, what is the purpose of this class? Who is the author of it?
+ * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 2057.
+ * The purpose of this class is to override the default security and configure the permissions for API calls.
+ * Currently all the API's are accessible for every user, as there is no web module for this project.
+ * 
  */
 
 package org.sdrc.lactation;
@@ -18,9 +21,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/resources/**", "/**").permitAll().
-		anyRequest().authenticated().and().csrf().
-		csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable();
+		http.authorizeRequests().antMatchers("/resources/**", "/**").permitAll().anyRequest().authenticated().and()
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable();
 	}
 
 	@Autowired

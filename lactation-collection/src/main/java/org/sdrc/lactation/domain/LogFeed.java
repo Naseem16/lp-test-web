@@ -56,7 +56,13 @@ public class LogFeed {
 	private Double formulaVolume;
 
 	@Digits(integer = 4, fraction = 2)
+	private Double animalMilkVolume;
+
+	@Digits(integer = 4, fraction = 2)
 	private Double otherVolume;
+
+	@Digits(integer = 5, fraction = 2)
+	private Double weightOfBaby;
 
 	@CreationTimestamp
 	private Timestamp createdDate;
@@ -67,6 +73,8 @@ public class LogFeed {
 	private String createdBy;
 
 	private String updatedBy;
+
+	private String imeiNumberUniqueDeviceId;
 
 	public Patient getPatientId() {
 		return patientId;
@@ -158,6 +166,30 @@ public class LogFeed {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
+	}
+
+	public Double getAnimalMilkVolume() {
+		return animalMilkVolume;
+	}
+
+	public void setAnimalMilkVolume(Double animalMilkVolume) {
+		this.animalMilkVolume = animalMilkVolume;
+	}
+
+	public Double getWeightOfBaby() {
+		return weightOfBaby;
+	}
+
+	public void setWeightOfBaby(Double weightOfBaby) {
+		this.weightOfBaby = weightOfBaby;
+	}
+
+	public String getImeiNumberUniqueDeviceId() {
+		return imeiNumberUniqueDeviceId;
+	}
+
+	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
+		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
 	}
 
 }

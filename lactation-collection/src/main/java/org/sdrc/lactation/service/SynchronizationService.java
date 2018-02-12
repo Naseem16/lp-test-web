@@ -1,5 +1,6 @@
 /**
- * @naseem Needs method comments, we do not need registerUser method I guess
+ * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 2057.
+ * This service will handle the request coming from mobile to SynchronizationController.
  */
 package org.sdrc.lactation.service;
 

@@ -43,6 +43,8 @@ public class LogBreastFeedingPostDischarge {
 	@JoinColumn
 	private TypeDetails breastFeedingStatus;
 
+	private String imeiNumberUniqueDeviceId;
+
 	@CreationTimestamp
 	private Timestamp createdDate;
 
@@ -111,6 +113,14 @@ public class LogBreastFeedingPostDischarge {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
+	}
+
+	public String getImeiNumberUniqueDeviceId() {
+		return imeiNumberUniqueDeviceId;
+	}
+
+	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
+		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
 	}
 
 }

@@ -41,7 +41,11 @@ public class LogExpressionBreastFeed {
 	private String babyCode;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-	private Timestamp timeOfExpression;
+	private Timestamp dateAndTimeOfExpression;
+
+	@Max(300)
+	@Digits(integer = 3, fraction = 2)
+	private Double durationOfExpression;
 
 	@ManyToOne
 	@JoinColumn
@@ -69,6 +73,8 @@ public class LogExpressionBreastFeed {
 
 	private String updatedBy;
 
+	private String imeiNumberUniqueDeviceId;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -85,12 +91,20 @@ public class LogExpressionBreastFeed {
 		this.babyCode = babyCode;
 	}
 
-	public Timestamp getTimeOfExpression() {
-		return timeOfExpression;
+	public Timestamp getDateAndTimeOfExpression() {
+		return dateAndTimeOfExpression;
 	}
 
-	public void setTimeOfExpression(Timestamp timeOfExpression) {
-		this.timeOfExpression = timeOfExpression;
+	public void setDateAndTimeOfExpression(Timestamp dateAndTimeOfExpression) {
+		this.dateAndTimeOfExpression = dateAndTimeOfExpression;
+	}
+
+	public Double getDurationOfExpression() {
+		return durationOfExpression;
+	}
+
+	public void setDurationOfExpression(Double durationOfExpression) {
+		this.durationOfExpression = durationOfExpression;
 	}
 
 	public TypeDetails getMethodOfExpression() {
@@ -143,6 +157,14 @@ public class LogExpressionBreastFeed {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getImeiNumberUniqueDeviceId() {
+		return imeiNumberUniqueDeviceId;
+	}
+
+	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
+		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
 	}
 
 }

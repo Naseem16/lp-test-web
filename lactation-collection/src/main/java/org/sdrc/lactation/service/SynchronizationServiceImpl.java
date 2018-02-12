@@ -61,7 +61,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	}
 
 	/**
-	 * @naseem this method needs internal comments
+	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 1548.
+	 *         This method will receive the forms in form of
+	 *         SynchronizationModel. This method will accept List of
+	 *         SynchronizationModel and each object of the list will contain the
+	 *         data related to a particular baby.
 	 */
 	@Override
 	public ResponseEntity<?> synchronizeForms(List<SynchronizationModel> synchronizationModels,

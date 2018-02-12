@@ -33,7 +33,12 @@ public class Patient {
 	@Column(nullable = false, unique = true)
 	private String babyCode;
 
+	@Column(nullable = false, unique = true)
+	private String babyCodeHospital;
+
 	private Integer mothersAge;
+
+	private String babyOf;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp deliveryDateAndTime;
@@ -49,7 +54,7 @@ public class Patient {
 
 	@ManyToOne
 	@JoinColumn
-	private TypeDetails mothersParentalIntent;
+	private TypeDetails mothersPrenatalIntent;
 
 	@ManyToOne
 	@JoinColumn
@@ -82,6 +87,8 @@ public class Patient {
 
 	private String updatedBy;
 
+	private String imeiNumberUniqueDeviceId;
+
 	public Patient() {
 
 	}
@@ -93,7 +100,7 @@ public class Patient {
 	public Integer getPatientId() {
 		return patientId;
 	}
-	
+
 	public String getBabyCode() {
 		return babyCode;
 	}
@@ -102,12 +109,28 @@ public class Patient {
 		this.babyCode = babyCode;
 	}
 
+	public String getBabyCodeHospital() {
+		return babyCodeHospital;
+	}
+
+	public void setBabyCodeHospital(String babyCodeHospital) {
+		this.babyCodeHospital = babyCodeHospital;
+	}
+
 	public Integer getMothersAge() {
 		return mothersAge;
 	}
 
 	public void setMothersAge(Integer mothersAge) {
 		this.mothersAge = mothersAge;
+	}
+
+	public String getBabyOf() {
+		return babyOf;
+	}
+
+	public void setBabyOf(String babyOf) {
+		this.babyOf = babyOf;
 	}
 
 	public Timestamp getDeliveryDateAndTime() {
@@ -142,12 +165,12 @@ public class Patient {
 		this.gestationalAgeInWeek = gestationalAgeInWeek;
 	}
 
-	public TypeDetails getMothersParentalIntent() {
-		return mothersParentalIntent;
+	public TypeDetails getMothersPrenatalIntent() {
+		return mothersPrenatalIntent;
 	}
 
-	public void setMothersParentalIntent(TypeDetails mothersParentalIntent) {
-		this.mothersParentalIntent = mothersParentalIntent;
+	public void setMothersPrenatalIntent(TypeDetails mothersPrenatalIntent) {
+		this.mothersPrenatalIntent = mothersPrenatalIntent;
 	}
 
 	public TypeDetails getParentsKnowledgeOnHmAndLactation() {
@@ -220,6 +243,14 @@ public class Patient {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getImeiNumberUniqueDeviceId() {
+		return imeiNumberUniqueDeviceId;
+	}
+
+	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
+		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
 	}
 
 }

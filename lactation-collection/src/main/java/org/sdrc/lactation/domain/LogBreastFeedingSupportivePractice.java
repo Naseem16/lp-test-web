@@ -63,6 +63,8 @@ public class LogBreastFeedingSupportivePractice {
 
 	private String updatedBy;
 
+	private String imeiNumberUniqueDeviceId;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -137,6 +139,14 @@ public class LogBreastFeedingSupportivePractice {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
+	}
+
+	public String getImeiNumberUniqueDeviceId() {
+		return imeiNumberUniqueDeviceId;
+	}
+
+	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
+		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
 	}
 
 }
