@@ -21,6 +21,7 @@ public class SynchronizationModel {
 	private List<LogFeed> logFeedList;
 	private List<LogBreastFeedingSupportivePractice> logBreastFeedingSupportivePracticeList;
 	private List<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList;
+	private String deviceId;
 
 	public Patient getPatient() {
 		return patient;
@@ -62,6 +63,14 @@ public class SynchronizationModel {
 	public void setLogBreastFeedingPostDischargeList(
 			List<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList) {
 		this.logBreastFeedingPostDischargeList = logBreastFeedingPostDischargeList;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

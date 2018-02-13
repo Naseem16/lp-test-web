@@ -11,9 +11,9 @@ import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.utils.SynchronizationModel;
+import org.sdrc.lactation.utils.SynchronizationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,8 +70,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	 */
 	@Override
 	@Transactional
-	public ResponseEntity<?> synchronizeForms(List<SynchronizationModel> synchronizationModels,
+	public SynchronizationResult synchronizeForms(List<SynchronizationModel> synchronizationModels,
 			HttpRequest httpRequest) {
+		
+		SynchronizationResult synchronizationResult = new SynchronizationResult();
 
 		try{
 			synchronizationModels.forEach(patientData -> {
@@ -85,7 +87,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					baby.setDeliveryDateAndTime(patientData.getPatient().getDeliveryDateAndTime());
 					baby.setDeliveryMethod(patientData.getPatient().getDeliveryMethod());
 					baby.setGestationalAgeInWeek(patientData.getPatient().getGestationalAgeInWeek());
-					baby.setImeiNumberUniqueDeviceId(patientData.getPatient().getImeiNumberUniqueDeviceId());
+					baby.setDeviceId(patientData.getDeviceId());
 					baby.setInpatientOrOutPatient(patientData.getPatient().getInpatientOrOutPatient());
 					baby.setMothersAge(patientData.getPatient().getMothersAge());
 					baby.setMothersPrenatalIntent(patientData.getPatient().getMothersPrenatalIntent());
@@ -101,6 +103,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
 						logExpBfPostDischarge.setPatientId(new Patient(babyFromDb.getPatientId()));
 						logExpBfPostDischarge.setBabyCode(babyFromDb.getBabyCode());
+						logExpBfPostDischarge.setDeviceId(patientData.getDeviceId());
 					});
 					logBreastFeedingPostDischargeRepository.save(patientData.getLogBreastFeedingPostDischargeList());
 				}
@@ -110,6 +113,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
 						logBfSuppPractice.setPatientId(new Patient(babyFromDb.getPatientId()));
 						logBfSuppPractice.setBabyCode(babyFromDb.getBabyCode());
+						logBfSuppPractice.setDeviceId(patientData.getDeviceId());
 					});
 					logBreastFeedingSupportivePracticeRepository
 							.save(patientData.getLogBreastFeedingSupportivePracticeList());
@@ -120,6 +124,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
 						logExpBf.setPatientId(new Patient(babyFromDb.getPatientId()));
 						logExpBf.setBabyCode(babyFromDb.getBabyCode());
+						logExpBf.setDeviceId(patientData.getDeviceId());
 					});
 					logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
 				}
@@ -128,6 +133,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					patientData.getLogFeedList().forEach(logFeed -> {
 						logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
 						logFeed.setBabyCode(babyFromDb.getBabyCode());
+						logFeed.setDeviceId(patientData.getDeviceId());
 					});
 					logFeedRepository.save(patientData.getLogFeedList());
 				}
@@ -136,7 +142,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			e.printStackTrace();
 		}
 		
-		return null;
+		synchronizationResult.setStatus(true);
+		synchronizationResult.setMessage("Successfull");
+		
+		return synchronizationResult;
 	}
 
 }

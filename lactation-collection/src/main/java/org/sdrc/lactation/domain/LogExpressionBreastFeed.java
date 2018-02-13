@@ -67,7 +67,7 @@ public class LogExpressionBreastFeed {
 
 	private String updatedBy;
 
-	private String imeiNumberUniqueDeviceId;
+	private String deviceId;
 
 	public Patient getPatientId() {
 		return patientId;
@@ -145,12 +145,12 @@ public class LogExpressionBreastFeed {
 		return id;
 	}
 
-	public String getImeiNumberUniqueDeviceId() {
-		return imeiNumberUniqueDeviceId;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
-		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

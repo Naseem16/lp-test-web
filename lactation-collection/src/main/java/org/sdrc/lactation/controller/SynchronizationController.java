@@ -6,8 +6,8 @@ import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.service.SynchronizationService;
 import org.sdrc.lactation.utils.SynchronizationModel;
+import org.sdrc.lactation.utils.SynchronizationResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +39,7 @@ public class SynchronizationController {
 	}
 
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
-	public ResponseEntity<?> synchronize(@RequestBody List<SynchronizationModel> synchronizationModels) {
+	public SynchronizationResult synchronize(@RequestBody List<SynchronizationModel> synchronizationModels) {
 		return synchronizationService.synchronizeForms(synchronizationModels, null);
 	}
 }

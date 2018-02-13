@@ -87,7 +87,7 @@ public class Patient {
 
 	private String updatedBy;
 
-	private String imeiNumberUniqueDeviceId;
+	private String deviceId;
 
 	public Patient() {
 
@@ -245,12 +245,12 @@ public class Patient {
 		this.updatedBy = updatedBy;
 	}
 
-	public String getImeiNumberUniqueDeviceId() {
-		return imeiNumberUniqueDeviceId;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
-		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

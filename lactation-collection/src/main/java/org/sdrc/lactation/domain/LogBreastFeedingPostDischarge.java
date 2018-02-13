@@ -45,8 +45,6 @@ public class LogBreastFeedingPostDischarge {
 	@JoinColumn
 	private TypeDetails breastFeedingStatus;
 
-	private String imeiNumberUniqueDeviceId;
-
 	@CreationTimestamp
 	private Timestamp createdDate;
 
@@ -56,6 +54,8 @@ public class LogBreastFeedingPostDischarge {
 	private String createdBy;
 
 	private String updatedBy;
+
+	private String deviceId;
 
 	public Patient getPatientId() {
 		return patientId;
@@ -117,12 +117,12 @@ public class LogBreastFeedingPostDischarge {
 		return updatedDate;
 	}
 
-	public String getImeiNumberUniqueDeviceId() {
-		return imeiNumberUniqueDeviceId;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setImeiNumberUniqueDeviceId(String imeiNumberUniqueDeviceId) {
-		this.imeiNumberUniqueDeviceId = imeiNumberUniqueDeviceId;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }
