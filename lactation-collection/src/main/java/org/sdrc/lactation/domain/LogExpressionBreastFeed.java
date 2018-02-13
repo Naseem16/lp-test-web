@@ -43,9 +43,7 @@ public class LogExpressionBreastFeed {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfExpression;
 
-	@Max(300)
-	@Digits(integer = 3, fraction = 2)
-	private Double durationOfExpression;
+	private Integer durationOfExpression;
 
 	@ManyToOne
 	@JoinColumn
@@ -57,11 +55,7 @@ public class LogExpressionBreastFeed {
 
 	@Max(300)
 	@Digits(integer = 3, fraction = 2)
-	private Double milkExpressedFromRightBreast;
-
-	@Max(300)
-	@Digits(integer = 3, fraction = 2)
-	private Double milkExpressedFromLeftBreast;
+	private Double milkExpressedFromLeftAndRightBreast;
 
 	@CreationTimestamp
 	private Timestamp createdDate;
@@ -99,11 +93,11 @@ public class LogExpressionBreastFeed {
 		this.dateAndTimeOfExpression = dateAndTimeOfExpression;
 	}
 
-	public Double getDurationOfExpression() {
+	public Integer getDurationOfExpression() {
 		return durationOfExpression;
 	}
 
-	public void setDurationOfExpression(Double durationOfExpression) {
+	public void setDurationOfExpression(Integer durationOfExpression) {
 		this.durationOfExpression = durationOfExpression;
 	}
 
@@ -123,20 +117,12 @@ public class LogExpressionBreastFeed {
 		this.expressionOccuredLocation = expressionOccuredLocation;
 	}
 
-	public Double getMilkExpressedFromRightBreast() {
-		return milkExpressedFromRightBreast;
+	public Double getMilkExpressedFromLeftAndRightBreast() {
+		return milkExpressedFromLeftAndRightBreast;
 	}
 
-	public void setMilkExpressedFromRightBreast(Double milkExpressedFromRightBreast) {
-		this.milkExpressedFromRightBreast = milkExpressedFromRightBreast;
-	}
-
-	public Double getMilkExpressedFromLeftBreast() {
-		return milkExpressedFromLeftBreast;
-	}
-
-	public void setMilkExpressedFromLeftBreast(Double milkExpressedFromLeftBreast) {
-		this.milkExpressedFromLeftBreast = milkExpressedFromLeftBreast;
+	public void setMilkExpressedFromLeftAndRightBreast(Double milkExpressedFromLeftAndRightBreast) {
+		this.milkExpressedFromLeftAndRightBreast = milkExpressedFromLeftAndRightBreast;
 	}
 
 	public String getCreatedBy() {

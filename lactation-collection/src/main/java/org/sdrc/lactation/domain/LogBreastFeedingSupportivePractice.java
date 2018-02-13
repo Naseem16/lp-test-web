@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,8 +49,7 @@ public class LogBreastFeedingSupportivePractice {
 	@JoinColumn
 	private TypeDetails personWhoPerformedBFSP;
 
-	@Digits(integer = 4, fraction = 2)
-	private Double bfspDuration;
+	private Integer bfspDuration;
 
 	@CreationTimestamp
 	private Timestamp createdDate;
@@ -105,11 +103,11 @@ public class LogBreastFeedingSupportivePractice {
 		this.personWhoPerformedBFSP = personWhoPerformedBFSP;
 	}
 
-	public Double getBfspDuration() {
+	public Integer getBfspDuration() {
 		return bfspDuration;
 	}
 
-	public void setBfspDuration(Double bfspDuration) {
+	public void setBfspDuration(Integer bfspDuration) {
 		this.bfspDuration = bfspDuration;
 	}
 

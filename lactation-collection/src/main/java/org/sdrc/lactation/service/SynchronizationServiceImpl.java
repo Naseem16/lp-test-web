@@ -16,6 +16,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -68,49 +69,73 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	 *         data related to a particular baby.
 	 */
 	@Override
+	@Transactional
 	public ResponseEntity<?> synchronizeForms(List<SynchronizationModel> synchronizationModels,
 			HttpRequest httpRequest) {
 
-		synchronizationModels.forEach(patientData -> {
-			Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
-			Patient babyFromDb = baby == null ? patientRepository.save(baby) : baby;
-
-			if (patientData.getLogBreastFeedingPostDischargeList() != null
-					&& !patientData.getLogBreastFeedingPostDischargeList().isEmpty()) {
-				patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
-					logExpBfPostDischarge.setPatientId(new Patient(babyFromDb.getPatientId()));
-					logExpBfPostDischarge.setBabyCode(babyFromDb.getBabyCode());
-				});
-				logBreastFeedingPostDischargeRepository.save(patientData.getLogBreastFeedingPostDischargeList());
-			}
-
-			if (patientData.getLogBreastFeedingSupportivePracticeList() != null
-					&& !patientData.getLogBreastFeedingSupportivePracticeList().isEmpty()) {
-				patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
-					logBfSuppPractice.setPatientId(new Patient(babyFromDb.getPatientId()));
-					logBfSuppPractice.setBabyCode(babyFromDb.getBabyCode());
-				});
-				logBreastFeedingSupportivePracticeRepository
-						.save(patientData.getLogBreastFeedingSupportivePracticeList());
-			}
-
-			if (patientData.getLogExpressionBreastFeedList() != null
-					&& !patientData.getLogExpressionBreastFeedList().isEmpty()) {
-				patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
-					logExpBf.setPatientId(new Patient(babyFromDb.getPatientId()));
-					logExpBf.setBabyCode(babyFromDb.getBabyCode());
-				});
-				logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
-			}
-
-			if (patientData.getLogFeedList() != null && !patientData.getLogFeedList().isEmpty()) {
-				patientData.getLogFeedList().forEach(logFeed -> {
-					logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
-					logFeed.setBabyCode(babyFromDb.getBabyCode());
-				});
-				logFeedRepository.save(patientData.getLogFeedList());
-			}
-		});
+		try{
+			synchronizationModels.forEach(patientData -> {
+				Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
+				if(baby != null){
+					baby.setAdmissionDateForOutdoorPatients(patientData.getPatient().getAdmissionDateForOutdoorPatients());
+					baby.setBabyAdmittedTo(patientData.getPatient().getBabyAdmittedTo());
+					baby.setBabyCodeHospital(patientData.getPatient().getBabyCodeHospital());
+					baby.setBabyOf(patientData.getPatient().getBabyOf());
+					baby.setBabyWeight(patientData.getPatient().getBabyWeight());
+					baby.setDeliveryDateAndTime(patientData.getPatient().getDeliveryDateAndTime());
+					baby.setDeliveryMethod(patientData.getPatient().getDeliveryMethod());
+					baby.setGestationalAgeInWeek(patientData.getPatient().getGestationalAgeInWeek());
+					baby.setImeiNumberUniqueDeviceId(patientData.getPatient().getImeiNumberUniqueDeviceId());
+					baby.setInpatientOrOutPatient(patientData.getPatient().getInpatientOrOutPatient());
+					baby.setMothersAge(patientData.getPatient().getMothersAge());
+					baby.setMothersPrenatalIntent(patientData.getPatient().getMothersPrenatalIntent());
+					baby.setNicuAdmissionReason(patientData.getPatient().getNicuAdmissionReason());
+					baby.setParentsKnowledgeOnHmAndLactation(patientData.getPatient().getParentsKnowledgeOnHmAndLactation());
+					baby.setTimeTillFirstExpression(patientData.getPatient().getTimeTillFirstExpression());
+					baby.setUpdatedBy(patientData.getPatient().getUpdatedBy());
+				}
+				Patient babyFromDb = baby == null ? patientRepository.save(patientData.getPatient()) : baby;
+	
+				if (patientData.getLogBreastFeedingPostDischargeList() != null
+						&& !patientData.getLogBreastFeedingPostDischargeList().isEmpty()) {
+					patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
+						logExpBfPostDischarge.setPatientId(new Patient(babyFromDb.getPatientId()));
+						logExpBfPostDischarge.setBabyCode(babyFromDb.getBabyCode());
+					});
+					logBreastFeedingPostDischargeRepository.save(patientData.getLogBreastFeedingPostDischargeList());
+				}
+	
+				if (patientData.getLogBreastFeedingSupportivePracticeList() != null
+						&& !patientData.getLogBreastFeedingSupportivePracticeList().isEmpty()) {
+					patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
+						logBfSuppPractice.setPatientId(new Patient(babyFromDb.getPatientId()));
+						logBfSuppPractice.setBabyCode(babyFromDb.getBabyCode());
+					});
+					logBreastFeedingSupportivePracticeRepository
+							.save(patientData.getLogBreastFeedingSupportivePracticeList());
+				}
+	
+				if (patientData.getLogExpressionBreastFeedList() != null
+						&& !patientData.getLogExpressionBreastFeedList().isEmpty()) {
+					patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
+						logExpBf.setPatientId(new Patient(babyFromDb.getPatientId()));
+						logExpBf.setBabyCode(babyFromDb.getBabyCode());
+					});
+					logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
+				}
+	
+				if (patientData.getLogFeedList() != null && !patientData.getLogFeedList().isEmpty()) {
+					patientData.getLogFeedList().forEach(logFeed -> {
+						logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
+						logFeed.setBabyCode(babyFromDb.getBabyCode());
+					});
+					logFeedRepository.save(patientData.getLogFeedList());
+				}
+			});
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
