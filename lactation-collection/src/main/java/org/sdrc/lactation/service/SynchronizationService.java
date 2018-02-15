@@ -4,8 +4,6 @@
  */
 package org.sdrc.lactation.service;
 
-import java.util.List;
-
 import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.utils.SynchronizationModel;
 import org.sdrc.lactation.utils.SynchronizationResult;
@@ -15,6 +13,6 @@ public interface SynchronizationService {
 
 	LactationUser registerUser(String firstName, String password);
 
-	SynchronizationResult synchronizeForms(List<SynchronizationModel> synchronizationModels, HttpRequest httpRequest);
+	SynchronizationResult synchronizeForms(SynchronizationModel synchronizationModels, HttpRequest httpRequest);
 
 }

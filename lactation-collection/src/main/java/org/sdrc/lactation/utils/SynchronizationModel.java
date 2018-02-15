@@ -2,11 +2,7 @@ package org.sdrc.lactation.utils;
 
 import java.util.List;
 
-import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
-import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
-import org.sdrc.lactation.domain.LogExpressionBreastFeed;
-import org.sdrc.lactation.domain.LogFeed;
-import org.sdrc.lactation.domain.Patient;
+import org.sdrc.lactation.domain.LactationUser;
 
 /**
  * 
@@ -16,53 +12,24 @@ import org.sdrc.lactation.domain.Patient;
 
 public class SynchronizationModel {
 
-	private Patient patient;
-	private List<LogExpressionBreastFeed> logExpressionBreastFeedList;
-	private List<LogFeed> logFeedList;
-	private List<LogBreastFeedingSupportivePractice> logBreastFeedingSupportivePracticeList;
-	private List<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList;
+	private List<LactationUser> lactationUserList;
+	private List<PatientSynchronizationModel> patientSynchronizationModelList;
 	private String deviceId;
 
-	public Patient getPatient() {
-		return patient;
+	public List<LactationUser> getLactationUserList() {
+		return lactationUserList;
 	}
 
-	public void setPatient(Patient patient) {
-		this.patient = patient;
+	public void setLactationUserList(List<LactationUser> lactationUserList) {
+		this.lactationUserList = lactationUserList;
 	}
 
-	public List<LogExpressionBreastFeed> getLogExpressionBreastFeedList() {
-		return logExpressionBreastFeedList;
+	public List<PatientSynchronizationModel> getPatientSynchronizationModelList() {
+		return patientSynchronizationModelList;
 	}
 
-	public void setLogExpressionBreastFeedList(List<LogExpressionBreastFeed> logExpressionBreastFeedList) {
-		this.logExpressionBreastFeedList = logExpressionBreastFeedList;
-	}
-
-	public List<LogFeed> getLogFeedList() {
-		return logFeedList;
-	}
-
-	public void setLogFeedList(List<LogFeed> logFeedList) {
-		this.logFeedList = logFeedList;
-	}
-
-	public List<LogBreastFeedingSupportivePractice> getLogBreastFeedingSupportivePracticeList() {
-		return logBreastFeedingSupportivePracticeList;
-	}
-
-	public void setLogBreastFeedingSupportivePracticeList(
-			List<LogBreastFeedingSupportivePractice> logBreastFeedingSupportivePracticeList) {
-		this.logBreastFeedingSupportivePracticeList = logBreastFeedingSupportivePracticeList;
-	}
-
-	public List<LogBreastFeedingPostDischarge> getLogBreastFeedingPostDischargeList() {
-		return logBreastFeedingPostDischargeList;
-	}
-
-	public void setLogBreastFeedingPostDischargeList(
-			List<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList) {
-		this.logBreastFeedingPostDischargeList = logBreastFeedingPostDischargeList;
+	public void setPatientSynchronizationModelList(List<PatientSynchronizationModel> patientSynchronizationModelList) {
+		this.patientSynchronizationModelList = patientSynchronizationModelList;
 	}
 
 	public String getDeviceId() {

@@ -1,6 +1,8 @@
 package org.sdrc.lactation.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.domain.Patient;
@@ -56,7 +58,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		user.setFirstName(firstName);
 		user.setPassword(messageDigestPasswordEncoder.encodePassword(user.getEmail(), password));
 
-		lactationUserRepository.save(user);
+		// lactationUserRepository.save(user);
 
 		return user;
 	}
@@ -65,86 +67,102 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 1548.
 	 *         This method will receive the forms in form of
 	 *         SynchronizationModel. This method will accept List of
-	 *         SynchronizationModel and each object of the list will contain the
-	 *         data related to a particular baby.
+	 *         SynchronizationModel which would contain list of users for
+	 *         registration purpose and list of data related to a particular
+	 *         baby.
 	 */
 	@Override
 	@Transactional
-	public SynchronizationResult synchronizeForms(List<SynchronizationModel> synchronizationModels,
-			HttpRequest httpRequest) {
-		
+	public SynchronizationResult synchronizeForms(SynchronizationModel synchronizationModels, HttpRequest httpRequest) {
+
 		SynchronizationResult synchronizationResult = new SynchronizationResult();
 
-		try{
-			synchronizationModels.forEach(patientData -> {
-				Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
-				if(baby != null){
-					baby.setAdmissionDateForOutdoorPatients(patientData.getPatient().getAdmissionDateForOutdoorPatients());
-					baby.setBabyAdmittedTo(patientData.getPatient().getBabyAdmittedTo());
-					baby.setBabyCodeHospital(patientData.getPatient().getBabyCodeHospital());
-					baby.setBabyOf(patientData.getPatient().getBabyOf());
-					baby.setBabyWeight(patientData.getPatient().getBabyWeight());
-					baby.setDeliveryDateAndTime(patientData.getPatient().getDeliveryDateAndTime());
-					baby.setDeliveryMethod(patientData.getPatient().getDeliveryMethod());
-					baby.setGestationalAgeInWeek(patientData.getPatient().getGestationalAgeInWeek());
-					baby.setDeviceId(patientData.getDeviceId());
-					baby.setInpatientOrOutPatient(patientData.getPatient().getInpatientOrOutPatient());
-					baby.setMothersAge(patientData.getPatient().getMothersAge());
-					baby.setMothersPrenatalIntent(patientData.getPatient().getMothersPrenatalIntent());
-					baby.setNicuAdmissionReason(patientData.getPatient().getNicuAdmissionReason());
-					baby.setParentsKnowledgeOnHmAndLactation(patientData.getPatient().getParentsKnowledgeOnHmAndLactation());
-					baby.setTimeTillFirstExpression(patientData.getPatient().getTimeTillFirstExpression());
-					baby.setUpdatedBy(patientData.getPatient().getUpdatedBy());
-				}
-				Patient babyFromDb = baby == null ? patientRepository.save(patientData.getPatient()) : baby;
-	
-				if (patientData.getLogBreastFeedingPostDischargeList() != null
-						&& !patientData.getLogBreastFeedingPostDischargeList().isEmpty()) {
-					patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
-						logExpBfPostDischarge.setPatientId(new Patient(babyFromDb.getPatientId()));
-						logExpBfPostDischarge.setBabyCode(babyFromDb.getBabyCode());
-						logExpBfPostDischarge.setDeviceId(patientData.getDeviceId());
-					});
-					logBreastFeedingPostDischargeRepository.save(patientData.getLogBreastFeedingPostDischargeList());
-				}
-	
-				if (patientData.getLogBreastFeedingSupportivePracticeList() != null
-						&& !patientData.getLogBreastFeedingSupportivePracticeList().isEmpty()) {
-					patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
-						logBfSuppPractice.setPatientId(new Patient(babyFromDb.getPatientId()));
-						logBfSuppPractice.setBabyCode(babyFromDb.getBabyCode());
-						logBfSuppPractice.setDeviceId(patientData.getDeviceId());
-					});
-					logBreastFeedingSupportivePracticeRepository
-							.save(patientData.getLogBreastFeedingSupportivePracticeList());
-				}
-	
-				if (patientData.getLogExpressionBreastFeedList() != null
-						&& !patientData.getLogExpressionBreastFeedList().isEmpty()) {
-					patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
-						logExpBf.setPatientId(new Patient(babyFromDb.getPatientId()));
-						logExpBf.setBabyCode(babyFromDb.getBabyCode());
-						logExpBf.setDeviceId(patientData.getDeviceId());
-					});
-					logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
-				}
-	
-				if (patientData.getLogFeedList() != null && !patientData.getLogFeedList().isEmpty()) {
-					patientData.getLogFeedList().forEach(logFeed -> {
-						logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
-						logFeed.setBabyCode(babyFromDb.getBabyCode());
-						logFeed.setDeviceId(patientData.getDeviceId());
-					});
-					logFeedRepository.save(patientData.getLogFeedList());
-				}
-			});
-		}catch(Exception e){
+		try {
+			if (synchronizationModels.getLactationUserList() != null
+					&& !synchronizationModels.getLactationUserList().isEmpty()) {
+				
+				List<LactationUser> usersInDb = lactationUserRepository.findAll();
+				
+				synchronizationModels.getLactationUserList().forEach(user -> {
+						user.setPassword(messageDigestPasswordEncoder.encodePassword(user.getEmail(), user.getPassword()));
+						lactationUserRepository.save(synchronizationModels.getLactationUserList());
+				});
+			}
+
+			if (synchronizationModels.getPatientSynchronizationModelList() != null
+					&& !synchronizationModels.getPatientSynchronizationModelList().isEmpty()) {
+				synchronizationModels.getPatientSynchronizationModelList().forEach(patientData -> {
+					Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
+					if (baby != null) {
+						baby.setAdmissionDateForOutdoorPatients(
+								patientData.getPatient().getAdmissionDateForOutdoorPatients());
+						baby.setBabyAdmittedTo(patientData.getPatient().getBabyAdmittedTo());
+						baby.setBabyCodeHospital(patientData.getPatient().getBabyCodeHospital());
+						baby.setBabyOf(patientData.getPatient().getBabyOf());
+						baby.setBabyWeight(patientData.getPatient().getBabyWeight());
+						baby.setDeliveryDateAndTime(patientData.getPatient().getDeliveryDateAndTime());
+						baby.setDeliveryMethod(patientData.getPatient().getDeliveryMethod());
+						baby.setGestationalAgeInWeek(patientData.getPatient().getGestationalAgeInWeek());
+						baby.setDeviceId(synchronizationModels.getDeviceId());
+						baby.setInpatientOrOutPatient(patientData.getPatient().getInpatientOrOutPatient());
+						baby.setMothersAge(patientData.getPatient().getMothersAge());
+						baby.setMothersPrenatalIntent(patientData.getPatient().getMothersPrenatalIntent());
+						baby.setNicuAdmissionReason(patientData.getPatient().getNicuAdmissionReason());
+						baby.setParentsKnowledgeOnHmAndLactation(
+								patientData.getPatient().getParentsKnowledgeOnHmAndLactation());
+						baby.setTimeTillFirstExpression(patientData.getPatient().getTimeTillFirstExpression());
+						baby.setUpdatedBy(patientData.getPatient().getUpdatedBy());
+					}
+					Patient babyFromDb = baby == null ? patientRepository.save(patientData.getPatient()) : baby;
+
+					if (patientData.getLogBreastFeedingPostDischargeList() != null
+							&& !patientData.getLogBreastFeedingPostDischargeList().isEmpty()) {
+						patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
+							logExpBfPostDischarge.setPatientId(new Patient(babyFromDb.getPatientId()));
+							logExpBfPostDischarge.setBabyCode(babyFromDb.getBabyCode());
+							logExpBfPostDischarge.setDeviceId(synchronizationModels.getDeviceId());
+						});
+						logBreastFeedingPostDischargeRepository
+								.save(patientData.getLogBreastFeedingPostDischargeList());
+					}
+
+					if (patientData.getLogBreastFeedingSupportivePracticeList() != null
+							&& !patientData.getLogBreastFeedingSupportivePracticeList().isEmpty()) {
+						patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
+							logBfSuppPractice.setPatientId(new Patient(babyFromDb.getPatientId()));
+							logBfSuppPractice.setBabyCode(babyFromDb.getBabyCode());
+							logBfSuppPractice.setDeviceId(synchronizationModels.getDeviceId());
+						});
+						logBreastFeedingSupportivePracticeRepository
+								.save(patientData.getLogBreastFeedingSupportivePracticeList());
+					}
+
+					if (patientData.getLogExpressionBreastFeedList() != null
+							&& !patientData.getLogExpressionBreastFeedList().isEmpty()) {
+						patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
+							logExpBf.setPatientId(new Patient(babyFromDb.getPatientId()));
+							logExpBf.setBabyCode(babyFromDb.getBabyCode());
+							logExpBf.setDeviceId(synchronizationModels.getDeviceId());
+						});
+						logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
+					}
+
+					if (patientData.getLogFeedList() != null && !patientData.getLogFeedList().isEmpty()) {
+						patientData.getLogFeedList().forEach(logFeed -> {
+							logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
+							logFeed.setBabyCode(babyFromDb.getBabyCode());
+							logFeed.setDeviceId(synchronizationModels.getDeviceId());
+						});
+						logFeedRepository.save(patientData.getLogFeedList());
+					}
+				});
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		synchronizationResult.setStatus(true);
+
 		synchronizationResult.setMessage("Successfull");
-		
+
 		return synchronizationResult;
 	}
 

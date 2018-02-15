@@ -2,6 +2,7 @@ package org.sdrc.lactation.domain;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +37,7 @@ public class LactationUser {
 
 	private String lastName;
 
+	@Column(nullable = false, unique = true)
 	private String email;
 
 	@JsonIgnore

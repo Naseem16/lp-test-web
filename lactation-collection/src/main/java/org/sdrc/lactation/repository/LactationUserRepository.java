@@ -1,5 +1,7 @@
 package org.sdrc.lactation.repository;
 
+import java.util.List;
+
 import org.sdrc.lactation.domain.LactationUser;
 
 /**
@@ -10,6 +12,8 @@ import org.sdrc.lactation.domain.LactationUser;
 
 public interface LactationUserRepository {
 
-	void save(LactationUser user);
+	void save(Iterable<LactationUser> userList);
+
+	List<LactationUser> findAll();
 
 }
