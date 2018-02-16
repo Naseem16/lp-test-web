@@ -14,6 +14,8 @@ import java.util.List;
 
 public class SynchronizationResult {
 
+	private Integer usersSynced;
+	private Integer usersFailed;
 	private Integer patientsSynced;
 	private Integer patientsFailed;
 	private Integer bfExpressionSynced;
@@ -24,8 +26,6 @@ public class SynchronizationResult {
 	private Integer bfSupportivePracticeFailed;
 	private Integer bfPostDischargeSynced;
 	private Integer bfPostDischargeFailed;
-	private Integer usersSynced;
-	private Integer usersFailed;
 	private Integer statusCode;
 	private String message;
 	private List<String> rejectedUserList;
