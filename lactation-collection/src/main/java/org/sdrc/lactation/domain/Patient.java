@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -88,6 +89,9 @@ public class Patient {
 	private String updatedBy;
 
 	private String deviceId;
+
+	@Transient
+	private Boolean isSynced;
 
 	public Patient() {
 
@@ -251,6 +255,14 @@ public class Patient {
 
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public Boolean getIsSynced() {
+		return isSynced;
+	}
+
+	public void setIsSynced(Boolean isSynced) {
+		this.isSynced = isSynced;
 	}
 
 }

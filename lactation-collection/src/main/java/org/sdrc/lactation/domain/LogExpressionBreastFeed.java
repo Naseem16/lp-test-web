@@ -69,6 +69,8 @@ public class LogExpressionBreastFeed {
 
 	private String deviceId;
 
+	private String uniqueFormId;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -151,6 +153,14 @@ public class LogExpressionBreastFeed {
 
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public String getUniqueFormId() {
+		return uniqueFormId;
+	}
+
+	public void setUniqueFormId(String uniqueFormId) {
+		this.uniqueFormId = uniqueFormId;
 	}
 
 }

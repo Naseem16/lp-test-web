@@ -78,6 +78,8 @@ public class LogFeed {
 
 	private String deviceId;
 
+	private String uniqueFormId;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -192,6 +194,14 @@ public class LogFeed {
 
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public String getUniqueFormId() {
+		return uniqueFormId;
+	}
+
+	public void setUniqueFormId(String uniqueFormId) {
+		this.uniqueFormId = uniqueFormId;
 	}
 
 }

@@ -1,9 +1,5 @@
 package org.sdrc.lactation.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.domain.Patient;
 import org.sdrc.lactation.repository.LactationUserRepository;
@@ -51,18 +47,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	@Autowired
 	private LogBreastFeedingSupportivePracticeRepository logBreastFeedingSupportivePracticeRepository;
 
-	@Override
-	public LactationUser registerUser(String firstName, String password) {
-		LactationUser user = new LactationUser();
-		user.setEmail(firstName + "@gmail.com");
-		user.setFirstName(firstName);
-		user.setPassword(messageDigestPasswordEncoder.encodePassword(user.getEmail(), password));
-
-		// lactationUserRepository.save(user);
-
-		return user;
-	}
-
 	/**
 	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 1548.
 	 *         This method will receive the forms in form of
@@ -80,12 +64,20 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try {
 			if (synchronizationModels.getLactationUserList() != null
 					&& !synchronizationModels.getLactationUserList().isEmpty()) {
-				
-				List<LactationUser> usersInDb = lactationUserRepository.findAll();
-				
+								
 				synchronizationModels.getLactationUserList().forEach(user -> {
+					LactationUser existingUser = lactationUserRepository.findByEmail(user.getEmail());
+					if(existingUser != null && !user.getIsSynced()){
+						existingUser.setCountry(user.getCountry());
+						existingUser.setDistrict(user.getDistrict());
+						existingUser.setFirstName(user.getFirstName());
+						existingUser.setInstitutionName(user.getInstitutionName());
+						existingUser.setLastName(user.getLastName());
+						existingUser.setState(user.getState());
+					}else if(!user.getIsSynced()){
 						user.setPassword(messageDigestPasswordEncoder.encodePassword(user.getEmail(), user.getPassword()));
-						lactationUserRepository.save(synchronizationModels.getLactationUserList());
+						lactationUserRepository.save(user);
+					}
 				});
 			}
 
@@ -93,7 +85,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					&& !synchronizationModels.getPatientSynchronizationModelList().isEmpty()) {
 				synchronizationModels.getPatientSynchronizationModelList().forEach(patientData -> {
 					Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
-					if (baby != null) {
+					if (baby != null && !baby.getIsSynced()) {
 						baby.setAdmissionDateForOutdoorPatients(
 								patientData.getPatient().getAdmissionDateForOutdoorPatients());
 						baby.setBabyAdmittedTo(patientData.getPatient().getBabyAdmittedTo());
@@ -161,7 +153,21 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			e.printStackTrace();
 		}
 
+		synchronizationResult.setBfExpressionFailed(0);
+		synchronizationResult.setBfExpressionSynced(1);
+		synchronizationResult.setBfPostDischargeFailed(0);
+		synchronizationResult.setBfPostDischargeSynced(1);
+		synchronizationResult.setBfSupportivePracticeFailed(0);
+		synchronizationResult.setBfSupportivePracticeSynced(1);
+		synchronizationResult.setLogFeedFailed(0);
+		synchronizationResult.setLogFeedSynced(1);
 		synchronizationResult.setMessage("Successfull");
+		synchronizationResult.setPatientsFailed(0);
+		synchronizationResult.setPatientsSynced(1);
+		synchronizationResult.setRejectedUserList(null);
+		synchronizationResult.setStatusCode(1);
+		synchronizationResult.setUsersFailed(0);
+		synchronizationResult.setUsersSynced(1);
 
 		return synchronizationResult;
 	}

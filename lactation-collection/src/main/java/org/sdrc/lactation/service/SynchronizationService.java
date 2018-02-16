@@ -4,14 +4,11 @@
  */
 package org.sdrc.lactation.service;
 
-import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.utils.SynchronizationModel;
 import org.sdrc.lactation.utils.SynchronizationResult;
 import org.springframework.http.HttpRequest;
 
 public interface SynchronizationService {
-
-	LactationUser registerUser(String firstName, String password);
 
 	SynchronizationResult synchronizeForms(SynchronizationModel synchronizationModels, HttpRequest httpRequest);
 

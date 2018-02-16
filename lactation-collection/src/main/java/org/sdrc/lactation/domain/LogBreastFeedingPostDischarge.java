@@ -38,8 +38,12 @@ public class LogBreastFeedingPostDischarge {
 
 	private String babyCode;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-	private Timestamp dateAndTimingOfBreastFeeding;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Timestamp dateOfBreastFeeding;
+
+	@ManyToOne
+	@JoinColumn
+	private TypeDetails timeOfBreastFeeding;
 
 	@ManyToOne
 	@JoinColumn
@@ -57,6 +61,8 @@ public class LogBreastFeedingPostDischarge {
 
 	private String deviceId;
 
+	private String uniqueFormId;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -73,12 +79,20 @@ public class LogBreastFeedingPostDischarge {
 		this.babyCode = babyCode;
 	}
 
-	public Timestamp getDateAndTimingOfBreastFeeding() {
-		return dateAndTimingOfBreastFeeding;
+	public Timestamp getDateOfBreastFeeding() {
+		return dateOfBreastFeeding;
 	}
 
-	public void setDateAndTimingOfBreastFeeding(Timestamp dateAndTimingOfBreastFeeding) {
-		this.dateAndTimingOfBreastFeeding = dateAndTimingOfBreastFeeding;
+	public void setDateOfBreastFeeding(Timestamp dateOfBreastFeeding) {
+		this.dateOfBreastFeeding = dateOfBreastFeeding;
+	}
+
+	public TypeDetails getTimeOfBreastFeeding() {
+		return timeOfBreastFeeding;
+	}
+
+	public void setTimeOfBreastFeeding(TypeDetails timeOfBreastFeeding) {
+		this.timeOfBreastFeeding = timeOfBreastFeeding;
 	}
 
 	public TypeDetails getBreastFeedingStatus() {
@@ -123,6 +137,14 @@ public class LogBreastFeedingPostDischarge {
 
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public String getUniqueFormId() {
+		return uniqueFormId;
+	}
+
+	public void setUniqueFormId(String uniqueFormId) {
+		this.uniqueFormId = uniqueFormId;
 	}
 
 }

@@ -1,6 +1,5 @@
 package org.sdrc.lactation.controller;
 
-import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.service.SynchronizationService;
 import org.sdrc.lactation.utils.SynchronizationModel;
 import org.sdrc.lactation.utils.SynchronizationResult;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -25,21 +23,15 @@ public class SynchronizationController {
 	@Autowired
 	private SynchronizationService synchronizationService;
 
-	@RequestMapping(value = "/registerUser", method = RequestMethod.GET)
-	public LactationUser registerUser(@RequestParam("firstName") String firstName,
-			@RequestParam("password") String password) {
-		return synchronizationService.registerUser(firstName, password);
-	}
-
 	@CrossOrigin
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
 	public SynchronizationResult synchronize(@RequestBody SynchronizationModel synchronizationModels) {
 		return synchronizationService.synchronizeForms(synchronizationModels, null);
 	}
-	
+
 	@CrossOrigin
 	@RequestMapping(value = "/serverStatus", method = RequestMethod.GET)
-	public Boolean serverStatus(){
+	public Boolean serverStatus() {
 		return true;
 	}
 }

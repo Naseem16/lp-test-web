@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -64,6 +65,9 @@ public class LactationUser {
 
 	@UpdateTimestamp
 	private Timestamp updatedDate;
+
+	@Transient
+	private Boolean isSynced;
 
 	public Integer getId() {
 		return id;
@@ -147,6 +151,14 @@ public class LactationUser {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public Boolean getIsSynced() {
+		return isSynced;
+	}
+
+	public void setIsSynced(Boolean isSynced) {
+		this.isSynced = isSynced;
 	}
 
 }
