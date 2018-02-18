@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 6th February 2018 13:10. This
  *         domain will be used for registering new user in the system.
+ * @author Ratikanta        
  */
 
 @Entity
@@ -39,10 +39,7 @@ public class LactationUser {
 	private String lastName;
 
 	@Column(nullable = false, unique = true)
-	private String email;
-
-	@JsonIgnore
-	private String password;
+	private String email;	
 
 	@ManyToOne
 	@JoinColumn
@@ -65,9 +62,6 @@ public class LactationUser {
 
 	@UpdateTimestamp
 	private Timestamp updatedDate;
-
-	@Transient
-	private Boolean isSynced;
 
 	public Integer getId() {
 		return id;
@@ -95,14 +89,6 @@ public class LactationUser {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Area getCountry() {
@@ -153,12 +139,9 @@ public class LactationUser {
 		this.updatedDate = updatedDate;
 	}
 
-	public Boolean getIsSynced() {
-		return isSynced;
+	public void setId(Integer id) {
+		this.id = id;
 	}
-
-	public void setIsSynced(Boolean isSynced) {
-		this.isSynced = isSynced;
-	}
+	
 
 }

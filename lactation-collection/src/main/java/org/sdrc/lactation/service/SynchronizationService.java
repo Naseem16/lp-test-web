@@ -4,12 +4,12 @@
  */
 package org.sdrc.lactation.service;
 
-import org.sdrc.lactation.utils.SynchronizationModel;
-import org.sdrc.lactation.utils.SynchronizationResult;
+import org.sdrc.lactation.utils.SyncModel;
+import org.sdrc.lactation.utils.SyncResult;
 import org.springframework.http.HttpRequest;
 
 public interface SynchronizationService {
 
-	SynchronizationResult synchronizeForms(SynchronizationModel synchronizationModels, HttpRequest httpRequest);
+	SyncResult synchronizeForms(SyncModel synchronizationModels, HttpRequest httpRequest);
 
 }

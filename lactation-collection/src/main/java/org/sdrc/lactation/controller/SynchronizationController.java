@@ -1,8 +1,8 @@
 package org.sdrc.lactation.controller;
 
 import org.sdrc.lactation.service.SynchronizationService;
-import org.sdrc.lactation.utils.SynchronizationModel;
-import org.sdrc.lactation.utils.SynchronizationResult;
+import org.sdrc.lactation.utils.SyncModel;
+import org.sdrc.lactation.utils.SyncResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +25,7 @@ public class SynchronizationController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
-	public SynchronizationResult synchronize(@RequestBody SynchronizationModel synchronizationModels) {
+	public SyncResult synchronize(@RequestBody SyncModel synchronizationModels) {
 		return synchronizationService.synchronizeForms(synchronizationModels, null);
 	}
 

@@ -1,5 +1,9 @@
 package org.sdrc.lactation.repository;
 
+import java.util.List;
+
+import org.sdrc.lactation.domain.Area;
+
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 9th February 2018 17:10. This
@@ -8,5 +12,7 @@ package org.sdrc.lactation.repository;
  */
 
 public interface AreaRepository {
-
+	
+	List<Area> findAll();
+	
 }

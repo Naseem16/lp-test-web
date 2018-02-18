@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -61,7 +60,7 @@ public class Patient {
 	@JoinColumn
 	private TypeDetails parentsKnowledgeOnHmAndLactation;
 
-	private Double timeTillFirstExpression;
+	private String timeTillFirstExpression;
 
 	@ManyToOne
 	@JoinColumn
@@ -87,11 +86,6 @@ public class Patient {
 	private String createdBy;
 
 	private String updatedBy;
-
-	private String deviceId;
-
-	@Transient
-	private Boolean isSynced;
 
 	public Patient() {
 
@@ -185,11 +179,11 @@ public class Patient {
 		this.parentsKnowledgeOnHmAndLactation = parentsKnowledgeOnHmAndLactation;
 	}
 
-	public Double getTimeTillFirstExpression() {
+	public String getTimeTillFirstExpression() {
 		return timeTillFirstExpression;
 	}
 
-	public void setTimeTillFirstExpression(Double timeTillFirstExpression) {
+	public void setTimeTillFirstExpression(String timeTillFirstExpression) {
 		this.timeTillFirstExpression = timeTillFirstExpression;
 	}
 
@@ -248,21 +242,4 @@ public class Patient {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
-	}
-
-	public Boolean getIsSynced() {
-		return isSynced;
-	}
-
-	public void setIsSynced(Boolean isSynced) {
-		this.isSynced = isSynced;
-	}
-
 }
