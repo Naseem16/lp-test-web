@@ -143,7 +143,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					Patient existingPatient = patientMap.get(patient.getBabyCode());
 					java.sql.Date date = null;
 					try{
-						date = new java.sql.Date(sdfddMMyyyy.parse(patient.getAdmissionDateForOutdoorPatients()).getTime());
+						if(patient.getAdmissionDateForOutdoorPatients() != null){
+							date = new java.sql.Date(sdfddMMyyyy.parse(patient.getAdmissionDateForOutdoorPatients()).getTime());
+						}
 					} catch(ParseException e){
 						e.printStackTrace();
 					}
