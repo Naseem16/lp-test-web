@@ -34,12 +34,10 @@ public class LogBreastFeedingSupportivePractice {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Patient patientId;
+	private Patient patientId;	
 
-	private String babyCode;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
-	private Timestamp timeOfBFSP;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+	private Timestamp dateAndTimeOfBFSP;
 
 	@ManyToOne
 	@JoinColumn
@@ -61,8 +59,6 @@ public class LogBreastFeedingSupportivePractice {
 
 	private String updatedBy;
 
-	private String deviceId;
-
 	private String uniqueFormId;
 
 	public Patient getPatientId() {
@@ -73,20 +69,12 @@ public class LogBreastFeedingSupportivePractice {
 		this.patientId = patientId;
 	}
 
-	public String getBabyCode() {
-		return babyCode;
+	public Timestamp getDateAndTimeOfBFSP() {
+		return dateAndTimeOfBFSP;
 	}
 
-	public void setBabyCode(String babyCode) {
-		this.babyCode = babyCode;
-	}
-
-	public Timestamp getTimeOfBFSP() {
-		return timeOfBFSP;
-	}
-
-	public void setTimeOfBFSP(Timestamp timeOfBFSP) {
-		this.timeOfBFSP = timeOfBFSP;
+	public void setDateAndTimeOfBFSP(Timestamp dateAndTimeOfBFSP) {
+		this.dateAndTimeOfBFSP = dateAndTimeOfBFSP;
 	}
 
 	public TypeDetails getBfspPerformed() {
@@ -139,14 +127,6 @@ public class LogBreastFeedingSupportivePractice {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public String getUniqueFormId() {

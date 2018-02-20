@@ -1,5 +1,7 @@
 package org.sdrc.lactation.repository;
 
+import java.util.List;
+
 import org.sdrc.lactation.domain.LogFeed;
 
 /**
@@ -12,4 +14,5 @@ public interface LogFeedRepository {
 
 	void save(Iterable<LogFeed> logFeedList);
 
+	List<LogFeed> findByINId(List<String> uniqueIdList);
 }

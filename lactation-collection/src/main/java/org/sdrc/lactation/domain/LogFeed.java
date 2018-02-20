@@ -38,9 +38,7 @@ public class LogFeed {
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Patient patientId;
-
-	private String babyCode;
-
+	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfFeed;
 
@@ -62,6 +60,10 @@ public class LogFeed {
 
 	@Digits(integer = 4, fraction = 2)
 	private Double otherVolume;
+	
+	@ManyToOne
+	@JoinColumn
+	private TypeDetails locationOfFeeding;
 
 	@Digits(integer = 5, fraction = 2)
 	private Double weightOfBaby;
@@ -74,11 +76,21 @@ public class LogFeed {
 
 	private String createdBy;
 
-	private String updatedBy;
-
-	private String deviceId;
+	private String updatedBy;	
 
 	private String uniqueFormId;
+
+	public TypeDetails getLocationOfFeeding() {
+		return locationOfFeeding;
+	}
+
+	public void setLocationOfFeeding(TypeDetails locationOfFeeding) {
+		this.locationOfFeeding = locationOfFeeding;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public Patient getPatientId() {
 		return patientId;
@@ -86,14 +98,6 @@ public class LogFeed {
 
 	public void setPatientId(Patient patientId) {
 		this.patientId = patientId;
-	}
-
-	public String getBabyCode() {
-		return babyCode;
-	}
-
-	public void setBabyCode(String babyCode) {
-		this.babyCode = babyCode;
 	}
 
 	public Timestamp getDateAndTimeOfFeed() {
@@ -186,14 +190,6 @@ public class LogFeed {
 
 	public void setWeightOfBaby(Double weightOfBaby) {
 		this.weightOfBaby = weightOfBaby;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public String getUniqueFormId() {

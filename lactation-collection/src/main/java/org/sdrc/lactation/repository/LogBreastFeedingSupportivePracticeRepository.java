@@ -1,5 +1,7 @@
 package org.sdrc.lactation.repository;
 
+import java.util.List;
+
 import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 
 /**
@@ -13,4 +15,6 @@ public interface LogBreastFeedingSupportivePracticeRepository {
 
 	void save(Iterable<LogBreastFeedingSupportivePractice> logBreastFeedingSupportivePracticeList);
 
+	List<LogBreastFeedingSupportivePractice> findByINId(
+			List<String> uniqueIdList);
 }
