@@ -88,11 +88,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try {
 			
 			//getting area 
-			Map<Integer, Area> areaMap = new HashMap<Integer, Area>();
+			Map<Integer, Area> areaMap = new HashMap<>();
 			areaRepository.findAll().forEach(area->areaMap.put(area.getId(), area));
 			
 			//getting type details
-			Map<Integer, TypeDetails> typeDetailsMap = new HashMap<Integer, TypeDetails>();
+			Map<Integer, TypeDetails> typeDetailsMap = new HashMap<>();
 			typeDetailsRepository.findAll().forEach(typeDetails->typeDetailsMap.put(typeDetails.getId(), typeDetails));
 			
 			
@@ -131,10 +131,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					&& !syncModels.getPatients().isEmpty()) {
 			
 				//getting patients from database
-				List<String> babyCodeList = new ArrayList<String>();
+				List<String> babyCodeList = new ArrayList<>();
 				syncModels.getPatients().forEach(patient -> babyCodeList.add(patient.getBabyCode()));
 				List<Patient> existingPatients = patientRepository.findByINBababyCode(babyCodeList);
-				Map<String, Patient> patientMap = new HashMap<String, Patient>();
+				Map<String, Patient> patientMap = new HashMap<>();
 				existingPatients.forEach(patient->patientMap.put(patient.getBabyCode(), patient));
 				
 				

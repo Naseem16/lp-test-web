@@ -38,8 +38,8 @@ public class LogBreastFeedingSupportivePractice {
 
 	private String babyCode;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-	private Timestamp dateAndTimeOfBFSP;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
+	private Timestamp timeOfBFSP;
 
 	@ManyToOne
 	@JoinColumn
@@ -81,12 +81,12 @@ public class LogBreastFeedingSupportivePractice {
 		this.babyCode = babyCode;
 	}
 
-	public Timestamp getDateAndTimeOfBFSP() {
-		return dateAndTimeOfBFSP;
+	public Timestamp getTimeOfBFSP() {
+		return timeOfBFSP;
 	}
 
-	public void setDateAndTimeOfBFSP(Timestamp dateAndTimeOfBFSP) {
-		this.dateAndTimeOfBFSP = dateAndTimeOfBFSP;
+	public void setTimeOfBFSP(Timestamp timeOfBFSP) {
+		this.timeOfBFSP = timeOfBFSP;
 	}
 
 	public TypeDetails getBfspPerformed() {
