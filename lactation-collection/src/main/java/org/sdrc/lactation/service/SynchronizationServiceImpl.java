@@ -10,6 +10,10 @@ import java.util.Map;
 
 import org.sdrc.lactation.domain.Area;
 import org.sdrc.lactation.domain.LactationUser;
+import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
+import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
+import org.sdrc.lactation.domain.LogExpressionBreastFeed;
+import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
 import org.sdrc.lactation.domain.TypeDetails;
 import org.sdrc.lactation.repository.AreaRepository;
@@ -20,6 +24,10 @@ import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.repository.TypeDetailsRepository;
+import org.sdrc.lactation.utils.FailureBFExpression;
+import org.sdrc.lactation.utils.FailureBFPD;
+import org.sdrc.lactation.utils.FailureBFSP;
+import org.sdrc.lactation.utils.FailureFeedExpression;
 import org.sdrc.lactation.utils.FailurePatient;
 import org.sdrc.lactation.utils.FailureUser;
 import org.sdrc.lactation.utils.SyncModel;
@@ -125,7 +133,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			}
 
 			//Saving patients
-			
+			Map<String, Patient> patientMap = new HashMap<String, Patient>();
 			
 			if (syncModels.getPatients() != null
 					&& !syncModels.getPatients().isEmpty()) {
@@ -133,8 +141,29 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				//getting patients from database
 				List<String> babyCodeList = new ArrayList<String>();
 				syncModels.getPatients().forEach(patient -> babyCodeList.add(patient.getBabyCode()));
-				List<Patient> existingPatients = patientRepository.findByINBababyCode(babyCodeList);
-				Map<String, Patient> patientMap = new HashMap<String, Patient>();
+				
+				if (syncModels.getBfExpressions() != null
+						&& !syncModels.getBfExpressions().isEmpty()) {
+					syncModels.getBfExpressions().forEach(bfExpression -> babyCodeList.add(bfExpression.getBabyCode()));					
+				}
+				
+				if (syncModels.getFeedExpressions() != null
+						&& !syncModels.getFeedExpressions().isEmpty()) {
+					syncModels.getFeedExpressions().forEach(feedExpression -> babyCodeList.add(feedExpression.getBabyCode()));					
+				}
+				
+				if (syncModels.getBfsps() != null
+						&& !syncModels.getBfsps().isEmpty()) {
+					syncModels.getBfsps().forEach(bfsp -> babyCodeList.add(bfsp.getBabyCode()));					
+				}
+				
+				if (syncModels.getBfpds() != null
+						&& !syncModels.getBfpds().isEmpty()) {
+					syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
+				}
+				
+				List<Patient> existingPatients = patientRepository.findByINBabyCode(babyCodeList);
+				
 				existingPatients.forEach(patient->patientMap.put(patient.getBabyCode(), patient));
 				
 				
@@ -156,7 +185,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						existingPatient.setBabyCodeHospital(patient.getBabyCodeHospital());
 						existingPatient.setBabyOf(patient.getBabyOf());
 						existingPatient.setBabyWeight(patient.getBabyWeight());
-						existingPatient.setDeliveryDateAndTime(getDeliveryDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
+						existingPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
 						existingPatient.setDeliveryMethod(typeDetailsMap.get(patient.getDeliveryMethod()));
 						existingPatient.setGestationalAgeInWeek(patient.getGestationalAgeInWeek());
 						existingPatient.setInpatientOrOutPatient(typeDetailsMap.get(patient.getInpatientOrOutPatient()));
@@ -177,7 +206,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newPatient.setBabyCodeHospital(patient.getBabyCodeHospital());
 						newPatient.setBabyOf(patient.getBabyOf());
 						newPatient.setBabyWeight(patient.getBabyWeight());
-						newPatient.setDeliveryDateAndTime(getDeliveryDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
+						newPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
 						newPatient.setDeliveryMethod(typeDetailsMap.get(patient.getDeliveryMethod()));
 						newPatient.setGestationalAgeInWeek(patient.getGestationalAgeInWeek());
 						newPatient.setInpatientOrOutPatient(typeDetailsMap.get(patient.getInpatientOrOutPatient()));
@@ -195,44 +224,118 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				List<FailurePatient> faliurePatients = new ArrayList<>();
 				syncResult.setFailurePatients(faliurePatients);
 			}
-			/*
-			if (synchronizationModels.getPatientSynchronizationModelList() != null
-					&& !synchronizationModels.getPatientSynchronizationModelList().isEmpty()) {
-				synchronizationModels.getPatientSynchronizationModelList().forEach(patientData -> {
-					Patient baby = patientRepository.findByBabyCode(patientData.getPatient().getBabyCode());
-					if (baby != null && !baby.getIsSynced()) {
-						baby.setAdmissionDateForOutdoorPatients(
-								patientData.getPatient().getAdmissionDateForOutdoorPatients());
-						baby.setBabyAdmittedTo(patientData.getPatient().getBabyAdmittedTo());
-						baby.setBabyCodeHospital(patientData.getPatient().getBabyCodeHospital());
-						baby.setBabyOf(patientData.getPatient().getBabyOf());
-						baby.setBabyWeight(patientData.getPatient().getBabyWeight());
-						baby.setDeliveryDateAndTime(patientData.getPatient().getDeliveryDateAndTime());
-						baby.setDeliveryMethod(patientData.getPatient().getDeliveryMethod());
-						baby.setGestationalAgeInWeek(patientData.getPatient().getGestationalAgeInWeek());
-						baby.setDeviceId(synchronizationModels.getDeviceId());
-						baby.setInpatientOrOutPatient(patientData.getPatient().getInpatientOrOutPatient());
-						baby.setMothersAge(patientData.getPatient().getMothersAge());
-						baby.setMothersPrenatalIntent(patientData.getPatient().getMothersPrenatalIntent());
-						baby.setNicuAdmissionReason(patientData.getPatient().getNicuAdmissionReason());
-						baby.setParentsKnowledgeOnHmAndLactation(
-								patientData.getPatient().getParentsKnowledgeOnHmAndLactation());
-						baby.setTimeTillFirstExpression(patientData.getPatient().getTimeTillFirstExpression());
-						baby.setUpdatedBy(patientData.getPatient().getUpdatedBy());
-					}
-					Patient babyFromDb = baby == null ? patientRepository.save(patientData.getPatient()) : baby;
-
-					
-
-					
-
-					
-
-					
-				});
-			}
+			
 			
 			//Saving BF expression
+			if (syncModels.getBfExpressions() != null
+					&& !syncModels.getBfExpressions().isEmpty()) {
+				
+				List<String> uniqueIdList = new ArrayList<String>();
+				
+				syncModels.getBfExpressions().forEach(bfExpression -> uniqueIdList.add(bfExpression.getId()));
+				List<LogExpressionBreastFeed> existingBFEXpressions = logExpressionBreastFeedRepository.findByINId(uniqueIdList);
+				Map<String, LogExpressionBreastFeed> bFEXpressionMap = new HashMap<String, LogExpressionBreastFeed>();
+				existingBFEXpressions.forEach(bFEXpression->bFEXpressionMap.put(bFEXpression.getUniqueFormId(), bFEXpression));
+				
+				syncModels.getBfExpressions().forEach(bFEXpression -> {
+					LogExpressionBreastFeed existingBFEXpression = bFEXpressionMap.get(bFEXpression.getId());
+					if(existingBFEXpression != null){
+						existingBFEXpression.setPatientId(patientMap.get(bFEXpression.getBabyCode()));
+						existingBFEXpression.setDateAndTimeOfExpression(getTimestampFromDateAndTime(bFEXpression.getDateOfExpression(),
+								bFEXpression.getTimeOfExpression()));
+						existingBFEXpression.setMethodOfExpression(typeDetailsMap.get(bFEXpression.getMethodOfExpression()));
+						existingBFEXpression.setExpressionOccuredLocation(typeDetailsMap.get(bFEXpression.getLocationOfExpression()));
+						existingBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR());
+						existingBFEXpression.setUpdatedBy(bFEXpression.getUserId());
+						existingBFEXpression.setUniqueFormId(bFEXpression.getId());
+						logExpressionBreastFeedRepository.save(existingBFEXpression);
+						
+					}else{
+						LogExpressionBreastFeed newBFEXpression = new LogExpressionBreastFeed();
+						newBFEXpression.setPatientId(patientMap.get(bFEXpression.getBabyCode()));
+						newBFEXpression.setDateAndTimeOfExpression(getTimestampFromDateAndTime(bFEXpression.getDateOfExpression(),
+								bFEXpression.getTimeOfExpression()));
+						newBFEXpression.setMethodOfExpression(typeDetailsMap.get(bFEXpression.getMethodOfExpression()));
+						newBFEXpression.setExpressionOccuredLocation(typeDetailsMap.get(bFEXpression.getLocationOfExpression()));
+						newBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR());
+						newBFEXpression.setCreatedBy(bFEXpression.getUserId());
+						newBFEXpression.setUniqueFormId(bFEXpression.getId());
+						logExpressionBreastFeedRepository.save(newBFEXpression);						
+					}
+				});
+				
+				List<FailureBFExpression> failureBFExpressions = new ArrayList<>();
+				syncResult.setFailureBFExpressions(failureBFExpressions);
+				
+			}
+			
+			//Saving feed expression
+			if (syncModels.getFeedExpressions() != null
+					&& !syncModels.getFeedExpressions().isEmpty()) {
+				
+				List<String> uniqueIdList = new ArrayList<String>();
+				syncModels.getFeedExpressions().forEach(feedExpression -> uniqueIdList.add(feedExpression.getId()));
+				List<LogFeed> existingFeeds = logFeedRepository.findByINId(uniqueIdList);
+				Map<String, LogFeed> logFeedMap = new HashMap<String, LogFeed>();
+				existingFeeds.forEach(logFeed->logFeedMap.put(logFeed.getUniqueFormId(), logFeed));
+				
+				syncModels.getFeedExpressions().forEach(logFeed -> {
+					LogFeed existingFeed = logFeedMap.get(logFeed.getId());
+					if(existingFeed != null){
+						
+					}else{
+						
+					}
+				});
+				List<FailureFeedExpression> failureFeedExpressions = new ArrayList<>();
+				syncResult.setFailureFeedExpressions(failureFeedExpressions);
+				
+			}
+			
+			//Saving BFSP
+			if (syncModels.getBfsps() != null
+					&& !syncModels.getBfsps().isEmpty()) {
+				List<String> uniqueIdList = new ArrayList<String>();
+				syncModels.getBfsps().forEach(bfsp -> uniqueIdList.add(bfsp.getId()));
+				
+				List<LogBreastFeedingSupportivePractice> existingBFSPs = logBreastFeedingSupportivePracticeRepository.findByINId(uniqueIdList);
+				Map<String, LogBreastFeedingSupportivePractice> bFSPMap = new HashMap<String, LogBreastFeedingSupportivePractice>();
+				existingBFSPs.forEach(bFSP->bFSPMap.put(bFSP.getUniqueFormId(), bFSP));
+				syncModels.getBfsps().forEach(bFSP -> {
+					LogBreastFeedingSupportivePractice existingBFSP = bFSPMap.get(bFSP.getId());
+					if(existingBFSP != null){
+						
+					}else{
+						
+					}
+				});
+				List<FailureBFSP> failureBFSPs = new ArrayList<>();
+				syncResult.setFailureBFSPs(failureBFSPs);
+			}
+			
+			//Saving BFPD
+			if (syncModels.getBfpds() != null
+					&& !syncModels.getBfpds().isEmpty()) {
+				
+				List<String> uniqueIdList = new ArrayList<String>();
+				syncModels.getBfpds().forEach(bfpd -> uniqueIdList.add(bfpd.getId()));
+				List<LogBreastFeedingPostDischarge> existingBFPDs = logBreastFeedingPostDischargeRepository.findByINId(uniqueIdList);
+				Map<String, LogBreastFeedingPostDischarge> bFPDMap = new HashMap<String, LogBreastFeedingPostDischarge>();
+				existingBFPDs.forEach(bFPD->bFPDMap.put(bFPD.getUniqueFormId(), bFPD));
+				syncModels.getBfpds().forEach(bFPD -> {
+					LogBreastFeedingPostDischarge existingBFPD = bFPDMap.get(bFPD.getId());
+					if(existingBFPD != null){
+						
+					}else{
+						
+					}
+				});
+				List<FailureBFPD> failureBFPDs = new ArrayList<>();
+				syncResult.setFailureBFPDs(failureBFPDs);
+			}
+			
+			/*			
+			
 			if (patientData.getLogExpressionBreastFeedList() != null
 					&& !patientData.getLogExpressionBreastFeedList().isEmpty()) {
 				patientData.getLogExpressionBreastFeedList().forEach(logExpBf -> {
@@ -243,7 +346,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				logExpressionBreastFeedRepository.save(patientData.getLogExpressionBreastFeedList());
 			}
 			
-			//Saving feed expression
+			
 			if (patientData.getLogFeedList() != null && !patientData.getLogFeedList().isEmpty()) {
 				patientData.getLogFeedList().forEach(logFeed -> {
 					logFeed.setPatientId(new Patient(babyFromDb.getPatientId()));
@@ -255,7 +358,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			
 			
 			
-			//Saving BFSP
+			
 			if (patientData.getLogBreastFeedingSupportivePracticeList() != null
 					&& !patientData.getLogBreastFeedingSupportivePracticeList().isEmpty()) {
 				patientData.getLogBreastFeedingSupportivePracticeList().forEach(logBfSuppPractice -> {
@@ -267,7 +370,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						.save(patientData.getLogBreastFeedingSupportivePracticeList());
 			}
 			
-			//Saving BFPD
+			
 			if (patientData.getLogBreastFeedingPostDischargeList() != null
 					&& !patientData.getLogBreastFeedingPostDischargeList().isEmpty()) {
 				patientData.getLogBreastFeedingPostDischargeList().forEach(logExpBfPostDischarge -> {
@@ -284,7 +387,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		return syncResult;
 	}
 	
-	private Timestamp getDeliveryDateAndTime(String date, String time){
+	private Timestamp getTimestampFromDateAndTime(String date, String time){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		try {
 			return new Timestamp(sdf.parse(date+ " " + time).getTime());

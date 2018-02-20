@@ -14,6 +14,10 @@ public class SyncModel {
 
 	private List<UserModel> users;
 	private List<PatientModel> patients;
+	private List<BFExpressionModel> bfExpressions;
+	private List<FeedExpressionModel> feedExpressions;
+	private List<BFSPModel> bfsps;
+	private List<BFPDModel> bfpds;
 
 	public List<UserModel> getUsers() {
 		return users;
@@ -29,6 +33,38 @@ public class SyncModel {
 
 	public void setPatients(List<PatientModel> patients) {
 		this.patients = patients;
-	}	
-	
+	}
+
+	public List<BFExpressionModel> getBfExpressions() {
+		return bfExpressions;
+	}
+
+	public void setBfExpressions(List<BFExpressionModel> bfExpressions) {
+		this.bfExpressions = bfExpressions;
+	}
+
+	public List<FeedExpressionModel> getFeedExpressions() {
+		return feedExpressions;
+	}
+
+	public void setFeedExpressions(List<FeedExpressionModel> feedExpressions) {
+		this.feedExpressions = feedExpressions;
+	}
+
+	public List<BFSPModel> getBfsps() {
+		return bfsps;
+	}
+
+	public void setBfsps(List<BFSPModel> bfsps) {
+		this.bfsps = bfsps;
+	}
+
+	public List<BFPDModel> getBfpds() {
+		return bfpds;
+	}
+
+	public void setBfpds(List<BFPDModel> bfpds) {
+		this.bfpds = bfpds;
+	}
+		
 }

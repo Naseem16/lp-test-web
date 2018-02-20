@@ -14,6 +14,6 @@ public interface SpringDataPatientRepository extends PatientRepository {
 	
 	@Override
 	@Query("SELECT p FROM Patient p where p.babyCode in :babyCodeList")
-	public List<Patient> findByINBababyCode(@Param("babyCodeList") List<String> babyCodeList);
+	public List<Patient> findByINBabyCode(@Param("babyCodeList") List<String> babyCodeList);
 
 }

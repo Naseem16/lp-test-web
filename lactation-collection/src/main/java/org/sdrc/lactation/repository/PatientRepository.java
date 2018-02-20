@@ -16,6 +16,6 @@ public interface PatientRepository {
 	
 	Patient findByBabyCode(String babyId);
 
-	List<Patient> findByINBababyCode(List<String> babyCodeList);
+	List<Patient> findByINBabyCode(List<String> babyCodeList);
 
 }

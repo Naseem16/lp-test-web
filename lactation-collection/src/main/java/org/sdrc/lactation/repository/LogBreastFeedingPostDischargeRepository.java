@@ -1,5 +1,7 @@
 package org.sdrc.lactation.repository;
 
+import java.util.List;
+
 import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
 
 /**
@@ -12,5 +14,7 @@ import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
 public interface LogBreastFeedingPostDischargeRepository {
 
 	void save(Iterable<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList);
+
+	List<LogBreastFeedingPostDischarge> findByINId(List<String> uniqueIdList);
 
 }

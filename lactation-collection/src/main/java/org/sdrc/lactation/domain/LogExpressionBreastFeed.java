@@ -38,12 +38,8 @@ public class LogExpressionBreastFeed {
 	@JoinColumn(nullable = false)
 	private Patient patientId;
 
-	private String babyCode;
-
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-	private Timestamp dateAndTimeOfExpression;
-
-	private Integer durationOfExpression;
+	private Timestamp dateAndTimeOfExpression;	
 
 	@ManyToOne
 	@JoinColumn
@@ -67,8 +63,6 @@ public class LogExpressionBreastFeed {
 
 	private String updatedBy;
 
-	private String deviceId;
-
 	private String uniqueFormId;
 
 	public Patient getPatientId() {
@@ -78,29 +72,13 @@ public class LogExpressionBreastFeed {
 	public void setPatientId(Patient patientId) {
 		this.patientId = patientId;
 	}
-
-	public String getBabyCode() {
-		return babyCode;
-	}
-
-	public void setBabyCode(String babyCode) {
-		this.babyCode = babyCode;
-	}
-
+	
 	public Timestamp getDateAndTimeOfExpression() {
 		return dateAndTimeOfExpression;
 	}
 
 	public void setDateAndTimeOfExpression(Timestamp dateAndTimeOfExpression) {
 		this.dateAndTimeOfExpression = dateAndTimeOfExpression;
-	}
-
-	public Integer getDurationOfExpression() {
-		return durationOfExpression;
-	}
-
-	public void setDurationOfExpression(Integer durationOfExpression) {
-		this.durationOfExpression = durationOfExpression;
 	}
 
 	public TypeDetails getMethodOfExpression() {
@@ -145,14 +123,6 @@ public class LogExpressionBreastFeed {
 
 	public Integer getId() {
 		return id;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public String getUniqueFormId() {
