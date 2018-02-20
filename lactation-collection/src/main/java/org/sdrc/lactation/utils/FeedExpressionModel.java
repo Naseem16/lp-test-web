@@ -12,11 +12,11 @@ public class FeedExpressionModel {
 	private String dateOfFeed;
 	private String timeOfFeed;
 	private int methodOfFeed;
-	private int OMMVolume;
-	private int DHMVolume;
-	private int formulaVolume;
-	private int animalMilkVolume;
-	private int otherVolume;
+	private Double OMMVolume;
+	private Double DHMVolume;
+	private Double formulaVolume;
+	private Double animalMilkVolume;
+	private Double otherVolume;
 	private int locationOfFeeding;
 	private Double babyWeight;
 	private String syncFailureMessage;
@@ -57,34 +57,34 @@ public class FeedExpressionModel {
 	public void setMethodOfFeed(int methodOfFeed) {
 		this.methodOfFeed = methodOfFeed;
 	}
-	public int getOMMVolume() {
+	public Double getOMMVolume() {
 		return OMMVolume;
 	}
-	public void setOMMVolume(int oMMVolume) {
+	public void setOMMVolume(Double oMMVolume) {
 		OMMVolume = oMMVolume;
 	}
-	public int getDHMVolume() {
+	public Double getDHMVolume() {
 		return DHMVolume;
 	}
-	public void setDHMVolume(int dHMVolume) {
+	public void setDHMVolume(Double dHMVolume) {
 		DHMVolume = dHMVolume;
 	}
-	public int getFormulaVolume() {
+	public Double getFormulaVolume() {
 		return formulaVolume;
 	}
-	public void setFormulaVolume(int formulaVolume) {
+	public void setFormulaVolume(Double formulaVolume) {
 		this.formulaVolume = formulaVolume;
 	}
-	public int getAnimalMilkVolume() {
+	public Double getAnimalMilkVolume() {
 		return animalMilkVolume;
 	}
-	public void setAnimalMilkVolume(int animalMilkVolume) {
+	public void setAnimalMilkVolume(Double animalMilkVolume) {
 		this.animalMilkVolume = animalMilkVolume;
 	}
-	public int getOtherVolume() {
+	public Double getOtherVolume() {
 		return otherVolume;
 	}
-	public void setOtherVolume(int otherVolume) {
+	public void setOtherVolume(Double otherVolume) {
 		this.otherVolume = otherVolume;
 	}
 	public int getLocationOfFeeding() {
@@ -111,5 +111,7 @@ public class FeedExpressionModel {
 	public void setIsSynced(Boolean isSynced) {
 		this.isSynced = isSynced;
 	}
+	
+	
 	
 }

@@ -15,7 +15,7 @@ public class BFSPModel {
 	private String timeOfFeed;
 	private int spPerformed;
 	private int personPerformed;
-	private Double duration;
+	private int duration;
 	public String getId() {
 		return id;
 	}
@@ -70,10 +70,10 @@ public class BFSPModel {
 	public void setPersonPerformed(int personPerformed) {
 		this.personPerformed = personPerformed;
 	}
-	public Double getDuration() {
+	public int getDuration() {
 		return duration;
 	}
-	public void setDuration(Double duration) {
+	public void setDuration(int duration) {
 		this.duration = duration;
 	}	
 	

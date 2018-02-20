@@ -36,8 +36,6 @@ public class LogBreastFeedingPostDischarge {
 	@JoinColumn(nullable = false)
 	private Patient patientId;
 
-	private String babyCode;
-
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Timestamp dateOfBreastFeeding;
 
@@ -59,8 +57,6 @@ public class LogBreastFeedingPostDischarge {
 
 	private String updatedBy;
 
-	private String deviceId;
-
 	private String uniqueFormId;
 
 	public Patient getPatientId() {
@@ -71,13 +67,6 @@ public class LogBreastFeedingPostDischarge {
 		this.patientId = patientId;
 	}
 
-	public String getBabyCode() {
-		return babyCode;
-	}
-
-	public void setBabyCode(String babyCode) {
-		this.babyCode = babyCode;
-	}
 
 	public Timestamp getDateOfBreastFeeding() {
 		return dateOfBreastFeeding;
@@ -129,14 +118,6 @@ public class LogBreastFeedingPostDischarge {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public String getUniqueFormId() {

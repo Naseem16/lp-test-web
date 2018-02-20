@@ -11,8 +11,8 @@ import org.sdrc.lactation.domain.Patient;
  */
 
 public interface PatientRepository {
-
-	Patient save(Patient baby);
+	
+	void save(Iterable<Patient> patients);
 	
 	Patient findByBabyCode(String babyId);
 

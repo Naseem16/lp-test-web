@@ -15,8 +15,6 @@ public interface LogExpressionBreastFeedRepository {
 
 	void save(Iterable<LogExpressionBreastFeed> logExpressionBreastFeedList);
 	
-	void save(LogExpressionBreastFeed logExpressionBreastFeed);
-
 	List<LogExpressionBreastFeed> findByINId(List<String> uniqueIdList);
 
 }

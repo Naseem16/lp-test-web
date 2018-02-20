@@ -10,8 +10,8 @@ import org.sdrc.lactation.domain.LactationUser;
 
 public interface LactationUserRepository {
 
-	void save(LactationUser user);
-
+	void save(Iterable<LactationUser> users);
+	
 	LactationUser findByEmail(String email);
 
 }

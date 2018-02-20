@@ -15,5 +15,4 @@ public interface LogFeedRepository {
 	void save(Iterable<LogFeed> logFeedList);
 
 	List<LogFeed> findByINId(List<String> uniqueIdList);
-
 }

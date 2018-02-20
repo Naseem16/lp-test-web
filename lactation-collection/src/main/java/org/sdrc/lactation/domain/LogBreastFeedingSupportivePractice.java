@@ -34,9 +34,7 @@ public class LogBreastFeedingSupportivePractice {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Patient patientId;
-
-	private String babyCode;
+	private Patient patientId;	
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfBFSP;
@@ -61,8 +59,6 @@ public class LogBreastFeedingSupportivePractice {
 
 	private String updatedBy;
 
-	private String deviceId;
-
 	private String uniqueFormId;
 
 	public Patient getPatientId() {
@@ -71,14 +67,6 @@ public class LogBreastFeedingSupportivePractice {
 
 	public void setPatientId(Patient patientId) {
 		this.patientId = patientId;
-	}
-
-	public String getBabyCode() {
-		return babyCode;
-	}
-
-	public void setBabyCode(String babyCode) {
-		this.babyCode = babyCode;
 	}
 
 	public Timestamp getDateAndTimeOfBFSP() {
@@ -139,14 +127,6 @@ public class LogBreastFeedingSupportivePractice {
 
 	public Timestamp getUpdatedDate() {
 		return updatedDate;
-	}
-
-	public String getDeviceId() {
-		return deviceId;
-	}
-
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
 	}
 
 	public String getUniqueFormId() {

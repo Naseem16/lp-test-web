@@ -17,5 +17,4 @@ public interface LogBreastFeedingSupportivePracticeRepository {
 
 	List<LogBreastFeedingSupportivePractice> findByINId(
 			List<String> uniqueIdList);
-
 }
