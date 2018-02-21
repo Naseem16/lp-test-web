@@ -11,11 +11,11 @@ public class BFSPModel {
 	private String userId;
 	private String syncFailureMessage;
 	private Boolean isSynced;
-	private String dateOfFeed;
-	private String timeOfFeed;
-	private int spPerformed;
-	private int personPerformed;
-	private int duration;
+	private String dateOfBFSP;
+	private String timeOfBFSP;
+	private int bfspPerformed;
+	private int personWhoPerformedBFSP;
+	private int bfspDuration;
 	public String getId() {
 		return id;
 	}
@@ -46,35 +46,35 @@ public class BFSPModel {
 	public void setIsSynced(Boolean isSynced) {
 		this.isSynced = isSynced;
 	}
-	public String getDateOfFeed() {
-		return dateOfFeed;
+	public String getDateOfBFSP() {
+		return dateOfBFSP;
 	}
-	public void setDateOfFeed(String dateOfFeed) {
-		this.dateOfFeed = dateOfFeed;
+	public void setDateOfBFSP(String dateOfBFSP) {
+		this.dateOfBFSP = dateOfBFSP;
 	}
-	public String getTimeOfFeed() {
-		return timeOfFeed;
+	public String getTimeOfBFSP() {
+		return timeOfBFSP;
 	}
-	public void setTimeOfFeed(String timeOfFeed) {
-		this.timeOfFeed = timeOfFeed;
+	public void setTimeOfBFSP(String timeOfBFSP) {
+		this.timeOfBFSP = timeOfBFSP;
 	}
-	public int getSpPerformed() {
-		return spPerformed;
+	public int getBfspPerformed() {
+		return bfspPerformed;
 	}
-	public void setSpPerformed(int spPerformed) {
-		this.spPerformed = spPerformed;
+	public void setBfspPerformed(int bfspPerformed) {
+		this.bfspPerformed = bfspPerformed;
 	}
-	public int getPersonPerformed() {
-		return personPerformed;
+	public int getPersonWhoPerformedBFSP() {
+		return personWhoPerformedBFSP;
 	}
-	public void setPersonPerformed(int personPerformed) {
-		this.personPerformed = personPerformed;
+	public void setPersonWhoPerformedBFSP(int personWhoPerformedBFSP) {
+		this.personWhoPerformedBFSP = personWhoPerformedBFSP;
 	}
-	public int getDuration() {
-		return duration;
+	public int getBfspDuration() {
+		return bfspDuration;
 	}
-	public void setDuration(int duration) {
-		this.duration = duration;
+	public void setBfspDuration(int bfspDuration) {
+		this.bfspDuration = bfspDuration;
 	}	
 	
 }

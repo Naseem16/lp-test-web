@@ -346,20 +346,20 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				LogBreastFeedingSupportivePractice existingBFSP = bFSPMap.get(bFSP.getId());
 				if(existingBFSP != null){
 					existingBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
-					existingBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfFeed(), bFSP.getTimeOfFeed()));
-					existingBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getSpPerformed()));
-					existingBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonPerformed()));
-					existingBFSP.setBfspDuration(bFSP.getDuration());
+					existingBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
+					existingBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
+					existingBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
+					existingBFSP.setBfspDuration(bFSP.getBfspDuration());
 					existingBFSP.setUpdatedBy(bFSP.getUserId());
 					existingBFSP.setUniqueFormId(bFSP.getId());
 					bFSPs.add(existingBFSP);
 				}else{
 					LogBreastFeedingSupportivePractice newBFSP = new LogBreastFeedingSupportivePractice();
 					newBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
-					newBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfFeed(), bFSP.getTimeOfFeed()));
-					newBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getSpPerformed()));
-					newBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonPerformed()));
-					newBFSP.setBfspDuration(bFSP.getDuration());
+					newBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
+					newBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
+					newBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
+					newBFSP.setBfspDuration(bFSP.getBfspDuration());
 					newBFSP.setCreatedBy(bFSP.getUserId());
 					newBFSP.setUniqueFormId(bFSP.getId());
 					bFSPs.add(newBFSP);					
