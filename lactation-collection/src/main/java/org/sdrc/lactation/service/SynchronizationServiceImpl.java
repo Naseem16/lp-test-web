@@ -384,18 +384,18 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				LogBreastFeedingPostDischarge existingBFPD = bFPDMap.get(bFPD.getId());
 				if(existingBFPD != null){
 					existingBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
-					existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfFeed(), "00:00"));
-					existingBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfFeed()));
-					existingBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getStatus()));
+					existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
+					existingBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
+					existingBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
 					existingBFPD.setUpdatedBy(bFPD.getUserId());
 					existingBFPD.setUniqueFormId(bFPD.getId());
 					bFPDs.add(existingBFPD);
 				}else{
 					LogBreastFeedingPostDischarge newBFPD = new LogBreastFeedingPostDischarge();
 					newBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
-					newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfFeed(), "00:00"));
-					newBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfFeed()));
-					newBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getStatus()));
+					newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
+					newBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
+					newBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
 					newBFPD.setUpdatedBy(bFPD.getUserId());
 					newBFPD.setUniqueFormId(bFPD.getId());
 					bFPDs.add(newBFPD);					
