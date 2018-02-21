@@ -135,40 +135,43 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			syncResult.setFailureUsers(faliureUsers);
 		}
 
-		//Saving patients
+		
+		//getting patients from database
 		Map<String, Patient> patientMap = new HashMap<String, Patient>();
+		List<String> babyCodeList = new ArrayList<String>();
 		
 		if (syncModels.getPatients() != null
 				&& !syncModels.getPatients().isEmpty()) {
-		
-			//getting patients from database
-			List<String> babyCodeList = new ArrayList<String>();
 			syncModels.getPatients().forEach(patient -> babyCodeList.add(patient.getBabyCode()));
-			
-			if (syncModels.getBfExpressions() != null
-					&& !syncModels.getBfExpressions().isEmpty()) {
-				syncModels.getBfExpressions().forEach(bfExpression -> babyCodeList.add(bfExpression.getBabyCode()));					
-			}
-			
-			if (syncModels.getFeedExpressions() != null
-					&& !syncModels.getFeedExpressions().isEmpty()) {
-				syncModels.getFeedExpressions().forEach(feedExpression -> babyCodeList.add(feedExpression.getBabyCode()));					
-			}
-			
-			if (syncModels.getBfsps() != null
-					&& !syncModels.getBfsps().isEmpty()) {
-				syncModels.getBfsps().forEach(bfsp -> babyCodeList.add(bfsp.getBabyCode()));					
-			}
-			
-			if (syncModels.getBfpds() != null
-					&& !syncModels.getBfpds().isEmpty()) {
-				syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
-			}
-			
+		}
+		if (syncModels.getBfExpressions() != null
+				&& !syncModels.getBfExpressions().isEmpty()) {
+			syncModels.getBfExpressions().forEach(bfExpression -> babyCodeList.add(bfExpression.getBabyCode()));					
+		}
+		
+		if (syncModels.getFeedExpressions() != null
+				&& !syncModels.getFeedExpressions().isEmpty()) {
+			syncModels.getFeedExpressions().forEach(feedExpression -> babyCodeList.add(feedExpression.getBabyCode()));					
+		}
+		
+		if (syncModels.getBfsps() != null
+				&& !syncModels.getBfsps().isEmpty()) {
+			syncModels.getBfsps().forEach(bfsp -> babyCodeList.add(bfsp.getBabyCode()));					
+		}
+		
+		if (syncModels.getBfpds() != null
+				&& !syncModels.getBfpds().isEmpty()) {
+			syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
+		}
+		if(!babyCodeList.isEmpty()){
 			List<Patient> existingPatients = patientRepository.findByINBabyCode(babyCodeList);
-			
 			existingPatients.forEach(patient->patientMap.put(patient.getBabyCode(), patient));
-			
+		}
+		
+		
+		//Saving patients
+		if (syncModels.getPatients() != null
+				&& !syncModels.getPatients().isEmpty()) {
 			
 			List<Patient> patients = new ArrayList<Patient>();
 			syncModels.getPatients().forEach(patient -> {
@@ -224,7 +227,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					
 				}
 			});
-			patientRepository.save(patients);
+			List<Patient> savedPatient = patientRepository.save(patients);
+			savedPatient.forEach(patient->{
+				patientMap.put(patient.getBabyCode(), patient);
+			});
 			
 			List<FailurePatient> faliurePatients = new ArrayList<>();
 			syncResult.setFailurePatients(faliurePatients);
@@ -293,8 +299,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					existingFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					existingFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
 					existingFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					existingFeed.setOmmVolume(logFeed.getOMMVolume());
-					existingFeed.setDhmVolume(logFeed.getDHMVolume());
+					existingFeed.setOmmVolume(logFeed.getOmmVolume());
+					existingFeed.setDhmVolume(logFeed.getDhmVolume());
 					existingFeed.setFormulaVolume(logFeed.getFormulaVolume());
 					existingFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
 					existingFeed.setOtherVolume(logFeed.getOtherVolume());
@@ -308,8 +314,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					newFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					newFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
 					newFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					newFeed.setOmmVolume(logFeed.getOMMVolume());
-					newFeed.setDhmVolume(logFeed.getDHMVolume());
+					newFeed.setOmmVolume(logFeed.getOmmVolume());
+					newFeed.setDhmVolume(logFeed.getDhmVolume());
 					newFeed.setFormulaVolume(logFeed.getFormulaVolume());
 					newFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
 					newFeed.setOtherVolume(logFeed.getOtherVolume());
