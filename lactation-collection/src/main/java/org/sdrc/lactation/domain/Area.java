@@ -17,7 +17,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 6th February 2018 13:10. This
- *         domain will be used for storing country,state,district and institution name etc.
+ *         domain will be used for storing country,state,district and
+ *         institution name etc.
  */
 
 @Entity
@@ -29,7 +30,7 @@ public class Area {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	private String areaCode;
+	private String shortName;
 
 	@Column(nullable = false)
 	private String name;
@@ -50,12 +51,12 @@ public class Area {
 		return id;
 	}
 
-	public String getAreaCode() {
-		return areaCode;
+	public String getShortName() {
+		return shortName;
 	}
 
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 	public String getName() {
