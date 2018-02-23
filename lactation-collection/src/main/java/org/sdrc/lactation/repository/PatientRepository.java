@@ -12,7 +12,7 @@ import org.sdrc.lactation.domain.Patient;
 
 public interface PatientRepository {
 	
-	void save(Iterable<Patient> patients);
+	List<Patient> save(Iterable<Patient> patients);
 	
 	Patient findByBabyCode(String babyId);
 

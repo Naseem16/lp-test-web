@@ -135,40 +135,43 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			syncResult.setFailureUsers(faliureUsers);
 		}
 
-		//Saving patients
+		
+		//getting patients from database
 		Map<String, Patient> patientMap = new HashMap<String, Patient>();
+		List<String> babyCodeList = new ArrayList<String>();
 		
 		if (syncModels.getPatients() != null
 				&& !syncModels.getPatients().isEmpty()) {
-		
-			//getting patients from database
-			List<String> babyCodeList = new ArrayList<String>();
 			syncModels.getPatients().forEach(patient -> babyCodeList.add(patient.getBabyCode()));
-			
-			if (syncModels.getBfExpressions() != null
-					&& !syncModels.getBfExpressions().isEmpty()) {
-				syncModels.getBfExpressions().forEach(bfExpression -> babyCodeList.add(bfExpression.getBabyCode()));					
-			}
-			
-			if (syncModels.getFeedExpressions() != null
-					&& !syncModels.getFeedExpressions().isEmpty()) {
-				syncModels.getFeedExpressions().forEach(feedExpression -> babyCodeList.add(feedExpression.getBabyCode()));					
-			}
-			
-			if (syncModels.getBfsps() != null
-					&& !syncModels.getBfsps().isEmpty()) {
-				syncModels.getBfsps().forEach(bfsp -> babyCodeList.add(bfsp.getBabyCode()));					
-			}
-			
-			if (syncModels.getBfpds() != null
-					&& !syncModels.getBfpds().isEmpty()) {
-				syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
-			}
-			
+		}
+		if (syncModels.getBfExpressions() != null
+				&& !syncModels.getBfExpressions().isEmpty()) {
+			syncModels.getBfExpressions().forEach(bfExpression -> babyCodeList.add(bfExpression.getBabyCode()));					
+		}
+		
+		if (syncModels.getFeedExpressions() != null
+				&& !syncModels.getFeedExpressions().isEmpty()) {
+			syncModels.getFeedExpressions().forEach(feedExpression -> babyCodeList.add(feedExpression.getBabyCode()));					
+		}
+		
+		if (syncModels.getBfsps() != null
+				&& !syncModels.getBfsps().isEmpty()) {
+			syncModels.getBfsps().forEach(bfsp -> babyCodeList.add(bfsp.getBabyCode()));					
+		}
+		
+		if (syncModels.getBfpds() != null
+				&& !syncModels.getBfpds().isEmpty()) {
+			syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
+		}
+		if(!babyCodeList.isEmpty()){
 			List<Patient> existingPatients = patientRepository.findByINBabyCode(babyCodeList);
-			
 			existingPatients.forEach(patient->patientMap.put(patient.getBabyCode(), patient));
-			
+		}
+		
+		
+		//Saving patients
+		if (syncModels.getPatients() != null
+				&& !syncModels.getPatients().isEmpty()) {
 			
 			List<Patient> patients = new ArrayList<Patient>();
 			syncModels.getPatients().forEach(patient -> {
@@ -224,7 +227,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					
 				}
 			});
-			patientRepository.save(patients);
+			List<Patient> savedPatient = patientRepository.save(patients);
+			savedPatient.forEach(patient->{
+				patientMap.put(patient.getBabyCode(), patient);
+			});
 			
 			List<FailurePatient> faliurePatients = new ArrayList<>();
 			syncResult.setFailurePatients(faliurePatients);
@@ -293,8 +299,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					existingFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					existingFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
 					existingFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					existingFeed.setOmmVolume(logFeed.getOMMVolume());
-					existingFeed.setDhmVolume(logFeed.getDHMVolume());
+					existingFeed.setOmmVolume(logFeed.getOmmVolume());
+					existingFeed.setDhmVolume(logFeed.getDhmVolume());
 					existingFeed.setFormulaVolume(logFeed.getFormulaVolume());
 					existingFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
 					existingFeed.setOtherVolume(logFeed.getOtherVolume());
@@ -308,8 +314,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					newFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					newFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
 					newFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					newFeed.setOmmVolume(logFeed.getOMMVolume());
-					newFeed.setDhmVolume(logFeed.getDHMVolume());
+					newFeed.setOmmVolume(logFeed.getOmmVolume());
+					newFeed.setDhmVolume(logFeed.getDhmVolume());
 					newFeed.setFormulaVolume(logFeed.getFormulaVolume());
 					newFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
 					newFeed.setOtherVolume(logFeed.getOtherVolume());
@@ -340,20 +346,20 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				LogBreastFeedingSupportivePractice existingBFSP = bFSPMap.get(bFSP.getId());
 				if(existingBFSP != null){
 					existingBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
-					existingBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfFeed(), bFSP.getTimeOfFeed()));
-					existingBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getSpPerformed()));
-					existingBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonPerformed()));
-					existingBFSP.setBfspDuration(bFSP.getDuration());
+					existingBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
+					existingBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
+					existingBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
+					existingBFSP.setBfspDuration(bFSP.getBfspDuration());
 					existingBFSP.setUpdatedBy(bFSP.getUserId());
 					existingBFSP.setUniqueFormId(bFSP.getId());
 					bFSPs.add(existingBFSP);
 				}else{
 					LogBreastFeedingSupportivePractice newBFSP = new LogBreastFeedingSupportivePractice();
 					newBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
-					newBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfFeed(), bFSP.getTimeOfFeed()));
-					newBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getSpPerformed()));
-					newBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonPerformed()));
-					newBFSP.setBfspDuration(bFSP.getDuration());
+					newBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
+					newBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
+					newBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
+					newBFSP.setBfspDuration(bFSP.getBfspDuration());
 					newBFSP.setCreatedBy(bFSP.getUserId());
 					newBFSP.setUniqueFormId(bFSP.getId());
 					bFSPs.add(newBFSP);					
@@ -378,18 +384,18 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				LogBreastFeedingPostDischarge existingBFPD = bFPDMap.get(bFPD.getId());
 				if(existingBFPD != null){
 					existingBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
-					existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfFeed(), "00:00"));
-					existingBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfFeed()));
-					existingBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getStatus()));
+					existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
+					existingBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
+					existingBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
 					existingBFPD.setUpdatedBy(bFPD.getUserId());
 					existingBFPD.setUniqueFormId(bFPD.getId());
 					bFPDs.add(existingBFPD);
 				}else{
 					LogBreastFeedingPostDischarge newBFPD = new LogBreastFeedingPostDischarge();
 					newBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
-					newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfFeed(), "00:00"));
-					newBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfFeed()));
-					newBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getStatus()));
+					newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
+					newBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
+					newBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
 					newBFPD.setUpdatedBy(bFPD.getUserId());
 					newBFPD.setUniqueFormId(bFPD.getId());
 					bFPDs.add(newBFPD);					

@@ -12,9 +12,9 @@ public class BFPDModel {
 	private String userId;
 	private String syncFailureMessage;
 	private Boolean isSynced;
-	private String dateOfFeed;
-	private int timeOfFeed;
-	private int status;
+	private String dateOfBreastFeeding;
+	private int timeOfBreastFeeding;
+	private int breastFeedingStatus;
 	public String getId() {
 		return id;
 	}
@@ -45,23 +45,25 @@ public class BFPDModel {
 	public void setIsSynced(Boolean isSynced) {
 		this.isSynced = isSynced;
 	}
-	public String getDateOfFeed() {
-		return dateOfFeed;
+	public String getDateOfBreastFeeding() {
+		return dateOfBreastFeeding;
 	}
-	public void setDateOfFeed(String dateOfFeed) {
-		this.dateOfFeed = dateOfFeed;
+	public void setDateOfBreastFeeding(String dateOfBreastFeeding) {
+		this.dateOfBreastFeeding = dateOfBreastFeeding;
 	}
-	public int getTimeOfFeed() {
-		return timeOfFeed;
+	public int getTimeOfBreastFeeding() {
+		return timeOfBreastFeeding;
 	}
-	public void setTimeOfFeed(int timeOfFeed) {
-		this.timeOfFeed = timeOfFeed;
+	public void setTimeOfBreastFeeding(int timeOfBreastFeeding) {
+		this.timeOfBreastFeeding = timeOfBreastFeeding;
 	}
-	public int getStatus() {
-		return status;
+	public int getBreastFeedingStatus() {
+		return breastFeedingStatus;
 	}
-	public void setStatus(int status) {
-		this.status = status;
+	public void setBreastFeedingStatus(int breastFeedingStatus) {
+		this.breastFeedingStatus = breastFeedingStatus;
 	}
+	
+	
 	
 }

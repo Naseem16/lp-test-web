@@ -12,8 +12,8 @@ public class FeedExpressionModel {
 	private String dateOfFeed;
 	private String timeOfFeed;
 	private int methodOfFeed;
-	private Double OMMVolume;
-	private Double DHMVolume;
+	private Double ommVolume;
+	private Double dhmVolume;
 	private Double formulaVolume;
 	private Double animalMilkVolume;
 	private Double otherVolume;
@@ -57,17 +57,18 @@ public class FeedExpressionModel {
 	public void setMethodOfFeed(int methodOfFeed) {
 		this.methodOfFeed = methodOfFeed;
 	}
-	public Double getOMMVolume() {
-		return OMMVolume;
+	
+	public Double getOmmVolume() {
+		return ommVolume;
 	}
-	public void setOMMVolume(Double oMMVolume) {
-		OMMVolume = oMMVolume;
+	public void setOmmVolume(Double ommVolume) {
+		this.ommVolume = ommVolume;
 	}
-	public Double getDHMVolume() {
-		return DHMVolume;
+	public Double getDhmVolume() {
+		return dhmVolume;
 	}
-	public void setDHMVolume(Double dHMVolume) {
-		DHMVolume = dHMVolume;
+	public void setDhmVolume(Double dhmVolume) {
+		this.dhmVolume = dhmVolume;
 	}
 	public Double getFormulaVolume() {
 		return formulaVolume;
