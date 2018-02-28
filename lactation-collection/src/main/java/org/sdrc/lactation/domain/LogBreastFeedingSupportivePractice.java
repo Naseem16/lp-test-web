@@ -9,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -49,10 +46,8 @@ public class LogBreastFeedingSupportivePractice {
 
 	private Integer bfspDuration;
 
-	@CreationTimestamp
 	private Timestamp createdDate;
 
-	@UpdateTimestamp
 	private Timestamp updatedDate;
 
 	private String createdBy;

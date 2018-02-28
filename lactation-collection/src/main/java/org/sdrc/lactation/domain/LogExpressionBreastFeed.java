@@ -11,9 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -39,7 +36,7 @@ public class LogExpressionBreastFeed {
 	private Patient patientId;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-	private Timestamp dateAndTimeOfExpression;	
+	private Timestamp dateAndTimeOfExpression;
 
 	@ManyToOne
 	@JoinColumn
@@ -53,10 +50,8 @@ public class LogExpressionBreastFeed {
 	@Digits(integer = 3, fraction = 2)
 	private Double milkExpressedFromLeftAndRightBreast;
 
-	@CreationTimestamp
 	private Timestamp createdDate;
 
-	@UpdateTimestamp
 	private Timestamp updatedDate;
 
 	private String createdBy;
@@ -72,7 +67,7 @@ public class LogExpressionBreastFeed {
 	public void setPatientId(Patient patientId) {
 		this.patientId = patientId;
 	}
-	
+
 	public Timestamp getDateAndTimeOfExpression() {
 		return dateAndTimeOfExpression;
 	}
@@ -131,6 +126,22 @@ public class LogExpressionBreastFeed {
 
 	public void setUniqueFormId(String uniqueFormId) {
 		this.uniqueFormId = uniqueFormId;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 }

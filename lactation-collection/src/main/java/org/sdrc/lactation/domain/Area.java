@@ -46,6 +46,12 @@ public class Area {
 
 	@UpdateTimestamp
 	private Timestamp updatedDate;
+	
+	public Area() {}
+
+	public Area(Integer id) {
+		this.id = id;
+	}
 
 	public Integer getId() {
 		return id;

@@ -10,9 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -68,10 +65,8 @@ public class LogFeed {
 	@Digits(integer = 5, fraction = 2)
 	private Double weightOfBaby;
 
-	@CreationTimestamp
 	private Timestamp createdDate;
 
-	@UpdateTimestamp
 	private Timestamp updatedDate;
 
 	private String createdBy;

@@ -96,11 +96,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 			
 		//getting area 
-		Map<Integer, Area> areaMap = new HashMap<Integer, Area>();
+		Map<Integer, Area> areaMap = new HashMap<>();
 		areaRepository.findAll().forEach(area->areaMap.put(area.getId(), area));
 		
 		//getting type details
-		Map<Integer, TypeDetails> typeDetailsMap = new HashMap<Integer, TypeDetails>();
+		Map<Integer, TypeDetails> typeDetailsMap = new HashMap<>();
 		typeDetailsRepository.findAll().forEach(typeDetails->typeDetailsMap.put(typeDetails.getId(), typeDetails));
 		
 		
@@ -109,7 +109,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				&& !syncModels.getUsers().isEmpty()) {
 					
 			List<FailureUser> faliureUsers = new ArrayList<>();
-			List<LactationUser> users = new ArrayList<LactationUser>();
+			List<LactationUser> users = new ArrayList<>();
 			syncModels.getUsers().forEach(user -> {
 				LactationUser existingUser = lactationUserRepository.findByEmail(user.getEmail());
 				if(existingUser != null){
@@ -118,16 +118,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					failureUser.setReasonOfFailure("User exists!");
 					faliureUsers.add(failureUser);
 				}else{
-					LactationUser lUser = new LactationUser();
-					lUser.setFirstName(user.getFirstName());
-					lUser.setLastName(user.getLastName());
-					lUser.setEmail(user.getEmail());
-					lUser.setCountry(areaMap.get(user.getCountry()));
-					lUser.setState(areaMap.get(user.getState()));
-					lUser.setDistrict(areaMap.get(user.getDistrict()));
-					lUser.setInstitutionName((areaMap.get(user.getInstitution())));
-					users.add(lUser);
-					
+					users.add(user);
 				}
 			});
 			lactationUserRepository.save(users);
@@ -137,8 +128,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 
 		
 		//getting patients from database
-		Map<String, Patient> patientMap = new HashMap<String, Patient>();
-		List<String> babyCodeList = new ArrayList<String>();
+		Map<String, Patient> patientMap = new HashMap<>();
+		List<String> babyCodeList = new ArrayList<>();
 		
 		if (syncModels.getPatients() != null
 				&& !syncModels.getPatients().isEmpty()) {
@@ -173,7 +164,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		if (syncModels.getPatients() != null
 				&& !syncModels.getPatients().isEmpty()) {
 			
-			List<Patient> patients = new ArrayList<Patient>();
+			List<Patient> patients = new ArrayList<>();
 			syncModels.getPatients().forEach(patient -> {
 				Patient existingPatient = patientMap.get(patient.getBabyCode());
 				java.sql.Date date = null;
@@ -200,7 +191,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					existingPatient.setNicuAdmissionReason(typeDetailsMap.get(patient.getNicuAdmissionReason()));
 					existingPatient.setParentsKnowledgeOnHmAndLactation(
 							typeDetailsMap.get(patient.getParentsKnowledgeOnHmAndLactation()));
-					existingPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpression());
+					existingPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
 					existingPatient.setUpdatedBy(patient.getUserId());
 					patients.add(existingPatient);
 					
@@ -221,16 +212,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					newPatient.setNicuAdmissionReason(typeDetailsMap.get(patient.getNicuAdmissionReason()));
 					newPatient.setParentsKnowledgeOnHmAndLactation(
 							typeDetailsMap.get(patient.getParentsKnowledgeOnHmAndLactation()));
-					newPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpression());
+					newPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
 					newPatient.setCreatedBy(patient.getUserId());
 					patients.add(newPatient);
 					
 				}
 			});
 			List<Patient> savedPatient = patientRepository.save(patients);
-			savedPatient.forEach(patient->{
-				patientMap.put(patient.getBabyCode(), patient);
-			});
+			savedPatient.forEach(patient-> patientMap.put(patient.getBabyCode(), patient));
 			
 			List<FailurePatient> faliurePatients = new ArrayList<>();
 			syncResult.setFailurePatients(faliurePatients);
@@ -241,14 +230,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		if (syncModels.getBfExpressions() != null
 				&& !syncModels.getBfExpressions().isEmpty()) {
 			
-			List<String> uniqueIdList = new ArrayList<String>();
+			List<String> uniqueIdList = new ArrayList<>();
 			
 			syncModels.getBfExpressions().forEach(bfExpression -> uniqueIdList.add(bfExpression.getId()));
 			List<LogExpressionBreastFeed> existingBFEXpressions = logExpressionBreastFeedRepository.findByINId(uniqueIdList);
-			Map<String, LogExpressionBreastFeed> bFEXpressionMap = new HashMap<String, LogExpressionBreastFeed>();
+			Map<String, LogExpressionBreastFeed> bFEXpressionMap = new HashMap<>();
 			existingBFEXpressions.forEach(bFEXpression->bFEXpressionMap.put(bFEXpression.getUniqueFormId(), bFEXpression));
 			
-			List<LogExpressionBreastFeed> bfExpressions = new ArrayList<LogExpressionBreastFeed>();
+			List<LogExpressionBreastFeed> bfExpressions = new ArrayList<>();
 			
 			syncModels.getBfExpressions().forEach(bFEXpression -> {
 				LogExpressionBreastFeed existingBFEXpression = bFEXpressionMap.get(bFEXpression.getId());
@@ -287,12 +276,12 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		if (syncModels.getFeedExpressions() != null
 				&& !syncModels.getFeedExpressions().isEmpty()) {
 			
-			List<String> uniqueIdList = new ArrayList<String>();
+			List<String> uniqueIdList = new ArrayList<>();
 			syncModels.getFeedExpressions().forEach(feedExpression -> uniqueIdList.add(feedExpression.getId()));
 			List<LogFeed> existingFeeds = logFeedRepository.findByINId(uniqueIdList);
-			Map<String, LogFeed> logFeedMap = new HashMap<String, LogFeed>();
+			Map<String, LogFeed> logFeedMap = new HashMap<>();
 			existingFeeds.forEach(logFeed->logFeedMap.put(logFeed.getUniqueFormId(), logFeed));
-			List<LogFeed> feeds = new ArrayList<LogFeed>();
+			List<LogFeed> feeds = new ArrayList<>();
 			syncModels.getFeedExpressions().forEach(logFeed -> {
 				LogFeed existingFeed = logFeedMap.get(logFeed.getId());
 				if(existingFeed != null){
@@ -335,13 +324,13 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		//Saving BFSP
 		if (syncModels.getBfsps() != null
 				&& !syncModels.getBfsps().isEmpty()) {
-			List<String> uniqueIdList = new ArrayList<String>();
+			List<String> uniqueIdList = new ArrayList<>();
 			syncModels.getBfsps().forEach(bfsp -> uniqueIdList.add(bfsp.getId()));
 			
 			List<LogBreastFeedingSupportivePractice> existingBFSPs = logBreastFeedingSupportivePracticeRepository.findByINId(uniqueIdList);
-			Map<String, LogBreastFeedingSupportivePractice> bFSPMap = new HashMap<String, LogBreastFeedingSupportivePractice>();
+			Map<String, LogBreastFeedingSupportivePractice> bFSPMap = new HashMap<>();
 			existingBFSPs.forEach(bFSP->bFSPMap.put(bFSP.getUniqueFormId(), bFSP));
-			List<LogBreastFeedingSupportivePractice> bFSPs = new ArrayList<LogBreastFeedingSupportivePractice>();
+			List<LogBreastFeedingSupportivePractice> bFSPs = new ArrayList<>();
 			syncModels.getBfsps().forEach(bFSP -> {
 				LogBreastFeedingSupportivePractice existingBFSP = bFSPMap.get(bFSP.getId());
 				if(existingBFSP != null){
@@ -374,12 +363,12 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		if (syncModels.getBfpds() != null
 				&& !syncModels.getBfpds().isEmpty()) {
 			
-			List<String> uniqueIdList = new ArrayList<String>();
+			List<String> uniqueIdList = new ArrayList<>();
 			syncModels.getBfpds().forEach(bfpd -> uniqueIdList.add(bfpd.getId()));
 			List<LogBreastFeedingPostDischarge> existingBFPDs = logBreastFeedingPostDischargeRepository.findByINId(uniqueIdList);
-			Map<String, LogBreastFeedingPostDischarge> bFPDMap = new HashMap<String, LogBreastFeedingPostDischarge>();
+			Map<String, LogBreastFeedingPostDischarge> bFPDMap = new HashMap<>();
 			existingBFPDs.forEach(bFPD->bFPDMap.put(bFPD.getUniqueFormId(), bFPD));
-			List<LogBreastFeedingPostDischarge> bFPDs = new ArrayList<LogBreastFeedingPostDischarge>();
+			List<LogBreastFeedingPostDischarge> bFPDs = new ArrayList<>();
 			syncModels.getBfpds().forEach(bFPD -> {
 				LogBreastFeedingPostDischarge existingBFPD = bFPDMap.get(bFPD.getId());
 				if(existingBFPD != null){

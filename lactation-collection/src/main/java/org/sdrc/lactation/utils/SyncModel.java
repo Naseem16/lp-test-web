@@ -2,28 +2,29 @@ package org.sdrc.lactation.utils;
 
 import java.util.List;
 
+import org.sdrc.lactation.domain.LactationUser;
 
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 9th February 2018 19:10. This
  *         model will be used to receive data from the mobile.
- *  @author Ratikanta 
+ * @author Ratikanta
  */
 
 public class SyncModel {
 
-	private List<UserModel> users;
+	private List<LactationUser> users;
 	private List<PatientModel> patients;
 	private List<BFExpressionModel> bfExpressions;
 	private List<FeedExpressionModel> feedExpressions;
 	private List<BFSPModel> bfsps;
 	private List<BFPDModel> bfpds;
 
-	public List<UserModel> getUsers() {
+	public List<LactationUser> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<UserModel> users) {
+	public void setUsers(List<LactationUser> users) {
 		this.users = users;
 	}
 
@@ -66,5 +67,5 @@ public class SyncModel {
 	public void setBfpds(List<BFPDModel> bfpds) {
 		this.bfpds = bfpds;
 	}
-		
+
 }

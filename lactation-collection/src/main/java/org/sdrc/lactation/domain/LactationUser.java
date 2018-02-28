@@ -10,10 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -21,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 6th February 2018 13:10. This
  *         domain will be used for registering new user in the system.
- * @author Ratikanta        
+ * @author Ratikanta
  */
 
 @Entity
@@ -39,7 +37,7 @@ public class LactationUser {
 	private String lastName;
 
 	@Column(nullable = false, unique = true)
-	private String email;	
+	private String email;
 
 	@ManyToOne
 	@JoinColumn
@@ -55,12 +53,12 @@ public class LactationUser {
 
 	@ManyToOne
 	@JoinColumn
-	private Area institutionName;
+	private Area institution;
 
-	@CreationTimestamp
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp createdDate;
 
-	@UpdateTimestamp
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp updatedDate;
 
 	public Integer getId() {
@@ -115,12 +113,12 @@ public class LactationUser {
 		this.district = district;
 	}
 
-	public Area getInstitutionName() {
-		return institutionName;
+	public Area getInstitution() {
+		return institution;
 	}
 
-	public void setInstitutionName(Area institutionName) {
-		this.institutionName = institutionName;
+	public void setInstitution(Area institution) {
+		this.institution = institution;
 	}
 
 	public Timestamp getCreatedDate() {
@@ -138,10 +136,5 @@ public class LactationUser {
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 
 }
