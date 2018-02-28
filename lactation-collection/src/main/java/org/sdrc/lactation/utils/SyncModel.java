@@ -3,6 +3,7 @@ package org.sdrc.lactation.utils;
 import java.util.List;
 
 import org.sdrc.lactation.domain.LactationUser;
+import org.sdrc.lactation.domain.Patient;
 
 /**
  * 
@@ -14,7 +15,7 @@ import org.sdrc.lactation.domain.LactationUser;
 public class SyncModel {
 
 	private List<LactationUser> users;
-	private List<PatientModel> patients;
+	private List<Patient> patients;
 	private List<BFExpressionModel> bfExpressions;
 	private List<FeedExpressionModel> feedExpressions;
 	private List<BFSPModel> bfsps;
@@ -28,11 +29,11 @@ public class SyncModel {
 		this.users = users;
 	}
 
-	public List<PatientModel> getPatients() {
+	public List<Patient> getPatients() {
 		return patients;
 	}
 
-	public void setPatients(List<PatientModel> patients) {
+	public void setPatients(List<Patient> patients) {
 		this.patients = patients;
 	}
 

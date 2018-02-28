@@ -5,20 +5,20 @@ public class PatientModel {
 	private String babyCode;
 	private String babyCodeHospital;
 	private String babyOf;
-	private int mothersAge;
+	private Integer mothersAge;
 	private String deliveryDate;
 	private String deliveryTime;
-	private int deliveryMethod;
-	private double babyWeight;
-	private int gestationalAgeInWeek;
-	private int mothersPrenatalIntent;
-	private int parentsKnowledgeOnHmAndLactation;
+	private Integer deliveryMethod;
+	private Double babyWeight;
+	private Integer gestationalAgeInWeek;
+	private Integer mothersPrenatalIntent;
+	private Integer parentsKnowledgeOnHmAndLactation;
 	private String timeTillFirstExpressionInHour;
 	private String timeTillFirstExpressionInMinute;
-	private int inpatientOrOutPatient;
+	private Integer inpatientOrOutPatient;
 	private String admissionDateForOutdoorPatients;
-	private int babyAdmittedTo;
-	private int nicuAdmissionReason;
+	private Integer babyAdmittedTo;
+	private Integer nicuAdmissionReason;
 	private Boolean isSynced;
 	private String syncFailureMessage;
 	private String userId;
@@ -47,11 +47,11 @@ public class PatientModel {
 		this.babyOf = babyOf;
 	}
 
-	public int getMothersAge() {
+	public Integer getMothersAge() {
 		return mothersAge;
 	}
 
-	public void setMothersAge(int mothersAge) {
+	public void setMothersAge(Integer mothersAge) {
 		this.mothersAge = mothersAge;
 	}
 
@@ -71,43 +71,43 @@ public class PatientModel {
 		this.deliveryTime = deliveryTime;
 	}
 
-	public int getDeliveryMethod() {
+	public Integer getDeliveryMethod() {
 		return deliveryMethod;
 	}
 
-	public void setDeliveryMethod(int deliveryMethod) {
+	public void setDeliveryMethod(Integer deliveryMethod) {
 		this.deliveryMethod = deliveryMethod;
 	}
 
-	public double getBabyWeight() {
+	public Double getBabyWeight() {
 		return babyWeight;
 	}
 
-	public void setBabyWeight(double babyWeight) {
+	public void setBabyWeight(Double babyWeight) {
 		this.babyWeight = babyWeight;
 	}
 
-	public int getGestationalAgeInWeek() {
+	public Integer getGestationalAgeInWeek() {
 		return gestationalAgeInWeek;
 	}
 
-	public void setGestationalAgeInWeek(int gestationalAgeInWeek) {
+	public void setGestationalAgeInWeek(Integer gestationalAgeInWeek) {
 		this.gestationalAgeInWeek = gestationalAgeInWeek;
 	}
 
-	public int getMothersPrenatalIntent() {
+	public Integer getMothersPrenatalIntent() {
 		return mothersPrenatalIntent;
 	}
 
-	public void setMothersPrenatalIntent(int mothersPrenatalIntent) {
+	public void setMothersPrenatalIntent(Integer mothersPrenatalIntent) {
 		this.mothersPrenatalIntent = mothersPrenatalIntent;
 	}
 
-	public int getParentsKnowledgeOnHmAndLactation() {
+	public Integer getParentsKnowledgeOnHmAndLactation() {
 		return parentsKnowledgeOnHmAndLactation;
 	}
 
-	public void setParentsKnowledgeOnHmAndLactation(int parentsKnowledgeOnHmAndLactation) {
+	public void setParentsKnowledgeOnHmAndLactation(Integer parentsKnowledgeOnHmAndLactation) {
 		this.parentsKnowledgeOnHmAndLactation = parentsKnowledgeOnHmAndLactation;
 	}
 
@@ -127,11 +127,11 @@ public class PatientModel {
 		this.timeTillFirstExpressionInMinute = timeTillFirstExpressionInMinute;
 	}
 
-	public int getInpatientOrOutPatient() {
+	public Integer getInpatientOrOutPatient() {
 		return inpatientOrOutPatient;
 	}
 
-	public void setInpatientOrOutPatient(int inpatientOrOutPatient) {
+	public void setInpatientOrOutPatient(Integer inpatientOrOutPatient) {
 		this.inpatientOrOutPatient = inpatientOrOutPatient;
 	}
 
@@ -143,19 +143,19 @@ public class PatientModel {
 		this.admissionDateForOutdoorPatients = admissionDateForOutdoorPatients;
 	}
 
-	public int getBabyAdmittedTo() {
+	public Integer getBabyAdmittedTo() {
 		return babyAdmittedTo;
 	}
 
-	public void setBabyAdmittedTo(int babyAdmittedTo) {
+	public void setBabyAdmittedTo(Integer babyAdmittedTo) {
 		this.babyAdmittedTo = babyAdmittedTo;
 	}
 
-	public int getNicuAdmissionReason() {
+	public Integer getNicuAdmissionReason() {
 		return nicuAdmissionReason;
 	}
 
-	public void setNicuAdmissionReason(int nicuAdmissionReason) {
+	public void setNicuAdmissionReason(Integer nicuAdmissionReason) {
 		this.nicuAdmissionReason = nicuAdmissionReason;
 	}
 

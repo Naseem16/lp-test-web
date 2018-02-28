@@ -13,68 +13,106 @@ public class BFExpressionModel {
 	private Boolean isSynced;
 	private String dateOfExpression;
 	private String timeOfExpression;
-	private int methodOfExpression;
-	private int locationOfExpression;
+	private Integer methodOfExpression;
+	private Integer locationOfExpression;
 	private Double volOfMilkExpressedFromLR;// 0-300ml
+	private String createdDate;
+	private String updatedDate;
+
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getBabyCode() {
 		return babyCode;
 	}
+
 	public void setBabyCode(String babyCode) {
 		this.babyCode = babyCode;
 	}
+
 	public String getUserId() {
 		return userId;
 	}
+
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
 	public String getSyncFailureMessage() {
 		return syncFailureMessage;
 	}
+
 	public void setSyncFailureMessage(String syncFailureMessage) {
 		this.syncFailureMessage = syncFailureMessage;
 	}
+
 	public Boolean getIsSynced() {
 		return isSynced;
 	}
+
 	public void setIsSynced(Boolean isSynced) {
 		this.isSynced = isSynced;
 	}
+
 	public String getDateOfExpression() {
 		return dateOfExpression;
 	}
+
 	public void setDateOfExpression(String dateOfExpression) {
 		this.dateOfExpression = dateOfExpression;
 	}
+
 	public String getTimeOfExpression() {
 		return timeOfExpression;
 	}
+
 	public void setTimeOfExpression(String timeOfExpression) {
 		this.timeOfExpression = timeOfExpression;
 	}
-	public int getMethodOfExpression() {
+
+	public Integer getMethodOfExpression() {
 		return methodOfExpression;
 	}
-	public void setMethodOfExpression(int methodOfExpression) {
+
+	public void setMethodOfExpression(Integer methodOfExpression) {
 		this.methodOfExpression = methodOfExpression;
 	}
-	public int getLocationOfExpression() {
+
+	public Integer getLocationOfExpression() {
 		return locationOfExpression;
 	}
-	public void setLocationOfExpression(int locationOfExpression) {
+
+	public void setLocationOfExpression(Integer locationOfExpression) {
 		this.locationOfExpression = locationOfExpression;
 	}
+
 	public Double getVolOfMilkExpressedFromLR() {
 		return volOfMilkExpressedFromLR;
 	}
+
 	public void setVolOfMilkExpressedFromLR(Double volOfMilkExpressedFromLR) {
 		this.volOfMilkExpressedFromLR = volOfMilkExpressedFromLR;
 	}
-	
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
 }

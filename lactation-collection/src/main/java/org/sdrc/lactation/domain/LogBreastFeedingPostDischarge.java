@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -33,7 +32,6 @@ public class LogBreastFeedingPostDischarge {
 	@JoinColumn(nullable = false)
 	private Patient patientId;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Timestamp dateOfBreastFeeding;
 
 	@ManyToOne
@@ -61,7 +59,6 @@ public class LogBreastFeedingPostDischarge {
 	public void setPatientId(Patient patientId) {
 		this.patientId = patientId;
 	}
-
 
 	public Timestamp getDateOfBreastFeeding() {
 		return dateOfBreastFeeding;
@@ -107,20 +104,28 @@ public class LogBreastFeedingPostDischarge {
 		return id;
 	}
 
-	public Timestamp getCreatedDate() {
-		return createdDate;
-	}
-
-	public Timestamp getUpdatedDate() {
-		return updatedDate;
-	}
-
 	public String getUniqueFormId() {
 		return uniqueFormId;
 	}
 
 	public void setUniqueFormId(String uniqueFormId) {
 		this.uniqueFormId = uniqueFormId;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 }

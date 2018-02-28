@@ -31,7 +31,7 @@ public class LogBreastFeedingSupportivePractice {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Patient patientId;	
+	private Patient patientId;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfBFSP;
@@ -116,20 +116,28 @@ public class LogBreastFeedingSupportivePractice {
 		return id;
 	}
 
-	public Timestamp getCreatedDate() {
-		return createdDate;
-	}
-
-	public Timestamp getUpdatedDate() {
-		return updatedDate;
-	}
-
 	public String getUniqueFormId() {
 		return uniqueFormId;
 	}
 
 	public void setUniqueFormId(String uniqueFormId) {
 		this.uniqueFormId = uniqueFormId;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 }

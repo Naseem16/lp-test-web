@@ -11,7 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -35,8 +34,7 @@ public class LogFeed {
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Patient patientId;
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+
 	private Timestamp dateAndTimeOfFeed;
 
 	@ManyToOne
@@ -57,7 +55,7 @@ public class LogFeed {
 
 	@Digits(integer = 4, fraction = 2)
 	private Double otherVolume;
-	
+
 	@ManyToOne
 	@JoinColumn
 	private TypeDetails locationOfFeeding;
@@ -71,7 +69,7 @@ public class LogFeed {
 
 	private String createdBy;
 
-	private String updatedBy;	
+	private String updatedBy;
 
 	private String uniqueFormId;
 
@@ -193,6 +191,14 @@ public class LogFeed {
 
 	public void setUniqueFormId(String uniqueFormId) {
 		this.uniqueFormId = uniqueFormId;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 }

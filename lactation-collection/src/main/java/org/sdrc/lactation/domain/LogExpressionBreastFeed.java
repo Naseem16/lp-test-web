@@ -12,7 +12,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -35,7 +34,6 @@ public class LogExpressionBreastFeed {
 	@JoinColumn(nullable = false)
 	private Patient patientId;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp dateAndTimeOfExpression;
 
 	@ManyToOne
