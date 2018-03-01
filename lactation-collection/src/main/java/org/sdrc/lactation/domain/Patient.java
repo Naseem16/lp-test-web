@@ -1,7 +1,7 @@
 package org.sdrc.lactation.domain;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Digits;
 
@@ -39,14 +38,8 @@ public class Patient {
 
 	private Timestamp deliveryDateAndTime;
 
-	@Transient
-	private String deliveryDate;
-
-	@Transient
-	private String deliveryTime;
-
 	@ManyToOne
-	@JoinColumn(name = "delivery_method")
+	@JoinColumn(nullable = true)
 	private TypeDetails deliveryMethod;
 
 	@Digits(integer = 4, fraction = 2)
@@ -55,60 +48,36 @@ public class Patient {
 	private Integer gestationalAgeInWeek;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = true)
 	private TypeDetails mothersPrenatalIntent;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = true)
 	private TypeDetails parentsKnowledgeOnHmAndLactation;
 
 	private String timeTillFirstExpression;
 
-	@Transient
-	private String timeTillFirstExpressionInHour;
-
-	@Transient
-	private String timeTillFirstExpressionInMinute;
-
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = true)
 	private TypeDetails inpatientOrOutPatient;
 
-	@Transient
-	private String admissionDateForOutdoorPatients;
-
-	private Date admissionDateForOutdoorPatientsM;
+	private Date admissionDateForOutdoorPatients;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = true)
 	private TypeDetails babyAdmittedTo;
 
-	private String nicuAdmissionReasonDb;
+	private String nicuAdmissionReason;
 
-	@Transient
-	private Integer[] nicuAdmissionReason;
+	private Timestamp createdDate;
 
-	@Transient
-	private String createdDate;
-
-	@Transient
-	private String updatedDate;
-
-	private Timestamp createdDateM;
-
-	private Timestamp updatedDateM;
+	private Timestamp updatedDate;
 
 	private String createdBy;
 
 	private String updatedBy;
 
-	@Transient
-	private String userId;
-
-	@Transient
-	private String dischargeDate;
-
-	private Date dischargeDateM;
+	private Date dischargeDate;
 
 	public Patient() {
 
@@ -156,22 +125,6 @@ public class Patient {
 
 	public void setDeliveryDateAndTime(Timestamp deliveryDateAndTime) {
 		this.deliveryDateAndTime = deliveryDateAndTime;
-	}
-
-	public String getDeliveryDate() {
-		return deliveryDate;
-	}
-
-	public void setDeliveryDate(String deliveryDate) {
-		this.deliveryDate = deliveryDate;
-	}
-
-	public String getDeliveryTime() {
-		return deliveryTime;
-	}
-
-	public void setDeliveryTime(String deliveryTime) {
-		this.deliveryTime = deliveryTime;
 	}
 
 	public TypeDetails getDeliveryMethod() {
@@ -222,22 +175,6 @@ public class Patient {
 		this.timeTillFirstExpression = timeTillFirstExpression;
 	}
 
-	public String getTimeTillFirstExpressionInHour() {
-		return timeTillFirstExpressionInHour;
-	}
-
-	public void setTimeTillFirstExpressionInHour(String timeTillFirstExpressionInHour) {
-		this.timeTillFirstExpressionInHour = timeTillFirstExpressionInHour;
-	}
-
-	public String getTimeTillFirstExpressionInMinute() {
-		return timeTillFirstExpressionInMinute;
-	}
-
-	public void setTimeTillFirstExpressionInMinute(String timeTillFirstExpressionInMinute) {
-		this.timeTillFirstExpressionInMinute = timeTillFirstExpressionInMinute;
-	}
-
 	public TypeDetails getInpatientOrOutPatient() {
 		return inpatientOrOutPatient;
 	}
@@ -246,20 +183,12 @@ public class Patient {
 		this.inpatientOrOutPatient = inpatientOrOutPatient;
 	}
 
-	public String getAdmissionDateForOutdoorPatients() {
+	public Date getAdmissionDateForOutdoorPatients() {
 		return admissionDateForOutdoorPatients;
 	}
 
-	public void setAdmissionDateForOutdoorPatients(String admissionDateForOutdoorPatients) {
+	public void setAdmissionDateForOutdoorPatients(Date admissionDateForOutdoorPatients) {
 		this.admissionDateForOutdoorPatients = admissionDateForOutdoorPatients;
-	}
-
-	public Date getAdmissionDateForOutdoorPatientsM() {
-		return admissionDateForOutdoorPatientsM;
-	}
-
-	public void setAdmissionDateForOutdoorPatientsM(Date admissionDateForOutdoorPatientsM) {
-		this.admissionDateForOutdoorPatientsM = admissionDateForOutdoorPatientsM;
 	}
 
 	public TypeDetails getBabyAdmittedTo() {
@@ -270,52 +199,28 @@ public class Patient {
 		this.babyAdmittedTo = babyAdmittedTo;
 	}
 
-	public String getNicuAdmissionReasonDb() {
-		return nicuAdmissionReasonDb;
-	}
-
-	public void setNicuAdmissionReasonDb(String nicuAdmissionReasonDb) {
-		this.nicuAdmissionReasonDb = nicuAdmissionReasonDb;
-	}
-
-	public Integer[] getNicuAdmissionReason() {
+	public String getNicuAdmissionReason() {
 		return nicuAdmissionReason;
 	}
 
-	public void setNicuAdmissionReason(Integer[] nicuAdmissionReason) {
+	public void setNicuAdmissionReason(String nicuAdmissionReason) {
 		this.nicuAdmissionReason = nicuAdmissionReason;
 	}
 
-	public String getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(String createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public String getUpdatedDate() {
+	public Timestamp getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(String updatedDate) {
+	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
-	}
-
-	public Timestamp getCreatedDateM() {
-		return createdDateM;
-	}
-
-	public void setCreatedDateM(Timestamp createdDateM) {
-		this.createdDateM = createdDateM;
-	}
-
-	public Timestamp getUpdatedDateM() {
-		return updatedDateM;
-	}
-
-	public void setUpdatedDateM(Timestamp updatedDateM) {
-		this.updatedDateM = updatedDateM;
 	}
 
 	public String getCreatedBy() {
@@ -334,32 +239,16 @@ public class Patient {
 		this.updatedBy = updatedBy;
 	}
 
-	public String getUserId() {
-		return userId;
+	public Date getDischargeDate() {
+		return dischargeDate;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setDischargeDate(Date dischargeDate) {
+		this.dischargeDate = dischargeDate;
 	}
 
 	public Integer getPatientId() {
 		return patientId;
-	}
-
-	public String getDischargeDate() {
-		return dischargeDate;
-	}
-
-	public void setDischargeDate(String dischargeDate) {
-		this.dischargeDate = dischargeDate;
-	}
-
-	public Date getDischargeDateM() {
-		return dischargeDateM;
-	}
-
-	public void setDischargeDateM(Date dischargeDateM) {
-		this.dischargeDateM = dischargeDateM;
 	}
 
 }

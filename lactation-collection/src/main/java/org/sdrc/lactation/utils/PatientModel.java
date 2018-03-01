@@ -18,10 +18,13 @@ public class PatientModel {
 	private Integer inpatientOrOutPatient;
 	private String admissionDateForOutdoorPatients;
 	private Integer babyAdmittedTo;
-	private Integer nicuAdmissionReason;
+	private Integer[] nicuAdmissionReason;
 	private Boolean isSynced;
 	private String syncFailureMessage;
 	private String userId;
+	private String createdDate;
+	private String updatedDate;
+	private String dischargeDate;
 
 	public String getBabyCode() {
 		return babyCode;
@@ -151,11 +154,11 @@ public class PatientModel {
 		this.babyAdmittedTo = babyAdmittedTo;
 	}
 
-	public Integer getNicuAdmissionReason() {
+	public Integer[] getNicuAdmissionReason() {
 		return nicuAdmissionReason;
 	}
 
-	public void setNicuAdmissionReason(Integer nicuAdmissionReason) {
+	public void setNicuAdmissionReason(Integer[] nicuAdmissionReason) {
 		this.nicuAdmissionReason = nicuAdmissionReason;
 	}
 
@@ -181,6 +184,30 @@ public class PatientModel {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getDischargeDate() {
+		return dischargeDate;
+	}
+
+	public void setDischargeDate(String dischargeDate) {
+		this.dischargeDate = dischargeDate;
 	}
 
 }

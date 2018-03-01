@@ -1,11 +1,10 @@
 package org.sdrc.lactation.service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,37 +167,66 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				Patient existingPatient = patientMap.get(patient.getBabyCode());
 				
 				if(existingPatient != null){
-					existingPatient.setAdmissionDateForOutdoorPatientsM(patient.getAdmissionDateForOutdoorPatients() == null ? null : 
-						getDateFromString(patient.getAdmissionDateForOutdoorPatients()));
-					existingPatient.setBabyAdmittedTo(patient.getBabyAdmittedTo());
-					existingPatient.setBabyCodeHospital(patient.getBabyCodeHospital());
-					existingPatient.setBabyOf(patient.getBabyOf());
-					existingPatient.setBabyWeight(patient.getBabyWeight());
+					existingPatient.setAdmissionDateForOutdoorPatients((patient.getAdmissionDateForOutdoorPatients() == null 
+							|| patient.getAdmissionDateForOutdoorPatients() == "") ? null :	getDateFromString(patient.getAdmissionDateForOutdoorPatients()));
+					existingPatient.setBabyAdmittedTo(patient.getBabyAdmittedTo() == null ? null : new TypeDetails(patient.getBabyAdmittedTo()));
+					existingPatient.setBabyCodeHospital((patient.getBabyCodeHospital() == null || patient.getBabyCodeHospital() == "") ? null : patient.getBabyCodeHospital());
+					existingPatient.setBabyOf((patient.getBabyOf() == null || patient.getBabyOf() == "") ? null : patient.getBabyOf());
+					existingPatient.setBabyWeight(patient.getBabyWeight() == null ? null :patient.getBabyWeight());
 					existingPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
-					existingPatient.setDeliveryMethod(patient.getDeliveryMethod());
-					existingPatient.setGestationalAgeInWeek(patient.getGestationalAgeInWeek());
-					existingPatient.setInpatientOrOutPatient(patient.getInpatientOrOutPatient());
-					existingPatient.setMothersAge(patient.getMothersAge());
-					existingPatient.setMothersPrenatalIntent(patient.getMothersPrenatalIntent());
-					existingPatient.setNicuAdmissionReasonDb(patient.getNicuAdmissionReason().length == 0 ? null : Arrays.toString(patient.getNicuAdmissionReason()));
-					existingPatient.setParentsKnowledgeOnHmAndLactation(patient.getParentsKnowledgeOnHmAndLactation());
-					existingPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() == null || patient.getTimeTillFirstExpressionInMinute() == null ? 
-							null : patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
-					existingPatient.setUpdatedBy(patient.getUserId());
-					existingPatient.setUpdatedDateM(getTimestampFromString(patient.getUpdatedDate()));
-					existingPatient.setDischargeDateM(getDateFromString(patient.getDischargeDate()));
-				}else {
-					patient.setAdmissionDateForOutdoorPatientsM(patient.getAdmissionDateForOutdoorPatients() == null ? null : 
-						getDateFromString(patient.getAdmissionDateForOutdoorPatients()));
-					patient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
-					patient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() == null || patient.getTimeTillFirstExpressionInMinute() == null ? 
-							null : patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
-					patient.setCreatedBy(patient.getUserId());
-					patient.setCreatedDateM(getTimestampFromString(patient.getCreatedDate()));
-					patient.setDischargeDateM(patient.getDischargeDate() == null ? null : getDateFromString(patient.getDischargeDate()));
-					patient.setNicuAdmissionReasonDb(patient.getNicuAdmissionReason().length == 0 ? null : Arrays.toString(patient.getNicuAdmissionReason()));
+					existingPatient.setDeliveryMethod(patient.getDeliveryMethod() == null ? null : new TypeDetails(patient.getDeliveryMethod()));
+					existingPatient.setDischargeDate((patient.getDischargeDate() == null || patient.getDischargeDate() == "") ? null : getDateFromString(patient.getDischargeDate()));
+					existingPatient.setGestationalAgeInWeek(patient.getGestationalAgeInWeek() == null ? null : patient.getGestationalAgeInWeek());
+					existingPatient.setInpatientOrOutPatient(patient.getInpatientOrOutPatient() == null ? null : new TypeDetails(patient.getInpatientOrOutPatient()));
+					existingPatient.setMothersAge(patient.getMothersAge() == null ? null : patient.getMothersAge());
+					existingPatient.setMothersPrenatalIntent(patient.getMothersPrenatalIntent() == null ? null : new TypeDetails(patient.getMothersPrenatalIntent()));
 					
-					patients.add(patient);
+					if(patient.getNicuAdmissionReason() != null && patient.getNicuAdmissionReason().length != 0){
+						existingPatient.setNicuAdmissionReason(arrayToString(patient.getNicuAdmissionReason()));
+					}
+					
+					existingPatient.setParentsKnowledgeOnHmAndLactation(patient.getParentsKnowledgeOnHmAndLactation() == null ? null : 
+						new TypeDetails(patient.getParentsKnowledgeOnHmAndLactation()));
+					
+					if((patient.getTimeTillFirstExpressionInHour() != null && patient.getTimeTillFirstExpressionInHour() != "") && 
+							(patient.getTimeTillFirstExpressionInMinute() != null && patient.getTimeTillFirstExpressionInMinute() != ""))
+						existingPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
+					
+					existingPatient.setUpdatedBy(patient.getUserId());
+					existingPatient.setUpdatedDate(getTimestampFromString(patient.getUpdatedDate()));
+					existingPatient.setDischargeDate(patient.getDischargeDate() != null && patient.getDischargeDate() != "" ? getDateFromString(patient.getDischargeDate()) : null);
+				}else {
+					Patient newPatient = new Patient();
+					
+					newPatient.setAdmissionDateForOutdoorPatients((patient.getAdmissionDateForOutdoorPatients() == null 
+							|| patient.getAdmissionDateForOutdoorPatients() == "") ? null :	getDateFromString(patient.getAdmissionDateForOutdoorPatients()));
+					newPatient.setBabyAdmittedTo(patient.getBabyAdmittedTo() == null ? null : new TypeDetails(patient.getBabyAdmittedTo()));
+					newPatient.setBabyCode(patient.getBabyCode());
+					newPatient.setBabyCodeHospital((patient.getBabyCodeHospital() == null || patient.getBabyCodeHospital() == "") ? null : patient.getBabyCodeHospital());
+					newPatient.setBabyOf((patient.getBabyOf() == null || patient.getBabyOf() == "") ? null : patient.getBabyOf());
+					newPatient.setBabyWeight(patient.getBabyWeight() == null ? null :patient.getBabyWeight());
+					newPatient.setCreatedBy(patient.getUserId());
+					newPatient.setCreatedDate(getTimestampFromString(patient.getCreatedDate()));
+					newPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
+					newPatient.setDeliveryMethod(patient.getDeliveryMethod() == null ? null : new TypeDetails(patient.getDeliveryMethod()));
+					newPatient.setDischargeDate((patient.getDischargeDate() == null || patient.getDischargeDate() == "") ? null : getDateFromString(patient.getDischargeDate()));
+					newPatient.setGestationalAgeInWeek(patient.getGestationalAgeInWeek() == null ? null : patient.getGestationalAgeInWeek());
+					newPatient.setInpatientOrOutPatient(patient.getInpatientOrOutPatient() == null ? null : new TypeDetails(patient.getInpatientOrOutPatient()));
+					newPatient.setMothersAge(patient.getMothersAge() == null ? null : patient.getMothersAge());
+					newPatient.setMothersPrenatalIntent(patient.getMothersPrenatalIntent() == null ? null : new TypeDetails(patient.getMothersPrenatalIntent()));
+					
+					if(patient.getNicuAdmissionReason() != null && patient.getNicuAdmissionReason().length != 0){
+						newPatient.setNicuAdmissionReason(arrayToString(patient.getNicuAdmissionReason()));
+					}
+					
+					newPatient.setParentsKnowledgeOnHmAndLactation(patient.getParentsKnowledgeOnHmAndLactation() == null ? null : 
+						new TypeDetails(patient.getParentsKnowledgeOnHmAndLactation()));
+					
+					if((patient.getTimeTillFirstExpressionInHour() != null && patient.getTimeTillFirstExpressionInHour() != "") && 
+							(patient.getTimeTillFirstExpressionInMinute() != null && patient.getTimeTillFirstExpressionInMinute() != ""))
+						newPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
+					
+					patients.add(newPatient);
 				}
 			});
 			List<Patient> savedPatient = patientRepository.save(patients);
@@ -228,9 +256,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					existingBFEXpression.setPatientId(patientMap.get(bFEXpression.getBabyCode()));
 					existingBFEXpression.setDateAndTimeOfExpression(getTimestampFromDateAndTime(bFEXpression.getDateOfExpression(),
 							bFEXpression.getTimeOfExpression()));
-					existingBFEXpression.setMethodOfExpression(typeDetailsMap.get(bFEXpression.getMethodOfExpression()));
-					existingBFEXpression.setExpressionOccuredLocation(typeDetailsMap.get(bFEXpression.getLocationOfExpression()));
-					existingBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR());
+					existingBFEXpression.setMethodOfExpression(bFEXpression.getMethodOfExpression() == null ? null : new TypeDetails(bFEXpression.getMethodOfExpression()));
+					existingBFEXpression.setExpressionOccuredLocation(bFEXpression.getLocationOfExpression() == null ? null : new TypeDetails(bFEXpression.getLocationOfExpression()));
+					existingBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR() == null ? null : bFEXpression.getVolOfMilkExpressedFromLR());
 					existingBFEXpression.setUniqueFormId(bFEXpression.getId());
 					existingBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 					existingBFEXpression.setUpdatedBy(bFEXpression.getUserId());
@@ -240,9 +268,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					newBFEXpression.setPatientId(patientMap.get(bFEXpression.getBabyCode()));
 					newBFEXpression.setDateAndTimeOfExpression(getTimestampFromDateAndTime(bFEXpression.getDateOfExpression(),
 							bFEXpression.getTimeOfExpression()));
-					newBFEXpression.setMethodOfExpression(typeDetailsMap.get(bFEXpression.getMethodOfExpression()));
-					newBFEXpression.setExpressionOccuredLocation(typeDetailsMap.get(bFEXpression.getLocationOfExpression()));
-					newBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR());
+					newBFEXpression.setMethodOfExpression(bFEXpression.getMethodOfExpression() == null ? null : new TypeDetails(bFEXpression.getMethodOfExpression()));
+					newBFEXpression.setExpressionOccuredLocation(bFEXpression.getLocationOfExpression() == null ? null : new TypeDetails(bFEXpression.getLocationOfExpression()));
+					newBFEXpression.setMilkExpressedFromLeftAndRightBreast(bFEXpression.getVolOfMilkExpressedFromLR() == null ? null : bFEXpression.getVolOfMilkExpressedFromLR());
 					newBFEXpression.setUniqueFormId(bFEXpression.getId());
 					newBFEXpression.setCreatedDate(getTimestampFromString(bFEXpression.getCreatedDate()));
 					newBFEXpression.setCreatedBy(bFEXpression.getUserId());
@@ -273,14 +301,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				if(existingFeed != null){
 					existingFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					existingFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
-					existingFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					existingFeed.setOmmVolume(logFeed.getOmmVolume());
-					existingFeed.setDhmVolume(logFeed.getDhmVolume());
-					existingFeed.setFormulaVolume(logFeed.getFormulaVolume());
-					existingFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
-					existingFeed.setOtherVolume(logFeed.getOtherVolume());
-					existingFeed.setLocationOfFeeding(typeDetailsMap.get(logFeed.getLocationOfFeeding()));
-					existingFeed.setWeightOfBaby(logFeed.getBabyWeight());
+					existingFeed.setFeedMethod(logFeed.getMethodOfFeed() == null ? null : new TypeDetails(logFeed.getMethodOfFeed()));
+					existingFeed.setOmmVolume(logFeed.getOmmVolume() == null ? null :logFeed.getOmmVolume());
+					existingFeed.setDhmVolume(logFeed.getDhmVolume() == null ? null : logFeed.getDhmVolume());
+					existingFeed.setFormulaVolume(logFeed.getFormulaVolume() == null ? null : logFeed.getFormulaVolume());
+					existingFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume() == null ? null : logFeed.getAnimalMilkVolume());
+					existingFeed.setOtherVolume(logFeed.getOtherVolume() == null ? null : logFeed.getOtherVolume());
+					existingFeed.setLocationOfFeeding(logFeed.getLocationOfFeeding() == null ? null : new TypeDetails(logFeed.getLocationOfFeeding()));
+					existingFeed.setWeightOfBaby(logFeed.getBabyWeight() == null ? null : logFeed.getBabyWeight());
 					existingFeed.setUpdatedBy(logFeed.getUserId());
 					existingFeed.setUniqueFormId(logFeed.getId());
 					existingFeed.setUpdatedDate(getTimestampFromString(logFeed.getUpdatedDate()));
@@ -289,14 +317,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					
 					newFeed.setPatientId(patientMap.get(logFeed.getBabyCode()));
 					newFeed.setDateAndTimeOfFeed(getTimestampFromDateAndTime(logFeed.getDateOfFeed(), logFeed.getTimeOfFeed()));
-					newFeed.setFeedMethod(typeDetailsMap.get(logFeed.getMethodOfFeed()));
-					newFeed.setOmmVolume(logFeed.getOmmVolume());
-					newFeed.setDhmVolume(logFeed.getDhmVolume());
-					newFeed.setFormulaVolume(logFeed.getFormulaVolume());
-					newFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume());
-					newFeed.setOtherVolume(logFeed.getOtherVolume());
-					newFeed.setLocationOfFeeding(typeDetailsMap.get(logFeed.getLocationOfFeeding()));
-					newFeed.setWeightOfBaby(logFeed.getBabyWeight());
+					newFeed.setFeedMethod(logFeed.getMethodOfFeed() == null ? null : new TypeDetails(logFeed.getMethodOfFeed()));
+					newFeed.setOmmVolume(logFeed.getOmmVolume() == null ? null :logFeed.getOmmVolume());
+					newFeed.setDhmVolume(logFeed.getDhmVolume() == null ? null : logFeed.getDhmVolume());
+					newFeed.setFormulaVolume(logFeed.getFormulaVolume() == null ? null : logFeed.getFormulaVolume());
+					newFeed.setAnimalMilkVolume(logFeed.getAnimalMilkVolume() == null ? null : logFeed.getAnimalMilkVolume());
+					newFeed.setOtherVolume(logFeed.getOtherVolume() == null ? null : logFeed.getOtherVolume());
+					newFeed.setLocationOfFeeding(logFeed.getLocationOfFeeding() == null ? null : new TypeDetails(logFeed.getLocationOfFeeding()));
+					newFeed.setWeightOfBaby(logFeed.getBabyWeight() == null ? null : logFeed.getBabyWeight());
 					newFeed.setCreatedBy(logFeed.getUserId());
 					newFeed.setUniqueFormId(logFeed.getId());
 					newFeed.setCreatedDate(getTimestampFromString(logFeed.getCreatedDate()));
@@ -326,22 +354,24 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				if(existingBFSP != null){
 					existingBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
 					existingBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
-					existingBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
-					existingBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
-					existingBFSP.setBfspDuration(bFSP.getBfspDuration());
+					existingBFSP.setBfspPerformed(bFSP.getBfspPerformed() == null ? null : new TypeDetails(bFSP.getBfspPerformed()));
+					existingBFSP.setPersonWhoPerformedBFSP(bFSP.getPersonWhoPerformedBFSP() == null ? null : new TypeDetails(bFSP.getPersonWhoPerformedBFSP()));
+					existingBFSP.setBfspDuration(bFSP.getBfspDuration() == null ? null : bFSP.getBfspDuration());
 					existingBFSP.setUpdatedBy(bFSP.getUserId());
 					existingBFSP.setUniqueFormId(bFSP.getId());
 					existingBFSP.setUpdatedDate(getTimestampFromString(bFSP.getUpdatedDate()));
 				}else{
 					LogBreastFeedingSupportivePractice newBFSP = new LogBreastFeedingSupportivePractice();
+					
 					newBFSP.setPatientId(patientMap.get(bFSP.getBabyCode()));
 					newBFSP.setDateAndTimeOfBFSP(getTimestampFromDateAndTime(bFSP.getDateOfBFSP(), bFSP.getTimeOfBFSP()));
-					newBFSP.setBfspPerformed(typeDetailsMap.get(bFSP.getBfspPerformed()));
-					newBFSP.setPersonWhoPerformedBFSP(typeDetailsMap.get(bFSP.getPersonWhoPerformedBFSP()));
-					newBFSP.setBfspDuration(bFSP.getBfspDuration());
+					newBFSP.setBfspPerformed(bFSP.getBfspPerformed() == null ? null : new TypeDetails(bFSP.getBfspPerformed()));
+					newBFSP.setPersonWhoPerformedBFSP(bFSP.getPersonWhoPerformedBFSP() == null ? null : new TypeDetails(bFSP.getPersonWhoPerformedBFSP()));
+					newBFSP.setBfspDuration(bFSP.getBfspDuration() == null ? null : bFSP.getBfspDuration());
 					newBFSP.setCreatedBy(bFSP.getUserId());
 					newBFSP.setUniqueFormId(bFSP.getId());
 					newBFSP.setCreatedDate(getTimestampFromString(bFSP.getCreatedDate()));
+					
 					bFSPs.add(newBFSP);					
 				}
 			});
@@ -367,8 +397,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				if(existingBFPD != null){
 					existingBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
 					existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
-					existingBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
-					existingBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
+					existingBFPD.setTimeOfBreastFeeding(bFPD.getTimeOfBreastFeeding() == null ? null : new TypeDetails(bFPD.getTimeOfBreastFeeding()));
+					existingBFPD.setBreastFeedingStatus(bFPD.getBreastFeedingStatus() == null ? null : new TypeDetails(bFPD.getBreastFeedingStatus()));
 					existingBFPD.setUpdatedBy(bFPD.getUserId());
 					existingBFPD.setUniqueFormId(bFPD.getId());
 					existingBFPD.setUpdatedDate(getTimestampFromString(bFPD.getUpdatedDate()));
@@ -377,8 +407,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					
 					newBFPD.setPatientId(patientMap.get(bFPD.getBabyCode()));
 					newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
-					newBFPD.setTimeOfBreastFeeding(typeDetailsMap.get(bFPD.getTimeOfBreastFeeding()));
-					newBFPD.setBreastFeedingStatus(typeDetailsMap.get(bFPD.getBreastFeedingStatus()));
+					newBFPD.setTimeOfBreastFeeding(bFPD.getTimeOfBreastFeeding() == null ? null : new TypeDetails(bFPD.getTimeOfBreastFeeding()));
+					newBFPD.setBreastFeedingStatus(bFPD.getBreastFeedingStatus() == null ? null : new TypeDetails(bFPD.getBreastFeedingStatus()));
 					newBFPD.setUpdatedBy(bFPD.getUserId());
 					newBFPD.setUniqueFormId(bFPD.getId());
 					newBFPD.setCreatedDate(getTimestampFromString(bFPD.getCreatedDate()));
@@ -404,13 +434,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	}
 	
 	private Timestamp getTimestampFromString(String date){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		try{
-			return new Timestamp(sdf.parse(date).getTime());
-		}catch(ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return Timestamp.valueOf(date);
 	}
 	
 	private Date getDateFromString(String date){
@@ -421,6 +445,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private String arrayToString(Integer[] integerArray){
+		StringBuilder arrayAsString = new StringBuilder();
+		for (int i = 0; i < integerArray.length; i++) {
+			arrayAsString.append(integerArray[i].toString()+",");
+		}
+		return arrayAsString.substring(0, arrayAsString.length() - 1);
 	}
 
 }
