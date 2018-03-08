@@ -1,6 +1,7 @@
 package org.sdrc.lactation.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.sdrc.lactation.domain.Patient;
 
@@ -17,5 +18,7 @@ public interface PatientRepository {
 	Patient findByBabyCode(String babyId);
 
 	List<Patient> findByINBabyCode(List<String> babyCodeList);
+
+	List<Patient> findByBabyCodeIn(Set<String> babyCodeList);
 
 }

@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,26 +40,20 @@ public class LogFeed {
 	@JoinColumn
 	private TypeDetails feedMethod;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double ommVolume;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double dhmVolume;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double formulaVolume;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double animalMilkVolume;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double otherVolume;
 
 	@ManyToOne
 	@JoinColumn
 	private TypeDetails locationOfFeeding;
 
-	@Digits(integer = 5, fraction = 2)
 	private Double weightOfBaby;
 
 	private Timestamp createdDate;

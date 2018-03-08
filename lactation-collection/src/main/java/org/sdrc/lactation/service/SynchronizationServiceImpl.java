@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sdrc.lactation.domain.Area;
 import org.sdrc.lactation.domain.LactationUser;
@@ -127,7 +129,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 		//getting patients from database
 		Map<String, Patient> patientMap = new HashMap<>();
-		List<String> babyCodeList = new ArrayList<>();
+		Set<String> babyCodeList = new HashSet<>();
+//		List<String> babyCodeList = new ArrayList<>();
 		
 		if (syncModels.getPatients() != null
 				&& !syncModels.getPatients().isEmpty()) {
@@ -153,7 +156,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			syncModels.getBfpds().forEach(bfpd -> babyCodeList.add(bfpd.getBabyCode()));					
 		}
 		if(!babyCodeList.isEmpty()){
-			List<Patient> existingPatients = patientRepository.findByINBabyCode(babyCodeList);
+			List<Patient> existingPatients = patientRepository.findByBabyCodeIn(babyCodeList);
 			existingPatients.forEach(patient->patientMap.put(patient.getBabyCode(), patient));
 		}
 		

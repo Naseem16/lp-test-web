@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Digits;
 
 /**
  * 
@@ -42,7 +41,6 @@ public class Patient {
 	@JoinColumn(nullable = true)
 	private TypeDetails deliveryMethod;
 
-	@Digits(integer = 4, fraction = 2)
 	private Double babyWeight;
 
 	private Integer gestationalAgeInWeek;
