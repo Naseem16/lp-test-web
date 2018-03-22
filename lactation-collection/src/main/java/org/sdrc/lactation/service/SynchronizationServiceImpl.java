@@ -184,16 +184,21 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					existingPatient.setMothersAge(patient.getMothersAge() == null ? null : patient.getMothersAge());
 					existingPatient.setMothersPrenatalIntent(patient.getMothersPrenatalIntent() == null ? null : new TypeDetails(patient.getMothersPrenatalIntent()));
 					
-					if(patient.getNicuAdmissionReason() != null && patient.getNicuAdmissionReason().length != 0){
+					if(patient.getNicuAdmissionReason() != null && patient.getNicuAdmissionReason().length != 0) {
 						existingPatient.setNicuAdmissionReason(arrayToString(patient.getNicuAdmissionReason()));
+					}else {
+						existingPatient.setNicuAdmissionReason(null);
 					}
 					
 					existingPatient.setParentsKnowledgeOnHmAndLactation(patient.getParentsKnowledgeOnHmAndLactation() == null ? null : 
 						new TypeDetails(patient.getParentsKnowledgeOnHmAndLactation()));
 					
 					if((patient.getTimeTillFirstExpressionInHour() != null && patient.getTimeTillFirstExpressionInHour() != "") && 
-							(patient.getTimeTillFirstExpressionInMinute() != null && patient.getTimeTillFirstExpressionInMinute() != ""))
+							(patient.getTimeTillFirstExpressionInMinute() != null && patient.getTimeTillFirstExpressionInMinute() != "")) {
 						existingPatient.setTimeTillFirstExpression(patient.getTimeTillFirstExpressionInHour() + ":" + patient.getTimeTillFirstExpressionInMinute());
+					}else{
+						existingPatient.setTimeTillFirstExpression(null);
+					}
 					
 					existingPatient.setUpdatedBy(patient.getUserId());
 					existingPatient.setUpdatedDate(getTimestampFromString(patient.getUpdatedDate()));
