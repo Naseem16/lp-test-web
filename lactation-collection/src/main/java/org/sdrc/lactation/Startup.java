@@ -12,10 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -23,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @EnableWebMvc
 @EnableTransactionManagement
-@PropertySource(value = { "file:${catalina.base}/conf/lactation_application_dev.properties", "file:${catalina.base}/conf/lactation_message_dev.properties" })
+@PropertySource("file:${catalina.base}/conf/lactation_application_dev.properties")
 public class Startup extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {
@@ -52,13 +50,13 @@ public class Startup extends SpringBootServletInitializer{
 	 * In this method we are creating a bean of {@link MessageSource}.
 	 * We are going to use this to access application.property file
 	 */
-	@Bean
+	/*@Bean
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setBasename("file:${catalina.base}/conf/lactation_message_dev.properties");
 		messageSource.setDefaultEncoding("UTF-8");
 	
 		return messageSource;
-	}
+	}*/
 
 }

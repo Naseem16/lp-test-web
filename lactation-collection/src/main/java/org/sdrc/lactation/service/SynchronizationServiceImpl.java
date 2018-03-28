@@ -47,7 +47,6 @@ import org.sdrc.lactation.utils.SyncModel;
 import org.sdrc.lactation.utils.SyncResult;
 import org.sdrc.lactation.utils.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,9 +88,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	
 	@Autowired
 	private LogBreastFeedingSupportivePracticeRepository logBreastFeedingSupportivePracticeRepository;
-	
-	@Autowired
-	private MessageSource messageSource;
 	
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
 	
