@@ -36,7 +36,7 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
-		
+
 		<!-- marked the embedded servlet container as provided -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -44,6 +44,18 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--Added for sending mail purpose  -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

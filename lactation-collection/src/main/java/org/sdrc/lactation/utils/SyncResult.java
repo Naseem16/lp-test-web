@@ -14,59 +14,75 @@ import java.util.List;
 
 public class SyncResult {
 
-	private List<FailureUser> failureUsers;
-	private List<FailurePatient> failurePatients;
-	private List<FailureBFExpression> failureBFExpressions;
-	private List<FailureFeedExpression> failureFeedExpressions;
-	private List<FailureBFSP> failureBFSPs;
-	private List<FailureBFPD> failureBFPDs;
+	/*
+	 * private List<FailureUser> failureUsers; private List<FailurePatient>
+	 * failurePatients; private List<FailureBFExpression> failureBFExpressions;
+	 * private List<FailureFeedExpression> failureFeedExpressions; private
+	 * List<FailureBFSP> failureBFSPs; private List<FailureBFPD> failureBFPDs;
+	 */
 
-	public List<FailureUser> getFailureUsers() {
-		return failureUsers;
+	private List<UserModel> users;
+	private List<PatientModel> patients;
+	private List<BFExpressionModel> bfExpressions;
+	private List<FeedExpressionModel> feedExpressions;
+	private List<BFSPModel> bfsps;
+	private List<BFPDModel> bfpds;
+	private Integer syncStatus;
+
+	public List<UserModel> getUsers() {
+		return users;
 	}
 
-	public void setFailureUsers(List<FailureUser> failureUsers) {
-		this.failureUsers = failureUsers;
+	public void setUsers(List<UserModel> users) {
+		this.users = users;
 	}
 
-	public List<FailurePatient> getFailurePatients() {
-		return failurePatients;
+	public List<PatientModel> getPatients() {
+		return patients;
 	}
 
-	public void setFailurePatients(List<FailurePatient> failurePatients) {
-		this.failurePatients = failurePatients;
+	public void setPatients(List<PatientModel> patients) {
+		this.patients = patients;
 	}
 
-	public List<FailureBFExpression> getFailureBFExpressions() {
-		return failureBFExpressions;
+	public List<BFExpressionModel> getBfExpressions() {
+		return bfExpressions;
 	}
 
-	public void setFailureBFExpressions(List<FailureBFExpression> failureBFExpressions) {
-		this.failureBFExpressions = failureBFExpressions;
+	public void setBfExpressions(List<BFExpressionModel> bfExpressions) {
+		this.bfExpressions = bfExpressions;
 	}
 
-	public List<FailureFeedExpression> getFailureFeedExpressions() {
-		return failureFeedExpressions;
+	public List<FeedExpressionModel> getFeedExpressions() {
+		return feedExpressions;
 	}
 
-	public void setFailureFeedExpressions(List<FailureFeedExpression> failureFeedExpressions) {
-		this.failureFeedExpressions = failureFeedExpressions;
+	public void setFeedExpressions(List<FeedExpressionModel> feedExpressions) {
+		this.feedExpressions = feedExpressions;
 	}
 
-	public List<FailureBFSP> getFailureBFSPs() {
-		return failureBFSPs;
+	public List<BFSPModel> getBfsps() {
+		return bfsps;
 	}
 
-	public void setFailureBFSPs(List<FailureBFSP> failureBFSPs) {
-		this.failureBFSPs = failureBFSPs;
+	public void setBfsps(List<BFSPModel> bfsps) {
+		this.bfsps = bfsps;
 	}
 
-	public List<FailureBFPD> getFailureBFPDs() {
-		return failureBFPDs;
+	public List<BFPDModel> getBfpds() {
+		return bfpds;
 	}
 
-	public void setFailureBFPDs(List<FailureBFPD> failureBFPDs) {
-		this.failureBFPDs = failureBFPDs;
+	public void setBfpds(List<BFPDModel> bfpds) {
+		this.bfpds = bfpds;
+	}
+
+	public Integer getSyncStatus() {
+		return syncStatus;
+	}
+
+	public void setSyncStatus(Integer syncStatus) {
+		this.syncStatus = syncStatus;
 	}
 
 }

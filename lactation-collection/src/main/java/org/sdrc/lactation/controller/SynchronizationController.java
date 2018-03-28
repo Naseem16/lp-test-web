@@ -25,8 +25,8 @@ public class SynchronizationController {
 
 	@CrossOrigin
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
-	public SyncResult synchronize(@RequestBody SyncModel synchronizationModels) {
-		return synchronizationService.synchronizeForms(synchronizationModels, null);
+	public SyncResult synchronize(@RequestBody SyncModel synchronizationModel) {
+		return synchronizationService.synchronizeForms(synchronizationModel, null);
 	}
 
 	@CrossOrigin

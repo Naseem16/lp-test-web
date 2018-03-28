@@ -17,4 +17,6 @@ public interface LogBreastFeedingPostDischargeRepository {
 
 	List<LogBreastFeedingPostDischarge> findByINId(List<String> uniqueIdList);
 
+	List<LogBreastFeedingPostDischarge> findByCreatedByIn(List<String> userNameByInstitution);
+
 }

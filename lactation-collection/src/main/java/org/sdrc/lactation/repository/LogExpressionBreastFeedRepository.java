@@ -17,4 +17,6 @@ public interface LogExpressionBreastFeedRepository {
 	
 	List<LogExpressionBreastFeed> findByINId(List<String> uniqueIdList);
 
+	List<LogExpressionBreastFeed> findByCreatedByIn(List<String> userNameByInstitution);
+
 }

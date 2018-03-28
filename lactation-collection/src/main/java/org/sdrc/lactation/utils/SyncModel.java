@@ -19,6 +19,7 @@ public class SyncModel {
 	private List<FeedExpressionModel> feedExpressions;
 	private List<BFSPModel> bfsps;
 	private List<BFPDModel> bfpds;
+	private Integer instituteId;
 
 	public List<LactationUser> getUsers() {
 		return users;
@@ -66,6 +67,14 @@ public class SyncModel {
 
 	public void setBfpds(List<BFPDModel> bfpds) {
 		this.bfpds = bfpds;
+	}
+
+	public Integer getInstituteId() {
+		return instituteId;
+	}
+
+	public void setInstituteId(Integer instituteId) {
+		this.instituteId = instituteId;
 	}
 
 }

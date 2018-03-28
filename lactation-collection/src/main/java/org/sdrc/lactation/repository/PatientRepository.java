@@ -21,4 +21,6 @@ public interface PatientRepository {
 
 	List<Patient> findByBabyCodeIn(Set<String> babyCodeList);
 
+	List<Patient> findByCreatedByIn(List<String> userNameByInstitution);
+
 }
