@@ -56,6 +56,8 @@ public class LogBreastFeedingSupportivePractice {
 
 	private String uniqueFormId;
 
+	private String uuidNumber;
+
 	public Patient getPatientId() {
 		return patientId;
 	}
@@ -138,6 +140,14 @@ public class LogBreastFeedingSupportivePractice {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

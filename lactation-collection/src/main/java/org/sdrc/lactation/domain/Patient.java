@@ -77,6 +77,8 @@ public class Patient {
 
 	private Date dischargeDate;
 
+	private String uuidNumber;
+
 	public Patient() {
 
 	}
@@ -247,6 +249,14 @@ public class Patient {
 
 	public Integer getPatientId() {
 		return patientId;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

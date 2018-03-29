@@ -11,6 +11,9 @@ public class UserModel {
 	private Integer district;
 	private Boolean isSynced;
 	private String syncFailureMessage;
+	private String createdDate;
+	private String updatedDate;
+	private String uuidNumber;
 
 	public String getFirstName() {
 		return firstName;
@@ -82,6 +85,30 @@ public class UserModel {
 
 	public void setSyncFailureMessage(String syncFailureMessage) {
 		this.syncFailureMessage = syncFailureMessage;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

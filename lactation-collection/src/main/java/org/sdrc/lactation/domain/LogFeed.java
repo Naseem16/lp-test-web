@@ -66,6 +66,8 @@ public class LogFeed {
 
 	private String uniqueFormId;
 
+	private String uuidNumber;
+
 	public TypeDetails getLocationOfFeeding() {
 		return locationOfFeeding;
 	}
@@ -192,6 +194,14 @@ public class LogFeed {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

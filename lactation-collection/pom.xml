@@ -44,7 +44,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--Added for sending mail purpose  -->
+		<!--Added for sending mail purpose -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
