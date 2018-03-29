@@ -25,6 +25,7 @@ public class PatientModel {
 	private String createdDate;
 	private String updatedDate;
 	private String dischargeDate;
+	private String uuidNumber;
 
 	public String getBabyCode() {
 		return babyCode;
@@ -208,6 +209,14 @@ public class PatientModel {
 
 	public void setDischargeDate(String dischargeDate) {
 		this.dischargeDate = dischargeDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

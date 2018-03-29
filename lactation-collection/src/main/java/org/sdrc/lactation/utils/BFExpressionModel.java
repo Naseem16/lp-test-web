@@ -18,6 +18,7 @@ public class BFExpressionModel {
 	private Double volOfMilkExpressedFromLR;// 0-300ml
 	private String createdDate;
 	private String updatedDate;
+	private String uuidNumber;
 
 	public String getId() {
 		return id;
@@ -113,6 +114,14 @@ public class BFExpressionModel {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

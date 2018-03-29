@@ -17,6 +17,7 @@ public class BFPDModel {
 	private Integer breastFeedingStatus;
 	private String createdDate;
 	private String updatedDate;
+	private String uuidNumber;
 
 	public String getId() {
 		return id;
@@ -96,6 +97,14 @@ public class BFPDModel {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }

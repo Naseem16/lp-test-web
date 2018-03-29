@@ -61,6 +61,8 @@ public class LactationUser {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Timestamp updatedDate;
 
+	private String uuidNumber;
+
 	public Integer getId() {
 		return id;
 	}
@@ -135,6 +137,14 @@ public class LactationUser {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getUuidNumber() {
+		return uuidNumber;
+	}
+
+	public void setUuidNumber(String uuidNumber) {
+		this.uuidNumber = uuidNumber;
 	}
 
 }
