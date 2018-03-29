@@ -2,8 +2,6 @@ package org.sdrc.lactation.utils;
 
 import java.util.List;
 
-import org.sdrc.lactation.domain.LactationUser;
-
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 9th February 2018 19:10. This
@@ -13,7 +11,7 @@ import org.sdrc.lactation.domain.LactationUser;
 
 public class SyncModel {
 
-	private List<LactationUser> users;
+	private List<UserModel> users;
 	private List<PatientModel> patients;
 	private List<BFExpressionModel> bfExpressions;
 	private List<FeedExpressionModel> feedExpressions;
@@ -21,11 +19,11 @@ public class SyncModel {
 	private List<BFPDModel> bfpds;
 	private Integer instituteId;
 
-	public List<LactationUser> getUsers() {
+	public List<UserModel> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<LactationUser> users) {
+	public void setUsers(List<UserModel> users) {
 		this.users = users;
 	}
 

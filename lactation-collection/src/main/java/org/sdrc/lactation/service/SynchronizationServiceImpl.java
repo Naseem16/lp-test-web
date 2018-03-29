@@ -137,17 +137,29 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			List<LactationUser> users = new ArrayList<>();
 			syncModel.getUsers().forEach(user -> {
 				LactationUser existingUser = lactationUserRepository.findByEmail(user.getEmail());
-				if(existingUser != null && existingUser.getInstitution().getId() != user.getInstitution().getId()){
+				if(existingUser != null && existingUser.getInstitution().getId() != user.getInstitution()){
 					inconsistentUser.put("name", existingUser.getFirstName());
 					inconsistentUser.put("oldState", existingUser.getState().getName());
 					inconsistentUser.put("oldDistrict", existingUser.getDistrict().getName());
 					inconsistentUser.put("oldInstitute", existingUser.getInstitution().getName());
-					inconsistentUser.put("newState", areaMap.get(user.getState().getId()).getName());
-					inconsistentUser.put("newDistrict", areaMap.get(user.getDistrict().getId()).getName());
-					inconsistentUser.put("newInstitute", areaMap.get(user.getInstitution().getId()).getName());
+					inconsistentUser.put("newState", areaMap.get(user.getState()).getName());
+					inconsistentUser.put("newDistrict", areaMap.get(user.getDistrict()).getName());
+					inconsistentUser.put("newInstitute", areaMap.get(user.getInstitution()).getName());
 					userFromDifferentInstitution.set(true);
 				}else if(existingUser == null && !userFromDifferentInstitution.get()){
-					users.add(user);
+					LactationUser lactationUser = new LactationUser();
+					lactationUser.setCountry(new Area(user.getCountry()));
+					lactationUser.setCreatedDate(getTimestampFromString(user.getCreatedDate()));
+					lactationUser.setDistrict(new Area(user.getDistrict()));
+					lactationUser.setEmail(user.getEmail());
+					lactationUser.setFirstName(user.getFirstName());
+					lactationUser.setInstitution(new Area(user.getInstitution()));
+					lactationUser.setLastName(user.getLastName());
+					lactationUser.setState(new Area(user.getState()));
+					lactationUser.setUpdatedDate(getTimestampFromString(user.getUpdatedDate()));
+					lactationUser.setUuidNumber(user.getUuidNumber() == null ? null : user.getUuidNumber());
+					
+					users.add(lactationUser);
 				}
 			});
 			
@@ -272,6 +284,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newPatient.setBabyWeight(patient.getBabyWeight() == null ? null :patient.getBabyWeight());
 						newPatient.setCreatedBy(patient.getUserId());
 						newPatient.setCreatedDate(getTimestampFromString(patient.getCreatedDate()));
+						newPatient.setUpdatedDate(getTimestampFromString(patient.getUpdatedDate()));
 						newPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
 						newPatient.setDeliveryMethod(patient.getDeliveryMethod() == null ? null : new TypeDetails(patient.getDeliveryMethod()));
 						newPatient.setDischargeDate((patient.getDischargeDate() == null || patient.getDischargeDate() == "") ? null : getDateFromString(patient.getDischargeDate()));
@@ -344,6 +357,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFEXpression.setCreatedDate(getTimestampFromString(bFEXpression.getCreatedDate()));
 						newBFEXpression.setCreatedBy(bFEXpression.getUserId());
 						newBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
+						newBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 						
 						bfExpressions.add(newBFEXpression);
 					}
@@ -401,6 +415,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newFeed.setUniqueFormId(logFeed.getId());
 						newFeed.setCreatedDate(getTimestampFromString(logFeed.getCreatedDate()));
 						newFeed.setUuidNumber(logFeed.getUuidNumber() == null ? null : logFeed.getUuidNumber());
+						newFeed.setUpdatedDate(getTimestampFromString(logFeed.getUpdatedDate()));
 						
 						feeds.add(newFeed);					
 					}
@@ -446,6 +461,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFSP.setUniqueFormId(bFSP.getId());
 						newBFSP.setCreatedDate(getTimestampFromString(bFSP.getCreatedDate()));
 						newBFSP.setUuidNumber(bFSP.getUuidNumber() == null ? null : bFSP.getUuidNumber());
+						newBFSP.setUpdatedDate(getTimestampFromString(bFSP.getUpdatedDate()));
 						
 						bFSPs.add(newBFSP);					
 					}
@@ -489,6 +505,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFPD.setUniqueFormId(bFPD.getId());
 						newBFPD.setCreatedDate(getTimestampFromString(bFPD.getCreatedDate()));
 						newBFPD.setUuidNumber(bFPD.getUuidNumber() == null ? null : bFPD.getUuidNumber());
+						newBFPD.setUpdatedDate(getTimestampFromString(bFPD.getUpdatedDate()));
 						
 						bFPDs.add(newBFPD);					
 					}
