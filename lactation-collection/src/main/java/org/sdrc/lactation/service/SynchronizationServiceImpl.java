@@ -648,16 +648,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			syncResult.setSyncStatus(1);
 			
 		}else{
-			//-----------------------------Send email to lactation group, conveying that existing user trying to register with different insitute----------------------//
+			//-----------------------------Send email to lactation group, conveying that existing user trying to register with different institute----------------------//
 			
 			syncResult.setSyncStatus(-1);
-			
 			Thread thread = new Thread(){
 				public void run(){
-					/*final String username = messageSource.getMessage("lactation.email", null, null);
-					final String password = messageSource.getMessage("lactation.password", null, null);
-					final String to = messageSource.getMessage("lactation.sentTo", null, null);*/
-					
 					final String username = "lactation.medella@gmail.com";
 					final String password = "lactation@2018";
 					final String to = "naseem@sdrc.co.in";

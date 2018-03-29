@@ -43,20 +43,5 @@ public class Startup extends SpringBootServletInitializer{
 	public MessageDigestPasswordEncoder passwordEncoder() {
 		return new MessageDigestPasswordEncoder("MD5");
 	}
-	
-	/**
-	 * 
-	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 27th March 2018 19:40.
-	 * In this method we are creating a bean of {@link MessageSource}.
-	 * We are going to use this to access application.property file
-	 */
-	/*@Bean
-	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasename("file:${catalina.base}/conf/lactation_message_dev.properties");
-		messageSource.setDefaultEncoding("UTF-8");
-	
-		return messageSource;
-	}*/
 
 }
