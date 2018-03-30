@@ -530,7 +530,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			
 			patientByInstituteId.forEach(patient -> {
 				PatientModel patientModel = new PatientModel();
-				patientModel.setAdmissionDateForOutdoorPatients(patient.getAdmissionDateForOutdoorPatients() == null ? null : patient.getAdmissionDateForOutdoorPatients().toString());
+				patientModel.setAdmissionDateForOutdoorPatients(patient.getAdmissionDateForOutdoorPatients() == null ? null : sdfDateOnly.format(patient.getAdmissionDateForOutdoorPatients()));
 				patientModel.setBabyAdmittedTo(patient.getBabyAdmittedTo() == null ? null : patient.getBabyAdmittedTo().getId());
 				patientModel.setBabyCode(patient.getBabyCode());
 				patientModel.setBabyCodeHospital(patient.getBabyCodeHospital() == null ? null : patient.getBabyCodeHospital());
@@ -539,7 +539,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				patientModel.setDeliveryDate(sdfDateOnly.format(patient.getDeliveryDateAndTime()));
 				patientModel.setDeliveryMethod(patient.getDeliveryMethod() == null ? null : patient.getDeliveryMethod().getId());
 				patientModel.setDeliveryTime(sdfTimeOnly.format(patient.getDeliveryDateAndTime()));
-				patientModel.setDischargeDate(patient.getDischargeDate() == null ? null : patient.getDischargeDate().toString());
+				patientModel.setDischargeDate(patient.getDischargeDate() == null ? null : sdfDateOnly.format(patient.getDischargeDate()));
 				patientModel.setGestationalAgeInWeek(patient.getGestationalAgeInWeek() == null ? null : patient.getGestationalAgeInWeek());
 				patientModel.setInpatientOrOutPatient(patient.getInpatientOrOutPatient() == null ? null : patient.getInpatientOrOutPatient().getId());
 				patientModel.setIsSynced(true);
