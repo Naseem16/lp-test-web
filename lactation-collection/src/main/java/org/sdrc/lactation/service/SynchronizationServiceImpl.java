@@ -595,7 +595,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				BFPDModel bfpdModel = new BFPDModel();
 				bfpdModel.setBabyCode(bfpd.getPatientId().getBabyCode());
 				bfpdModel.setBreastFeedingStatus(bfpd.getBreastFeedingStatus() == null ? null : bfpd.getBreastFeedingStatus().getId());
-				bfpdModel.setDateOfBreastFeeding(bfpd.getDateOfBreastFeeding().toString());
+				bfpdModel.setDateOfBreastFeeding(sdfDateOnly.format(bfpd.getDateOfBreastFeeding()));
 				bfpdModel.setId(bfpd.getUniqueFormId());
 				bfpdModel.setIsSynced(true);
 				bfpdModel.setTimeOfBreastFeeding(bfpd.getTimeOfBreastFeeding() == null ? null : bfpd.getTimeOfBreastFeeding().getId());
