@@ -23,4 +23,6 @@ public interface PatientRepository {
 
 	List<Patient> findByCreatedByIn(List<String> userNameByInstitution);
 
+	List<Patient> findByUuidNumberIsNull();
+
 }

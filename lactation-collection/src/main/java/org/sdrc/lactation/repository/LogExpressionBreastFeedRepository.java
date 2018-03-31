@@ -19,4 +19,6 @@ public interface LogExpressionBreastFeedRepository {
 
 	List<LogExpressionBreastFeed> findByCreatedByIn(List<String> userNameByInstitution);
 
+	List<LogExpressionBreastFeed> findByUniqueFormIdIsNull();
+
 }

@@ -51,6 +51,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 9th February 2018 17:10. This
@@ -94,6 +95,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	private SimpleDateFormat sdfTimeOnly = new SimpleDateFormat("HH:mm");
 	
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 
 	/**
 	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 1548.
@@ -139,6 +142,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				LactationUser existingUser = lactationUserRepository.findByEmail(user.getEmail());
 				if(existingUser != null && existingUser.getInstitution().getId() != user.getInstitution()){
 					inconsistentUser.put("name", existingUser.getFirstName());
+					inconsistentUser.put("email", user.getEmail());
 					inconsistentUser.put("oldState", existingUser.getState().getName());
 					inconsistentUser.put("oldDistrict", existingUser.getDistrict().getName());
 					inconsistentUser.put("oldInstitute", existingUser.getInstitution().getName());
@@ -283,6 +287,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newPatient.setBabyOf((patient.getBabyOf() == null || patient.getBabyOf() == "") ? null : patient.getBabyOf());
 						newPatient.setBabyWeight(patient.getBabyWeight() == null ? null :patient.getBabyWeight());
 						newPatient.setCreatedBy(patient.getUserId());
+						newPatient.setUpdatedBy(patient.getUserId());
 						newPatient.setCreatedDate(getTimestampFromString(patient.getCreatedDate()));
 						newPatient.setUpdatedDate(getTimestampFromString(patient.getUpdatedDate()));
 						newPatient.setDeliveryDateAndTime(getTimestampFromDateAndTime(patient.getDeliveryDate(), patient.getDeliveryTime()));
@@ -356,6 +361,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFEXpression.setUniqueFormId(bFEXpression.getId());
 						newBFEXpression.setCreatedDate(getTimestampFromString(bFEXpression.getCreatedDate()));
 						newBFEXpression.setCreatedBy(bFEXpression.getUserId());
+						newBFEXpression.setUpdatedBy(bFEXpression.getUserId());
 						newBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
 						newBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 						
@@ -412,6 +418,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newFeed.setLocationOfFeeding(logFeed.getLocationOfFeeding() == null ? null : new TypeDetails(logFeed.getLocationOfFeeding()));
 						newFeed.setWeightOfBaby(logFeed.getBabyWeight() == null ? null : logFeed.getBabyWeight());
 						newFeed.setCreatedBy(logFeed.getUserId());
+						newFeed.setUpdatedBy(logFeed.getUserId());
 						newFeed.setUniqueFormId(logFeed.getId());
 						newFeed.setCreatedDate(getTimestampFromString(logFeed.getCreatedDate()));
 						newFeed.setUuidNumber(logFeed.getUuidNumber() == null ? null : logFeed.getUuidNumber());
@@ -458,6 +465,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFSP.setPersonWhoPerformedBFSP(bFSP.getPersonWhoPerformedBFSP() == null ? null : new TypeDetails(bFSP.getPersonWhoPerformedBFSP()));
 						newBFSP.setBfspDuration(bFSP.getBfspDuration() == null ? null : bFSP.getBfspDuration());
 						newBFSP.setCreatedBy(bFSP.getUserId());
+						newBFSP.setUpdatedBy(bFSP.getUserId());
 						newBFSP.setUniqueFormId(bFSP.getId());
 						newBFSP.setCreatedDate(getTimestampFromString(bFSP.getCreatedDate()));
 						newBFSP.setUuidNumber(bFSP.getUuidNumber() == null ? null : bFSP.getUuidNumber());
@@ -490,10 +498,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						existingBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
 						existingBFPD.setTimeOfBreastFeeding(bFPD.getTimeOfBreastFeeding() == null ? null : new TypeDetails(bFPD.getTimeOfBreastFeeding()));
 						existingBFPD.setBreastFeedingStatus(bFPD.getBreastFeedingStatus() == null ? null : new TypeDetails(bFPD.getBreastFeedingStatus()));
-						existingBFPD.setUpdatedBy(bFPD.getUserId());
 						existingBFPD.setUniqueFormId(bFPD.getId());
-						existingBFPD.setUpdatedDate(getTimestampFromString(bFPD.getUpdatedDate()));
 						existingBFPD.setUuidNumber(bFPD.getUuidNumber() == null ? null : bFPD.getUuidNumber());
+						existingBFPD.setUpdatedDate(getTimestampFromString(bFPD.getUpdatedDate()));
+						existingBFPD.setUpdatedBy(bFPD.getUserId());
 					}else{
 						LogBreastFeedingPostDischarge newBFPD = new LogBreastFeedingPostDischarge();
 						
@@ -501,11 +509,12 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFPD.setDateOfBreastFeeding(getTimestampFromDateAndTime(bFPD.getDateOfBreastFeeding(), "00:00"));
 						newBFPD.setTimeOfBreastFeeding(bFPD.getTimeOfBreastFeeding() == null ? null : new TypeDetails(bFPD.getTimeOfBreastFeeding()));
 						newBFPD.setBreastFeedingStatus(bFPD.getBreastFeedingStatus() == null ? null : new TypeDetails(bFPD.getBreastFeedingStatus()));
-						newBFPD.setUpdatedBy(bFPD.getUserId());
 						newBFPD.setUniqueFormId(bFPD.getId());
-						newBFPD.setCreatedDate(getTimestampFromString(bFPD.getCreatedDate()));
 						newBFPD.setUuidNumber(bFPD.getUuidNumber() == null ? null : bFPD.getUuidNumber());
+						newBFPD.setCreatedDate(getTimestampFromString(bFPD.getCreatedDate()));
 						newBFPD.setUpdatedDate(getTimestampFromString(bFPD.getUpdatedDate()));
+						newBFPD.setCreatedBy(bFPD.getUserId());
+						newBFPD.setUpdatedBy(bFPD.getUserId());
 						
 						bFPDs.add(newBFPD);					
 					}
@@ -559,10 +568,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					patientModel.setTimeTillFirstExpressionInHour(patient.getTimeTillFirstExpression().split(":")[0]);
 					patientModel.setTimeTillFirstExpressionInMinute(patient.getTimeTillFirstExpression().split(":")[1]);
 				}
-				patientModel.setUserId(patient.getCreatedBy());
 				patientModel.setCreatedDate(sdfDateTimeWithSeconds.format(patient.getCreatedDate()));
 				patientModel.setUpdatedDate(sdfDateTimeWithSeconds.format(patient.getUpdatedDate()));
 				patientModel.setUuidNumber(patient.getUuidNumber() == null ? null : patient.getUuidNumber());
+				patientModel.setUserId(patient.getUpdatedBy());
 				
 				patientByInstituteIdList.add(patientModel);
 			});
@@ -579,11 +588,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfExpressionModel.setLocationOfExpression(bfExp.getExpressionOccuredLocation() == null ? null : bfExp.getExpressionOccuredLocation().getId());
 				bfExpressionModel.setMethodOfExpression(bfExp.getMethodOfExpression() == null ? null : bfExp.getMethodOfExpression().getId());
 				bfExpressionModel.setTimeOfExpression(sdfTimeOnly.format(bfExp.getDateAndTimeOfExpression()));
-				bfExpressionModel.setUserId(bfExp.getCreatedBy());
 				bfExpressionModel.setVolOfMilkExpressedFromLR(bfExp.getMilkExpressedFromLeftAndRightBreast() == null ? null : bfExp.getMilkExpressedFromLeftAndRightBreast());
 				bfExpressionModel.setCreatedDate(sdfDateTimeWithSeconds.format(bfExp.getCreatedDate()));
 				bfExpressionModel.setUpdatedDate(sdfDateTimeWithSeconds.format(bfExp.getUpdatedDate()));
 				bfExpressionModel.setUuidNumber(bfExp.getUuidNumber() == null ? null : bfExp.getUuidNumber());
+				bfExpressionModel.setUserId(bfExp.getUpdatedBy());
 				
 				bfExpressionByInstituteList.add(bfExpressionModel);
 			});
@@ -599,10 +608,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfpdModel.setId(bfpd.getUniqueFormId());
 				bfpdModel.setIsSynced(true);
 				bfpdModel.setTimeOfBreastFeeding(bfpd.getTimeOfBreastFeeding() == null ? null : bfpd.getTimeOfBreastFeeding().getId());
-				bfpdModel.setUserId(bfpd.getCreatedBy());
 				bfpdModel.setCreatedDate(sdfDateTimeWithSeconds.format(bfpd.getCreatedDate()));
 				bfpdModel.setUpdatedDate(sdfDateTimeWithSeconds.format(bfpd.getUpdatedDate()));
 				bfpdModel.setUuidNumber(bfpd.getUuidNumber() == null ? null : bfpd.getUuidNumber());
+				bfpdModel.setUserId(bfpd.getUpdatedBy());
 				
 				bfpdByInstituteList.add(bfpdModel);
 			});
@@ -620,10 +629,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfspModel.setIsSynced(true);
 				bfspModel.setPersonWhoPerformedBFSP(bfsp.getPersonWhoPerformedBFSP() == null ? null : bfsp.getPersonWhoPerformedBFSP().getId());
 				bfspModel.setTimeOfBFSP(sdfTimeOnly.format(bfsp.getDateAndTimeOfBFSP()));
-				bfspModel.setUserId(bfsp.getCreatedBy());
 				bfspModel.setCreatedDate(sdfDateTimeWithSeconds.format(bfsp.getCreatedDate()));
 				bfspModel.setUpdatedDate(sdfDateTimeWithSeconds.format(bfsp.getUpdatedDate()));
 				bfspModel.setUuidNumber(bfsp.getUuidNumber() == null ? null : bfsp.getUuidNumber());
+				bfspModel.setUserId(bfsp.getUpdatedBy());
 				
 				bfspByInstituteList.add(bfspModel);
 			});
@@ -646,10 +655,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				feedModel.setOmmVolume(feed.getOmmVolume() == null ? null : feed.getOmmVolume());
 				feedModel.setOtherVolume(feed.getOtherVolume() == null ? null : feed.getOtherVolume());
 				feedModel.setTimeOfFeed(sdfTimeOnly.format(feed.getDateAndTimeOfFeed()));
-				feedModel.setUserId(feed.getCreatedBy());
 				feedModel.setCreatedDate(sdfDateTimeWithSeconds.format(feed.getCreatedDate()));
 				feedModel.setUpdatedDate(sdfDateTimeWithSeconds.format(feed.getUpdatedDate()));
 				feedModel.setUuidNumber(feed.getUuidNumber() == null ? null : feed.getUuidNumber());
+				feedModel.setUserId(feed.getUpdatedBy());
 				
 				feedByInstituteList.add(feedModel);
 			});
@@ -693,7 +702,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						message.setFrom(new InternetAddress(username));
 						message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 						message.setSubject("Lactation Project - Alert");
-						message.setText("A user - "+ inconsistentUser.get("name") +", registered with "+ inconsistentUser.get("oldInstitute") + 
+						message.setText("A user - "+ inconsistentUser.get("name") + " (" + inconsistentUser.get("email") +"), registered with "+ inconsistentUser.get("oldInstitute") + 
 								" (" +inconsistentUser.get("oldState") + ", " + inconsistentUser.get("oldDistrict") + "), is trying to register "+ 
 								"himself again with "+ inconsistentUser.get("newInstitute") + " (" + inconsistentUser.get("newState") + ", " + inconsistentUser.get("newDistrict")
 								+ ")");
@@ -742,6 +751,105 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			arrayAsString.append(integerArray[i].toString()+",");
 		}
 		return arrayAsString.substring(0, arrayAsString.length() - 1);
+	}
+
+	@Override
+	@Transactional
+	public Boolean setUniqueId() {
+		List<Patient> patients = patientRepository.findByUuidNumberIsNull();
+		List<LogBreastFeedingPostDischarge> bfpd = logBreastFeedingPostDischargeRepository.findByUniqueFormIdIsNull();
+		List<LogBreastFeedingSupportivePractice> bfps = logBreastFeedingSupportivePracticeRepository.findByUniqueFormIdIsNull();
+		List<LogExpressionBreastFeed> bfExpression = logExpressionBreastFeedRepository.findByUniqueFormIdIsNull();
+		List<LogFeed> feeds = logFeedRepository.findByUniqueFormIdIsNull();
+		
+		patients.forEach(d -> {
+			if(d.getUpdatedDate() == null)
+				d.setUpdatedDate(d.getCreatedDate());
+			
+			if(d.getUuidNumber() == null)
+				d.setUuidNumber("LegacyData");
+			
+			if(d.getUpdatedBy() == null)
+				d.setUpdatedBy(d.getCreatedBy());
+		});
+		
+		bfpd.forEach(d -> {
+			String date = sdfDateTimeWithSeconds.format(new Date());
+			
+			if(d.getUniqueFormId() == null)
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + sdfDateInteger.format(new Date()));
+			
+			if(d.getUuidNumber() == null)
+				d.setUuidNumber("LegacyData");
+			
+			if(d.getCreatedDate() == null)
+				d.setCreatedDate(Timestamp.valueOf(date));
+				
+			if(d.getUpdatedBy() == null)
+				d.setUpdatedBy(d.getCreatedBy());
+			
+			if(d.getUpdatedDate() == null)
+				d.setUpdatedDate(d.getCreatedDate());
+		});
+		
+		bfps.forEach(d -> {
+			String date = sdfDateTimeWithSeconds.format(new Date());
+			
+			if(d.getUniqueFormId() == null)
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + sdfDateInteger.format(new Date()));
+			
+			if(d.getUuidNumber() == null)
+				d.setUuidNumber("LegacyData");
+			
+			if(d.getCreatedDate() == null)
+				d.setCreatedDate(Timestamp.valueOf(date));
+			
+			if(d.getUpdatedBy() == null)
+				d.setUpdatedBy(d.getCreatedBy());
+			
+			if(d.getUpdatedDate() == null)
+				d.setUpdatedDate(d.getCreatedDate());
+		});
+		
+		bfExpression.forEach(d -> {
+			String date = sdfDateTimeWithSeconds.format(new Date());
+			
+			if(d.getUniqueFormId() == null)
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + sdfDateInteger.format(new Date()));
+			
+			if(d.getUuidNumber() == null)
+				d.setUuidNumber("LegacyData");
+			
+			if(d.getCreatedDate() == null)
+				d.setCreatedDate(Timestamp.valueOf(date));
+			
+			if(d.getUpdatedBy() == null)
+				d.setUpdatedBy(d.getCreatedBy());
+			
+			if(d.getUpdatedDate() == null)
+				d.setUpdatedDate(d.getCreatedDate());
+		});
+		
+		feeds.forEach(d -> {
+			String date = sdfDateTimeWithSeconds.format(new Date());
+			
+			if(d.getUniqueFormId() == null)
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + sdfDateInteger.format(new Date()));
+			
+			if(d.getUuidNumber() == null)
+				d.setUuidNumber("LegacyData");
+			
+			if(d.getCreatedDate() == null)
+				d.setCreatedDate(Timestamp.valueOf(date));
+			
+			if(d.getUpdatedBy() == null)
+				d.setUpdatedBy(d.getCreatedBy());
+			
+			if(d.getUpdatedDate() == null)
+				d.setUpdatedDate(d.getCreatedDate());
+		});
+		
+		return true;
 	}
 
 }

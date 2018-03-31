@@ -31,7 +31,7 @@ public class LogFeed {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name="patient_id", nullable = false)
 	private Patient patientId;
 
 	private Timestamp dateAndTimeOfFeed;

@@ -17,4 +17,6 @@ public interface LogFeedRepository {
 	List<LogFeed> findByINId(List<String> uniqueIdList);
 
 	List<LogFeed> findByCreatedByIn(List<String> userNameByInstitution);
+
+	List<LogFeed> findByUniqueFormIdIsNull();
 }

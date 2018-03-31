@@ -19,4 +19,6 @@ public interface LogBreastFeedingSupportivePracticeRepository {
 			List<String> uniqueIdList);
 
 	List<LogBreastFeedingSupportivePractice> findByCreatedByIn(List<String> userNameByInstitution);
+
+	List<LogBreastFeedingSupportivePractice> findByUniqueFormIdIsNull();
 }

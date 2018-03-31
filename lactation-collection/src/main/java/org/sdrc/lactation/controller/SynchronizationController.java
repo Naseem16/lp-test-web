@@ -34,4 +34,10 @@ public class SynchronizationController {
 	public Boolean serverStatus() {
 		return true;
 	}
+	
+	@RequestMapping(value = "/setUniqueId", method = RequestMethod.GET)
+	public Boolean setUniqueId() {
+		return synchronizationService.setUniqueId();
+	}
+	
 }

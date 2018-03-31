@@ -30,7 +30,7 @@ public class LogBreastFeedingSupportivePractice {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name="patient_id", nullable = false)
 	private Patient patientId;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
