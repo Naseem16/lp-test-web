@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @EnableWebMvc
 @EnableTransactionManagement
-@PropertySource("file:${catalina.base}/conf/lactation_application_test.properties")
+@PropertySource("file:${catalina.base}/conf/lactation_application_stage.properties")
 public class Startup extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {
