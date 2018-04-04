@@ -21,4 +21,6 @@ public interface LogExpressionBreastFeedRepository {
 
 	List<LogExpressionBreastFeed> findByUniqueFormIdIsNull();
 
+	List<LogExpressionBreastFeed> findAll();
+
 }

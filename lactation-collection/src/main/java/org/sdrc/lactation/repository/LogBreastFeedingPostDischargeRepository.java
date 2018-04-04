@@ -21,4 +21,6 @@ public interface LogBreastFeedingPostDischargeRepository {
 
 	List<LogBreastFeedingPostDischarge> findByUniqueFormIdIsNull();
 
+	List<LogBreastFeedingPostDischarge> findAll();
+
 }

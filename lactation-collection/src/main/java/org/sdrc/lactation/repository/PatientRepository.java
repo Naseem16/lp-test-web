@@ -25,4 +25,6 @@ public interface PatientRepository {
 
 	List<Patient> findByUuidNumberIsNull();
 
+	List<Patient> findAll();
+
 }

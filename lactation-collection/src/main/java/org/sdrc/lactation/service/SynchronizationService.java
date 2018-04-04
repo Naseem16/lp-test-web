@@ -13,5 +13,6 @@ public interface SynchronizationService {
 	SyncResult synchronizeForms(SyncModel synchronizationModels, HttpRequest httpRequest);
 
 	Boolean setUniqueId();
-
+	
+	String exportDataToExcel();
 }
