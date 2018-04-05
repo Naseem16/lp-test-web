@@ -186,7 +186,7 @@ public class ReportServiceImpl {
 			
 			workbook.write(fileOut);
 			
-			emailService.sendEmail("naseem@sdrc.co.in", null, "Lactation Project - Daily Report", "Please find attached daily submission report", filePath);
+			emailService.sendEmail("lactationproject@sdrc.co.in", null, "Lactation Project - Daily Report", "Please find attached daily submission report", filePath);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
