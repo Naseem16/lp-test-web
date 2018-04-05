@@ -1,5 +1,6 @@
 package org.sdrc.lactation.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.sdrc.lactation.domain.LogFeed;
@@ -21,4 +22,6 @@ public interface LogFeedRepository {
 	List<LogFeed> findByUniqueFormIdIsNull();
 
 	List<LogFeed> findAll();
+
+	List<LogFeed> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
 }

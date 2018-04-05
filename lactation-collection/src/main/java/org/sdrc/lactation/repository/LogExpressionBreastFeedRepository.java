@@ -1,5 +1,6 @@
 package org.sdrc.lactation.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
@@ -22,5 +23,7 @@ public interface LogExpressionBreastFeedRepository {
 	List<LogExpressionBreastFeed> findByUniqueFormIdIsNull();
 
 	List<LogExpressionBreastFeed> findAll();
+
+	List<LogExpressionBreastFeed> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
 
 }

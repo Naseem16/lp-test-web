@@ -102,7 +102,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
+	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 
 	/**
 	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 1548.

@@ -1,5 +1,6 @@
 package org.sdrc.lactation.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
@@ -26,5 +27,7 @@ public interface PatientRepository {
 	List<Patient> findByUuidNumberIsNull();
 
 	List<Patient> findAll();
+
+	List<Patient> findByCreatedDateBetween(Timestamp startDate, Timestamp endDate);
 
 }
