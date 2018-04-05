@@ -14,5 +14,4 @@ public interface SynchronizationService {
 
 	Boolean setUniqueId();
 	
-	String exportDataToExcel();
 }
