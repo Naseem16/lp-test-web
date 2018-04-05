@@ -80,7 +80,7 @@ public class ReportServiceImpl {
 //			cron="*/10 * * * * *"
 			cron="0 0 0 * * *"
 			)
-	public Boolean generateReport(){
+	public void generateReport(){
 		
 		// setting file path
 		String filePath = "/opt/lactation/dailyReport/daily_report_"+ sdfDateInteger.format(new Date()) + ".xlsx";
@@ -190,6 +190,5 @@ public class ReportServiceImpl {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return true;
 	}
 }
