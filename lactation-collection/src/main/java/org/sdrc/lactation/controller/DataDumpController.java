@@ -1,5 +1,6 @@
 package org.sdrc.lactation.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,15 +35,9 @@ public class DataDumpController {
 	@CrossOrigin
 	@RequestMapping(value = "/downloadFile", method=RequestMethod.GET)
 	public void downLoad(HttpServletResponse response) throws IOException {
-		String name1 = dataDumpService.exportDataToExcel();
-		InputStream inputStream;
-		String fileName = "";
-		try {
-			fileName=name1.replaceAll("%3A", ":").replaceAll("%2F", "/")
-						 .replaceAll("%5C", "/").replaceAll("%2C",",")
-						 .replaceAll("\\+", " ").replaceAll("%22", "")
-						 .replaceAll("%3F", "?").replaceAll("%3D", "=");
-			inputStream = new FileInputStream(fileName);
+		String fileName = dataDumpService.exportDataToExcel();
+		
+		try(InputStream inputStream = new FileInputStream(fileName)) {
 			String headerKey = "Content-Disposition";
 			String headerValue = String.format("attachment; filename=\"%s\"",
 					new java.io.File(fileName).getName());
@@ -57,7 +52,11 @@ public class DataDumpController {
 			e.printStackTrace();
 		}
 		finally{
-//			new File(fileName).delete();
+			File file = new File(fileName);
+			if(file.delete())
+				System.out.println("file delete succcess");
+			else
+				System.out.println("file delete failed");
 		}
 	}
 

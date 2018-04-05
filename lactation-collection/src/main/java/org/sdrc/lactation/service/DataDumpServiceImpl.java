@@ -131,7 +131,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getBabyCodeHospital());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getBabyOf());
+				row.createCell(colNum).setCellValue(patient.getBabyOf() == null ? "" : patient.getBabyOf());
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getBabyWeight());
 				colNum++;
