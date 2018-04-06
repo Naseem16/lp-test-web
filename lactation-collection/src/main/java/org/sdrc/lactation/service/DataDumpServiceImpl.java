@@ -3,7 +3,9 @@ package org.sdrc.lactation.service;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,11 +17,13 @@ import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
+import org.sdrc.lactation.domain.TypeDetails;
 import org.sdrc.lactation.repository.LogBreastFeedingPostDischargeRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingSupportivePracticeRepository;
 import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
+import org.sdrc.lactation.repository.TypeDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +44,21 @@ public class DataDumpServiceImpl implements DataDumpService {
 
 	@Autowired
 	private LogBreastFeedingSupportivePracticeRepository logBreastFeedingSupportivePracticeRepository;
+	
+	@Autowired
+	private TypeDetailsRepository typeDetailsRepository;
 
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
+	
+	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public String exportDataToExcel() {
 
+		Map<Integer, TypeDetails> typeDetailsMap = new HashMap<>();
+		typeDetailsRepository.findAll().forEach(typeDetails->typeDetailsMap.put(typeDetails.getId(), typeDetails));
+		
 		String filePath = "/opt/lactation/data_dump/dataDump_" + sdfDateInteger.format(new Date()) + ".xlsx";
 
 		try (XSSFWorkbook workbook = new XSSFWorkbook(); FileOutputStream fileOut = new FileOutputStream(filePath);) {
@@ -129,45 +143,45 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getBabyCode());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getBabyCodeHospital());
+				row.createCell(colNum).setCellValue(patient.getBabyCodeHospital() == null ? "" : patient.getBabyCodeHospital());
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getBabyOf() == null ? "" : patient.getBabyOf());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getBabyWeight());
+				row.createCell(colNum).setCellValue(patient.getBabyWeight() == null ? "" : patient.getBabyWeight().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getBabyAdmittedTo().getName());
+				row.createCell(colNum).setCellValue(patient.getBabyAdmittedTo() == null ? "" : patient.getBabyAdmittedTo().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getAdmissionDateForOutdoorPatients());
+				row.createCell(colNum).setCellValue(patient.getAdmissionDateForOutdoorPatients() ==  null ? "" : sdfDateOnly.format(patient.getAdmissionDateForOutdoorPatients()));
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getCreatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getDischargeDate());
+				row.createCell(colNum).setCellValue(patient.getDischargeDate() == null ? "" : sdfDateOnly.format(patient.getDischargeDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getNicuAdmissionReason());
+				row.createCell(colNum).setCellValue(patient.getNicuAdmissionReason().length() == 0 ? "" : arrayToString(patient.getNicuAdmissionReason(), typeDetailsMap));
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getTimeTillFirstExpression());
+				row.createCell(colNum).setCellValue(patient.getTimeTillFirstExpression() == null ? "" : patient.getTimeTillFirstExpression());
 				colNum++;
 				row.createCell(colNum).setCellValue(patient.getUpdatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getUuidNumber());
+				row.createCell(colNum).setCellValue(patient.getUuidNumber() == null ? "" : patient.getUuidNumber());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getCreatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(patient.getCreatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getDeliveryDateAndTime());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(patient.getDeliveryDateAndTime()));
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getGestationalAgeInWeek());
+				row.createCell(colNum).setCellValue(patient.getGestationalAgeInWeek() == null ? "" : patient.getGestationalAgeInWeek().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getMothersAge());
+				row.createCell(colNum).setCellValue(patient.getMothersAge() == null ? "" : patient.getMothersAge().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getUpdatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(patient.getUpdatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getDeliveryMethod().getName());
+				row.createCell(colNum).setCellValue(patient.getDeliveryMethod() == null ? "" : patient.getDeliveryMethod().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getInpatientOrOutPatient().getName());
+				row.createCell(colNum).setCellValue(patient.getInpatientOrOutPatient() == null ? "" : patient.getInpatientOrOutPatient().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getMothersPrenatalIntent().getName());
+				row.createCell(colNum).setCellValue(patient.getMothersPrenatalIntent() == null ? "" : patient.getMothersPrenatalIntent().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(patient.getParentsKnowledgeOnHmAndLactation().getName());
+				row.createCell(colNum).setCellValue(patient.getParentsKnowledgeOnHmAndLactation() == null ? "" : patient.getParentsKnowledgeOnHmAndLactation().getName());
 			}
 
 			rowNum = 0;
@@ -213,19 +227,19 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(bfExpression.getUpdatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getUuidNumber());
+				row.createCell(colNum).setCellValue(bfExpression.getUuidNumber() == null ? "" : bfExpression.getUuidNumber());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getCreatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfExpression.getCreatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getDateAndTimeOfExpression());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfExpression.getDateAndTimeOfExpression()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getMilkExpressedFromLeftAndRightBreast());
+				row.createCell(colNum).setCellValue(bfExpression.getMilkExpressedFromLeftAndRightBreast() == null ? "" : bfExpression.getMilkExpressedFromLeftAndRightBreast().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getUpdatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfExpression.getUpdatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getExpressionOccuredLocation().getName());
+				row.createCell(colNum).setCellValue(bfExpression.getExpressionOccuredLocation() == null ? "" : bfExpression.getExpressionOccuredLocation().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfExpression.getMethodOfExpression().getName());
+				row.createCell(colNum).setCellValue(bfExpression.getMethodOfExpression() == null ? "" : bfExpression.getMethodOfExpression().getName());
 				colNum++;
 				row.createCell(colNum).setCellValue(bfExpression.getPatientId().getBabyCode());
 			}
@@ -273,21 +287,21 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(bfsp.getUpdatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getUuidNumber());
+				row.createCell(colNum).setCellValue(bfsp.getUuidNumber() == null ? "" : bfsp.getUuidNumber());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getBfspDuration());
+				row.createCell(colNum).setCellValue(bfsp.getBfspDuration() == null ? "" : bfsp.getBfspDuration().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getCreatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfsp.getCreatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getDateAndTimeOfBFSP());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfsp.getDateAndTimeOfBFSP()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getUpdatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfsp.getUpdatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getBfspPerformed().getName());
+				row.createCell(colNum).setCellValue(bfsp.getBfspPerformed() == null ? "" : bfsp.getBfspPerformed().getName());
 				colNum++;
 				row.createCell(colNum).setCellValue(bfsp.getPatientId().getBabyCode());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfsp.getPersonWhoPerformedBFSP().getName());
+				row.createCell(colNum).setCellValue(bfsp.getPersonWhoPerformedBFSP() == null ? "" : bfsp.getPersonWhoPerformedBFSP().getName());
 			}
 
 			rowNum = 0;
@@ -343,14 +357,14 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(feed.getUpdatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getUuidNumber());
+				row.createCell(colNum).setCellValue(feed.getUuidNumber() == null ? "" : feed.getUuidNumber());
 				colNum++;
 				row.createCell(colNum)
 						.setCellValue(feed.getAnimalMilkVolume() == null ? "" : feed.getAnimalMilkVolume().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getCreatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(feed.getCreatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getDateAndTimeOfFeed());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(feed.getDateAndTimeOfFeed()));
 				colNum++;
 				row.createCell(colNum).setCellValue(feed.getDhmVolume() == null ? "" : feed.getDhmVolume().toString());
 				colNum++;
@@ -362,13 +376,13 @@ public class DataDumpServiceImpl implements DataDumpService {
 				row.createCell(colNum)
 						.setCellValue(feed.getOtherVolume() == null ? "" : feed.getOtherVolume().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getUpdatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(feed.getUpdatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getWeightOfBaby());
+				row.createCell(colNum).setCellValue(feed.getWeightOfBaby() == null ? "" : feed.getWeightOfBaby().toString());
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getFeedMethod().getName());
+				row.createCell(colNum).setCellValue(feed.getFeedMethod() == null ? "" : feed.getFeedMethod().getName());
 				colNum++;
-				row.createCell(colNum).setCellValue(feed.getLocationOfFeeding().getName());
+				row.createCell(colNum).setCellValue(feed.getLocationOfFeeding() == null ? "" : feed.getLocationOfFeeding().getName());
 				colNum++;
 				row.createCell(colNum).setCellValue(feed.getPatientId().getBabyCode());
 			}
@@ -414,15 +428,15 @@ public class DataDumpServiceImpl implements DataDumpService {
 				colNum++;
 				row.createCell(colNum).setCellValue(bfpd.getUpdatedBy());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfpd.getUuidNumber());
+				row.createCell(colNum).setCellValue(bfpd.getUuidNumber() == null ? "" : bfpd.getUuidNumber());
 				colNum++;
-				row.createCell(colNum).setCellValue(bfpd.getCreatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfpd.getCreatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfpd.getDateOfBreastFeeding());
+				row.createCell(colNum).setCellValue(sdfDateOnly.format(bfpd.getDateOfBreastFeeding()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfpd.getUpdatedDate());
+				row.createCell(colNum).setCellValue(sdfDateTimeWithSeconds.format(bfpd.getUpdatedDate()));
 				colNum++;
-				row.createCell(colNum).setCellValue(bfpd.getBreastFeedingStatus().getName());
+				row.createCell(colNum).setCellValue(bfpd.getBreastFeedingStatus() == null ? "" : bfpd.getBreastFeedingStatus().getName());
 				colNum++;
 				row.createCell(colNum).setCellValue(bfpd.getPatientId().getBabyCode());
 				colNum++;
@@ -430,13 +444,20 @@ public class DataDumpServiceImpl implements DataDumpService {
 			}
 
 			workbook.write(fileOut);
-			// workbook.close();
-			// fileOut.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return filePath;
+	}
+	
+	private String arrayToString(String admissionReason, Map<Integer, TypeDetails> typeDetailsMap){
+		String[] nicuAdmissionReasons = admissionReason.split(",");
+		StringBuilder reasonNameList = new StringBuilder();
+		for(String reason : nicuAdmissionReasons){
+			reasonNameList.append(typeDetailsMap.get(Integer.parseInt(reason)).getName() + ",");
+		}
+		return reasonNameList.substring(0, reasonNameList.length() - 1);
 	}
 
 }

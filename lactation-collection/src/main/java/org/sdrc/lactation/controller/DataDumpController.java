@@ -1,10 +1,12 @@
 package org.sdrc.lactation.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +35,7 @@ public class DataDumpController {
 	private DataDumpService dataDumpService;
 	
 	@CrossOrigin
-	@RequestMapping(value = "/downloadFile", method=RequestMethod.GET)
+	@RequestMapping(value = "/downloadFile", method=RequestMethod.POST)
 	public void downLoad(HttpServletResponse response) throws IOException {
 		String fileName = dataDumpService.exportDataToExcel();
 		
@@ -52,11 +54,8 @@ public class DataDumpController {
 			e.printStackTrace();
 		}
 		finally{
-			File file = new File(fileName);
-			if(file.delete())
-				System.out.println("file delete succcess");
-			else
-				System.out.println("file delete failed");
+			Path path = Paths.get(fileName);
+			Files.delete(path);
 		}
 	}
 
