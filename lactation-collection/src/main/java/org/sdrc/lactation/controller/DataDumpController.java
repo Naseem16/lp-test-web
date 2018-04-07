@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.sdrc.lactation.service.DataDumpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
@@ -34,29 +36,39 @@ public class DataDumpController {
 	@Autowired
 	private DataDumpService dataDumpService;
 	
+	// for data dump in excel file
 	@CrossOrigin
-	@RequestMapping(value = "/downloadFile", method=RequestMethod.POST)
-	public void downLoad(HttpServletResponse response) throws IOException {
-		String fileName = dataDumpService.exportDataToExcel();
+	@RequestMapping(value = "/exportDataInFile", method=RequestMethod.POST)
+	public void exportDataInFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String fileName = dataDumpService.exportDataInExcel(request, response);
 		
-		try(InputStream inputStream = new FileInputStream(fileName)) {
-			String headerKey = "Content-Disposition";
-			String headerValue = String.format("attachment; filename=\"%s\"",
-					new java.io.File(fileName).getName());
-			response.setHeader(headerKey, headerValue);
-			response.setContentType("application/octet-stream"); //for all file type
-			ServletOutputStream outputStream = response.getOutputStream();
-			FileCopyUtils.copy(inputStream, outputStream);
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(fileName != null){
+			try(InputStream inputStream = new FileInputStream(fileName)) {
+				String headerKey = "Content-Disposition";
+				String headerValue = String.format("attachment; filename=\"%s\"",
+						new java.io.File(fileName).getName());
+				response.setHeader(headerKey, headerValue);
+				response.setContentType("application/octet-stream"); //for all file type
+				ServletOutputStream outputStream = response.getOutputStream();
+				FileCopyUtils.copy(inputStream, outputStream);
+				outputStream.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			finally{
+				Path path = Paths.get(fileName);
+				Files.delete(path);
+			}
 		}
-		finally{
-			Path path = Paths.get(fileName);
-			Files.delete(path);
-		}
+	}
+	
+	//for data dump in json format
+	@CrossOrigin
+	@RequestMapping(value = "/exportDataInJson", method=RequestMethod.POST)
+	public JSONObject exportDataInJson(HttpServletRequest request, HttpServletResponse response) {
+		return dataDumpService.exportDataInJson(request, response);
 	}
 
 

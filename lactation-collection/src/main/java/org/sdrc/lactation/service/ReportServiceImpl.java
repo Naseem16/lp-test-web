@@ -20,6 +20,7 @@ import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
+import org.sdrc.lactation.repository.LactationUserRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingPostDischargeRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingSupportivePracticeRepository;
 import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
@@ -29,6 +30,7 @@ import org.sdrc.lactation.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *@author Naseem Akhtar - (naseem@sdrc.co.in) on 5th April 2018 11:30
@@ -58,6 +60,9 @@ public class ReportServiceImpl {
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired
+	private LactationUserRepository lactationUserRepository;
+	
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -80,6 +85,7 @@ public class ReportServiceImpl {
 //			cron="*/10 * * * * *"
 			cron="0 0 0 * * *"
 			)
+	@Transactional(readOnly = true)
 	public void generateReport(){
 		
 		// setting file path
@@ -97,8 +103,9 @@ public class ReportServiceImpl {
 			Timestamp startDate = new Timestamp(sdfDateTimeWithSeconds.parse((sdfDateOnly.format(calendar.getTime()) + " 00:00:00")).getTime());
 			Timestamp endDate = new Timestamp(sdfDateTimeWithSeconds.parse(sdfDateOnly.format(calendar.getTime()) + " 23:59:59").getTime());
 			
-			//creating a sheet in the workbook
-			XSSFSheet dailyReportSheet = workbook.createSheet("daily_report");
+			//creating two sheets in the workbook - 1. will contain baby details and 2. will contain user details.
+			XSSFSheet babyReportSheet = workbook.createSheet("baby_list");
+			XSSFSheet userReportSheet = workbook.createSheet("user_list");
 			
 			//creating cell style for this workbook
 			XSSFCellStyle style = workbook.createCellStyle();
@@ -113,19 +120,19 @@ public class ReportServiceImpl {
 			//setting heading of the patient columns which are being written in excel sheet
 			int rowNum = 0;
 	        int headingCol = 0;
-	        Row headingRow = dailyReportSheet.createRow(rowNum);
+	        Row headingRow = babyReportSheet.createRow(rowNum);
 	        
 	        Cell slNoHeadingCell = headingRow.createCell(headingCol); slNoHeadingCell.setCellValue("Sl no.");
-	        slNoHeadingCell.setCellStyle(style); dailyReportSheet.autoSizeColumn(headingCol); headingCol++;
+	        slNoHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
 	        Cell babyListHeadingCell = headingRow.createCell(headingCol); babyListHeadingCell.setCellValue("Cumulative list of baby code");
-	        babyListHeadingCell.setCellStyle(style); dailyReportSheet.autoSizeColumn(headingCol); headingCol++;
+	        babyListHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
 	        Cell previousDayBabyListHeadingCell = headingRow.createCell(headingCol);
 	        previousDayBabyListHeadingCell.setCellValue("Babies created on - " + sdfDateOnly.format(calendar.getTime())); 
-	        previousDayBabyListHeadingCell.setCellStyle(style); dailyReportSheet.autoSizeColumn(headingCol); headingCol++;
+	        previousDayBabyListHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
-	        Cell usersHeadingCell = headingRow.createCell(headingCol); dailyReportSheet.autoSizeColumn(headingCol);
+	        Cell usersHeadingCell = headingRow.createCell(headingCol); babyReportSheet.autoSizeColumn(headingCol);
 	        usersHeadingCell.setCellValue("List of users who synced on - " + sdfDateOnly.format(calendar.getTime())); usersHeadingCell.setCellStyle(style);
 	        
 	        //finding all the babies in the DB for cumulative baby column in the excel sheet
@@ -136,7 +143,7 @@ public class ReportServiceImpl {
 	        int slNo = 1;
 			for(Patient patient : patientList){
 				int col = 0;
-				Row row = dailyReportSheet.createRow(rowNum);
+				Row row = babyReportSheet.createRow(rowNum);
 				
 				row.createCell(col).setCellValue(slNo); col++;
 				row.createCell(col).setCellValue(patient.getBabyCode()); slNo++; rowNum++;
@@ -155,7 +162,7 @@ public class ReportServiceImpl {
 			rowNum = 1;
 			for(Patient patient : previousDayBabyList){
 				int colNum = 2;
-				Row row = dailyReportSheet.getRow(rowNum);
+				Row row = babyReportSheet.getRow(rowNum);
 				row.createCell(colNum).setCellValue(patient.getBabyCode());
 				
 				lastDaySyncedUsers.add(patient.getUpdatedBy()); rowNum++;
@@ -180,7 +187,7 @@ public class ReportServiceImpl {
 			
 			for(String userName : lastDaySyncedUsers){
 				int colNum = 3;
-				Row row = dailyReportSheet.getRow(rowNum);
+				Row row = babyReportSheet.getRow(rowNum);
 				row.createCell(colNum).setCellValue(userName); rowNum++;
 			}
 			
