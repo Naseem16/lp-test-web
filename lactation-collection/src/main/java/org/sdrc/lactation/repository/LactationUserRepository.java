@@ -18,4 +18,6 @@ public interface LactationUserRepository {
 
 	List<LactationUser> findByInstitutionId(int i);
 
+	List<LactationUser> findAll();
+
 }

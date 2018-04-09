@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.sdrc.lactation.domain.LactationUser;
 import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
 import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
@@ -132,9 +133,6 @@ public class ReportServiceImpl {
 	        previousDayBabyListHeadingCell.setCellValue("Babies created on - " + sdfDateOnly.format(calendar.getTime())); 
 	        previousDayBabyListHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
-	        Cell usersHeadingCell = headingRow.createCell(headingCol); babyReportSheet.autoSizeColumn(headingCol);
-	        usersHeadingCell.setCellValue("List of users who synced on - " + sdfDateOnly.format(calendar.getTime())); usersHeadingCell.setCellStyle(style);
-	        
 	        //finding all the babies in the DB for cumulative baby column in the excel sheet
 			List<Patient> patientList = patientRepository.findAll();
 			
@@ -183,11 +181,38 @@ public class ReportServiceImpl {
 			feedList.forEach(d -> lastDaySyncedUsers.add(d.getUpdatedBy()));
 			bfpdList.forEach(d -> lastDaySyncedUsers.add(d.getUpdatedBy()));
 			
+			rowNum = 0;
+			headingCol = 0;
+			
+			Row userSheetHeading = userReportSheet.createRow(rowNum);
+			
+			Cell slNoHeading = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
+			slNoHeading.setCellValue("Sl no."); slNoHeading.setCellStyle(style); headingCol++;
+			
+			Cell cumulativeUsersHeading = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
+			cumulativeUsersHeading.setCellValue("Cumulative list of users"); cumulativeUsersHeading.setCellStyle(style); headingCol++;
+			
+			Cell lastDaySyncedUsersHeadingCell = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
+			lastDaySyncedUsersHeadingCell.setCellValue("List of users who synced on - " + sdfDateOnly.format(calendar.getTime()));
+			lastDaySyncedUsersHeadingCell.setCellStyle(style);
+			
+			List<LactationUser> users = lactationUserRepository.findAll();
+			
 			rowNum = 1;
+			slNo = 1;
+			
+			for(LactationUser user : users){
+				int col = 0;
+				Row row = userReportSheet.createRow(rowNum);
+				row.createCell(col).setCellValue(slNo); col++; slNo++;
+				row.createCell(col).setCellValue(user.getEmail());
+				
+				rowNum++;
+			}
 			
 			for(String userName : lastDaySyncedUsers){
-				int colNum = 3;
-				Row row = babyReportSheet.getRow(rowNum);
+				int colNum = 2;
+				Row row = userReportSheet.getRow(rowNum);
 				row.createCell(colNum).setCellValue(userName); rowNum++;
 			}
 			
