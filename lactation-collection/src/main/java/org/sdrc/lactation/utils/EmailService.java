@@ -17,6 +17,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,12 +26,14 @@ import org.springframework.stereotype.Service;
  * @author Naseem Akhtar (naseem@sdrc.co.in)
  * @category - Email
  * 
- * This class contains a method which wil be used for sending mails in the lactation project.
+ * This class contains a method which will be used for sending mails in the lactation project.
  *
  */
 
 @Service
 public class EmailService {
+	
+	private static final Logger log = LogManager.getLogger(EmailService.class);
 	
 	/**
 	 * This method will send an email, use this component throughout the lactation project. 
@@ -110,7 +114,7 @@ public class EmailService {
 			Transport.send(message);
 
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			log.error("Exception occured while sending email - " + e.getMessage());
 		}
 	
 	}

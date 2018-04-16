@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.sdrc.lactation.domain.Area;
 import org.sdrc.lactation.domain.LactationUser;
@@ -55,6 +57,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SynchronizationServiceImpl implements SynchronizationService {
 
+	private static final Logger log = LogManager.getLogger(SynchronizationServiceImpl.class);
+	
 	@Autowired
 	private LactationUserRepository lactationUserRepository;
 
@@ -163,7 +167,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				lactationUserRepository.save(users);
 			}
 			
-//			syncResult.setFailureUsers(faliureUsers);
 		}
 		
 		
@@ -310,8 +313,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				List<Patient> savedPatient = patientRepository.save(patients);
 				savedPatient.forEach(patient-> patientMap.put(patient.getBabyCode(), patient));
 				
-//				List<FailurePatient> faliurePatients = new ArrayList<>();
-//				syncResult.setFailurePatients(faliurePatients);
 			}
 			
 			
@@ -361,9 +362,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					}
 				});
 				logExpressionBreastFeedRepository.save(bfExpressions);
-				
-//				List<FailureBFExpression> failureBFExpressions = new ArrayList<>();
-//				syncResult.setFailureBFExpressions(failureBFExpressions);
 				
 			}
 			
@@ -420,8 +418,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					}
 				});
 				logFeedRepository.save(feeds);
-//				List<FailureFeedExpression> failureFeedExpressions = new ArrayList<>();
-//				syncResult.setFailureFeedExpressions(failureFeedExpressions);
 				
 			}
 			
@@ -467,8 +463,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					}
 				});
 				logBreastFeedingSupportivePracticeRepository.save(bFSPs);
-//				List<FailureBFSP> failureBFSPs = new ArrayList<>();
-//				syncResult.setFailureBFSPs(failureBFSPs);
 			}
 			
 			//Saving BFPD
@@ -512,8 +506,6 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 					}
 				});
 				logBreastFeedingPostDischargeRepository.save(bFPDs);
-//				List<FailureBFPD> failureBFPDs = new ArrayList<>();
-//				syncResult.setFailureBFPDs(failureBFPDs);
 			}
 			
 //=================================================================================================================================================================//
@@ -693,7 +685,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try {
 			return new Timestamp(sdf.parse(date+ " " + time).getTime());
 		} catch (ParseException e) {
-			e.printStackTrace();
+			log.error("Error in method getTimestampFromDateAndTime - " + e.getMessage());
 			return null;
 		}
 	}
@@ -707,7 +699,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try{
 			return new Date(sdf.parse(date).getTime());
 		} catch(ParseException e){
-			e.printStackTrace();
+			log.error("Error in method getDateFromString - " + e.getMessage());
 			return null;
 		}
 	}

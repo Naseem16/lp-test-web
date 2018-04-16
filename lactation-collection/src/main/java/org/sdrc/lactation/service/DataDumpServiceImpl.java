@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -46,6 +48,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DataDumpServiceImpl implements DataDumpService {
 
+	private static final Logger log = LogManager.getLogger(DataDumpServiceImpl.class);
+	
 	@Autowired
 	private PatientRepository patientRepository;
 
@@ -468,7 +472,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 				workbook.write(fileOut);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Error - DataDumpServiceImpl - exportDataInExcel - " + e.getMessage());
 			}
 		}else{
 			filePath = null;
@@ -528,7 +532,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 					patient.put("admissionDateForOutdoorPatients", d.getAdmissionDateForOutdoorPatients() ==  null ? null : sdfDateOnly.format(d.getAdmissionDateForOutdoorPatients()));
 					patient.put(createdBy, d.getCreatedBy());
 					patient.put("dischargeDate", d.getDischargeDate() == null ? null : sdfDateOnly.format(d.getDischargeDate()));
-					patient.put("nicuAdmissionReason", d.getNicuAdmissionReason().length() == 0 ? null : arrayToString(d.getNicuAdmissionReason(), typeDetailsMap));
+					patient.put("nicuAdmissionReason", d.getNicuAdmissionReason() == null ? null : arrayToString(d.getNicuAdmissionReason(), typeDetailsMap));
 					patient.put("timeTillFirstExpression", d.getTimeTillFirstExpression() == null ? null : d.getTimeTillFirstExpression());
 					patient.put(updatedBy, d.getUpdatedBy());
 					patient.put("uuid", d.getUuidNumber() == null ? null : d.getUuidNumber());
@@ -633,7 +637,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				data.put("bfpds", bfpdList);
 				
 			}catch (Exception e) {
-				e.printStackTrace();
+				log.error("Error - DataDumpServiceImpl - exportDataInJson - " + e.getMessage());
 			}
 		}else{
 			//if user is not valid then send null

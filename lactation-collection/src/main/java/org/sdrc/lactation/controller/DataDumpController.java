@@ -12,6 +12,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.sdrc.lactation.service.DataDumpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DataDumpController {
 	
+	private static final Logger log = LogManager.getLogger(DataDumpController.class);
+	
 	@Autowired
 	private DataDumpService dataDumpService;
 	
@@ -53,9 +57,9 @@ public class DataDumpController {
 				FileCopyUtils.copy(inputStream, outputStream);
 				outputStream.close();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				log.error("DataDumpController - exportDataInFile - File Not Found Exception - " + e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("DataDumpController - exportDataInFile - Input/output exception - " + e.getMessage());
 			}
 			finally{
 				Path path = Paths.get(fileName);
