@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 /**
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in)
- * @category - Email
  * 
  * This class contains a method which will be used for sending mails in the lactation project.
  *

@@ -1,7 +1,5 @@
 package org.sdrc.lactation.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.sdrc.lactation.service.SynchronizationService;
 import org.sdrc.lactation.utils.SyncModel;
 import org.sdrc.lactation.utils.SyncResult;
@@ -22,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SynchronizationController {
 
-	private static final Logger log = LogManager.getLogger(SynchronizationController.class);
-	
 	@Autowired
 	private SynchronizationService synchronizationService;
 
@@ -36,11 +32,6 @@ public class SynchronizationController {
 	@CrossOrigin
 	@RequestMapping(value = "/serverStatus", method = RequestMethod.GET)
 	public Boolean serverStatus() {
-		log.debug("Debugging log");
-		log.info("Info log");
-		log.warn("Hey, This is a warning!");
-		log.error("Oops! We have an Error. OK");
-		log.fatal("Damn! Fatal error. Please fix me.");
 		return true;
 	}
 

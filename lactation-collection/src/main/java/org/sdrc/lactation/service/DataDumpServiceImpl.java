@@ -21,12 +21,16 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.sdrc.lactation.domain.ApiCallMeta;
+import org.sdrc.lactation.domain.ApiUser;
 import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
 import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
 import org.sdrc.lactation.domain.TypeDetails;
+import org.sdrc.lactation.repository.ApiCallMetaRepository;
+import org.sdrc.lactation.repository.ApiUserRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingPostDischargeRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingSupportivePracticeRepository;
 import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
@@ -34,6 +38,7 @@ import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.repository.TypeDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +72,15 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 	@Autowired
 	private TypeDetailsRepository typeDetailsRepository;
+	
+	@Autowired
+	private ApiUserRepository apiUserRepository;
+	
+	@Autowired
+	private MessageDigestPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ApiCallMetaRepository apiCallMetaRepository;
 
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 	
@@ -75,7 +89,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public String exportDataInExcel(HttpServletRequest request, HttpServletResponse response) {
 		
 		String filePath;
@@ -492,7 +506,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public JSONObject exportDataInJson(HttpServletRequest request, HttpServletResponse response) {
 		
 		//JSONObject which will be returned at last.
@@ -668,20 +682,38 @@ public class DataDumpServiceImpl implements DataDumpService {
             String value = request.getHeader(key);
             map.put(key, value);
 		}
-		
-		
-		if(map.get("username") != null && map.get("password") != null){
-			//decoding the username and password
-			String username = new String(Base64.getDecoder().decode(map.get("username")));
-			String password = new String(Base64.getDecoder().decode(map.get("password")));
 			
-			//DB call to be made here
-			if(username.equals("lactation@medella.co.in") && password.equals("la@123#!"))
-				validUser = true;
-			else
-				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		}else{
-			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+		try{
+			//Logging info about the api call
+			ApiCallMeta apiCallMeta = new ApiCallMeta();
+			apiCallMeta.setIpAddress(getIpAddr(request));
+			apiCallMeta.setUserAgent(request.getHeader("User-Agent"));
+			
+			if(map.get("username") != null && map.get("password") != null){
+				//decoding the username and password
+				String username = new String(Base64.getDecoder().decode(map.get("username")));
+				String password = new String(Base64.getDecoder().decode(map.get("password")));
+				apiCallMeta.setUsername(username);
+				
+				//generating salt password useing md5
+				String encodedPassword = passwordEncoder.encodePassword(username, password);
+				System.out.println(encodedPassword);
+				
+				//DB call to be made here
+				ApiUser apiUser = apiUserRepository.findByUsername(username);
+				
+				if(apiUser != null && apiUser.getPassword().equals(encodedPassword))
+					validUser = true;
+				else
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			}else{
+				response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			}
+			
+			//saving the api info
+			apiCallMetaRepository.save(apiCallMeta);
+		}catch (Exception e) {
+			log.error("Error occured while validating the user who made the API call", e.getMessage());
 		}
 		
 		return validUser;
@@ -707,6 +739,27 @@ public class DataDumpServiceImpl implements DataDumpService {
 			reasonNameList.append(typeDetailsMap.get(Integer.parseInt(reason)).getName() + ",");
 		}
 		return reasonNameList.substring(0, reasonNameList.length() - 1);
+	}
+	
+	/** 
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param request
+	 * @return
+	 * This method will return the ip details of the logged in user
+	 */
+	private String getIpAddr(HttpServletRequest request) {
+		final String unkwown = "unknown";
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || unkwown.equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || unkwown.equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || unkwown.equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
 	}
 
 	

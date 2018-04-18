@@ -17,29 +17,29 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
-@EnableWebMvc
 @EnableTransactionManagement
 @EnableScheduling
 @PropertySource("file:${catalina.base}/conf/lactation_application_test.properties")
-public class Startup extends SpringBootServletInitializer{
+public class Startup extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Startup.class, args);
 	}
-	
+
 	@Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Startup.class);
-    }
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Startup.class);
+	}
 
 	/**
 	 * 
-	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 20:57.
-	 * In this method we are creating a bean of {@link MessageDigestPasswordEncoder} with MD5 algorithm.
-	 * We are going to use this for the online users who are going to register themselves.
+	 * @author Naseem Akhtar (naseem@sdrc.co.in) on 12th February 2018 20:57. In
+	 *         this method we are creating a bean of
+	 *         {@link MessageDigestPasswordEncoder} with MD5 algorithm. We are
+	 *         going to use this for the online users who are going to register
+	 *         themselves.
 	 */
 	@Bean
 	public MessageDigestPasswordEncoder passwordEncoder() {
