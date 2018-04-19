@@ -16,8 +16,6 @@ public interface LogBreastFeedingPostDischargeRepository {
 
 	void save(Iterable<LogBreastFeedingPostDischarge> logBreastFeedingPostDischargeList);
 
-	List<LogBreastFeedingPostDischarge> findByINId(List<String> uniqueIdList);
-
 	List<LogBreastFeedingPostDischarge> findByCreatedByIn(List<String> userNameByInstitution);
 
 	List<LogBreastFeedingPostDischarge> findByUniqueFormIdIsNull();
@@ -25,5 +23,7 @@ public interface LogBreastFeedingPostDischargeRepository {
 	List<LogBreastFeedingPostDischarge> findAll();
 
 	List<LogBreastFeedingPostDischarge> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
+
+	List<LogBreastFeedingPostDischarge> findByUniqueFormIdIn(List<String> uniqueIdList);
 
 }

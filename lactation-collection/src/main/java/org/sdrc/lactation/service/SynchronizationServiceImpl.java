@@ -23,6 +23,14 @@ import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
 import org.sdrc.lactation.domain.TypeDetails;
+import org.sdrc.lactation.model.BFExpressionModel;
+import org.sdrc.lactation.model.BFPDModel;
+import org.sdrc.lactation.model.BFSPModel;
+import org.sdrc.lactation.model.FeedExpressionModel;
+import org.sdrc.lactation.model.PatientModel;
+import org.sdrc.lactation.model.SyncModel;
+import org.sdrc.lactation.model.SyncResult;
+import org.sdrc.lactation.model.UserModel;
 import org.sdrc.lactation.repository.AreaRepository;
 import org.sdrc.lactation.repository.LactationUserRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingPostDischargeRepository;
@@ -31,15 +39,7 @@ import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.repository.TypeDetailsRepository;
-import org.sdrc.lactation.utils.BFExpressionModel;
-import org.sdrc.lactation.utils.BFPDModel;
-import org.sdrc.lactation.utils.BFSPModel;
 import org.sdrc.lactation.utils.EmailService;
-import org.sdrc.lactation.utils.FeedExpressionModel;
-import org.sdrc.lactation.utils.PatientModel;
-import org.sdrc.lactation.utils.SyncModel;
-import org.sdrc.lactation.utils.SyncResult;
-import org.sdrc.lactation.utils.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
@@ -121,12 +121,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		// for changing values inside lambda expressions atomic boolean is used.
 		AtomicBoolean userFromDifferentInstitution = new AtomicBoolean(false);
 		
-		//for storing users fetched by institution id
-		List<LactationUser> userByInstitutionId;
+		List<String> userEmailsByInstitution = new ArrayList<>();
 		
-		List<String> userNameByInstitution = new ArrayList<>();
-		
-		JSONObject inconsistentUser = new JSONObject();
+		JSONObject userWithDifferentInstituteId = new JSONObject();
 		
 		
 		//Saving users
@@ -137,14 +134,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			syncModel.getUsers().forEach(user -> {
 				LactationUser existingUser = lactationUserRepository.findByEmail(user.getEmail());
 				if(existingUser != null && existingUser.getInstitution().getId() != user.getInstitution()){
-					inconsistentUser.put("name", existingUser.getFirstName());
-					inconsistentUser.put("email", user.getEmail());
-					inconsistentUser.put("oldState", existingUser.getState().getName());
-					inconsistentUser.put("oldDistrict", existingUser.getDistrict().getName());
-					inconsistentUser.put("oldInstitute", existingUser.getInstitution().getName());
-					inconsistentUser.put("newState", areaMap.get(user.getState()).getName());
-					inconsistentUser.put("newDistrict", areaMap.get(user.getDistrict()).getName());
-					inconsistentUser.put("newInstitute", areaMap.get(user.getInstitution()).getName());
+					userWithDifferentInstituteId.put("name", existingUser.getFirstName());
+					userWithDifferentInstituteId.put("email", user.getEmail());
+					userWithDifferentInstituteId.put("oldState", existingUser.getState().getName());
+					userWithDifferentInstituteId.put("oldDistrict", existingUser.getDistrict().getName());
+					userWithDifferentInstituteId.put("oldInstitute", existingUser.getInstitution().getName());
+					userWithDifferentInstituteId.put("newState", areaMap.get(user.getState()).getName());
+					userWithDifferentInstituteId.put("newDistrict", areaMap.get(user.getDistrict()).getName());
+					userWithDifferentInstituteId.put("newInstitute", areaMap.get(user.getInstitution()).getName());
 					userFromDifferentInstitution.set(true);
 				}else if(existingUser == null && !userFromDifferentInstitution.get()){
 					LactationUser lactationUser = new LactationUser();
@@ -173,10 +170,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		if(!userFromDifferentInstitution.get()){
 			
 			List<UserModel> userByInstitutionList = new ArrayList<>();
-			// Fetching user institution wise
-			userByInstitutionId = lactationUserRepository.findByInstitutionId(syncModel.getInstituteId());
 			
-			for (LactationUser user : userByInstitutionId) {
+			// Fetching user institution wise and iterating through them
+			for (LactationUser user : lactationUserRepository.findByInstitutionId(syncModel.getInstituteId())) {
 				UserModel userModel = new UserModel();
 				userModel.setCountry(user.getCountry().getId());
 				userModel.setDistrict(user.getDistrict().getId());
@@ -190,7 +186,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				userModel.setUpdatedDate(sdfDateTimeWithSeconds.format(user.getUpdatedDate()));
 				userModel.setUuidNumber(user.getUuidNumber() == null ? null : user.getUuidNumber());
 				
-				userNameByInstitution.add(user.getEmail());
+				userEmailsByInstitution.add(user.getEmail());
 				
 				userByInstitutionList.add(userModel);
 			}
@@ -324,7 +320,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				Map<String, LogExpressionBreastFeed> bFEXpressionMap = new HashMap<>();
 				syncModel.getBfExpressions().forEach(bfExpression -> uniqueIdList.add(bfExpression.getId()));
 				
-				List<LogExpressionBreastFeed> existingBFEXpressions = logExpressionBreastFeedRepository.findByINId(uniqueIdList);
+				List<LogExpressionBreastFeed> existingBFEXpressions = logExpressionBreastFeedRepository.findByUniqueFormIdIn(uniqueIdList);
 				existingBFEXpressions.forEach(bFEXpression->bFEXpressionMap.put(bFEXpression.getUniqueFormId(), bFEXpression));
 				
 				List<LogExpressionBreastFeed> bfExpressions = new ArrayList<>();
@@ -374,7 +370,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				Map<String, LogFeed> logFeedMap = new HashMap<>();
 				syncModel.getFeedExpressions().forEach(feedExpression -> uniqueIdList.add(feedExpression.getId()));
 				
-				List<LogFeed> existingFeeds = logFeedRepository.findByINId(uniqueIdList);
+				List<LogFeed> existingFeeds = logFeedRepository.findByUniqueFormIdIn(uniqueIdList);
 				existingFeeds.forEach(logFeed->logFeedMap.put(logFeed.getUniqueFormId(), logFeed));
 				
 				syncModel.getFeedExpressions().forEach(logFeed -> {
@@ -429,7 +425,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				Map<String, LogBreastFeedingSupportivePractice> bFSPMap = new HashMap<>();
 				
 				syncModel.getBfsps().forEach(bfsp -> uniqueIdList.add(bfsp.getId()));
-				List<LogBreastFeedingSupportivePractice> existingBFSPs = logBreastFeedingSupportivePracticeRepository.findByINId(uniqueIdList);
+				List<LogBreastFeedingSupportivePractice> existingBFSPs = logBreastFeedingSupportivePracticeRepository.findByUniqueFormIdIn(uniqueIdList);
 				existingBFSPs.forEach(bFSP->bFSPMap.put(bFSP.getUniqueFormId(), bFSP));
 				
 				syncModel.getBfsps().forEach(bFSP -> {
@@ -474,7 +470,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				List<LogBreastFeedingPostDischarge> bFPDs = new ArrayList<>();
 				
 				syncModel.getBfpds().forEach(bfpd -> uniqueIdList.add(bfpd.getId()));
-				List<LogBreastFeedingPostDischarge> existingBFPDs = logBreastFeedingPostDischargeRepository.findByINId(uniqueIdList);
+				List<LogBreastFeedingPostDischarge> existingBFPDs = logBreastFeedingPostDischargeRepository.findByUniqueFormIdIn(uniqueIdList);
 				existingBFPDs.forEach(bFPD->bFPDMap.put(bFPD.getUniqueFormId(), bFPD));
 				
 				syncModel.getBfpds().forEach(bFPD -> {
@@ -518,7 +514,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			 * From here the reverse sync logic starts
 			 */
 			
-			List<Patient> patientByInstituteId = patientRepository.findByCreatedByIn(userNameByInstitution);
+			List<Patient> patientByInstituteId = patientRepository.findByCreatedByIn(userEmailsByInstitution);
 			List<PatientModel> patientByInstituteIdList = new ArrayList<>();
 			
 			patientByInstituteId.forEach(patient -> {
@@ -560,7 +556,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				patientByInstituteIdList.add(patientModel);
 			});
 			
-			List<LogExpressionBreastFeed> bfExpressionByInstitute = logExpressionBreastFeedRepository.findByCreatedByIn(userNameByInstitution);
+			List<LogExpressionBreastFeed> bfExpressionByInstitute = logExpressionBreastFeedRepository.findByCreatedByIn(userEmailsByInstitution);
 			List<BFExpressionModel> bfExpressionByInstituteList = new ArrayList<>();
 			
 			bfExpressionByInstitute.forEach(bfExp -> {
@@ -581,7 +577,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfExpressionByInstituteList.add(bfExpressionModel);
 			});
 			
-			List<LogBreastFeedingPostDischarge> bfpdByInstitute = logBreastFeedingPostDischargeRepository.findByCreatedByIn(userNameByInstitution);
+			List<LogBreastFeedingPostDischarge> bfpdByInstitute = logBreastFeedingPostDischargeRepository.findByCreatedByIn(userEmailsByInstitution);
 			List<BFPDModel> bfpdByInstituteList = new ArrayList<>();
 			
 			bfpdByInstitute.forEach(bfpd -> {
@@ -600,7 +596,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfpdByInstituteList.add(bfpdModel);
 			});
 			
-			List<LogBreastFeedingSupportivePractice> bfspByInstitute = logBreastFeedingSupportivePracticeRepository.findByCreatedByIn(userNameByInstitution);
+			List<LogBreastFeedingSupportivePractice> bfspByInstitute = logBreastFeedingSupportivePracticeRepository.findByCreatedByIn(userEmailsByInstitution);
 			List<BFSPModel> bfspByInstituteList = new ArrayList<>();
 			
 			bfspByInstitute.forEach(bfsp -> {
@@ -621,7 +617,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfspByInstituteList.add(bfspModel);
 			});
 			
-			List<LogFeed> feedByInstitute = logFeedRepository.findByCreatedByIn(userNameByInstitution);
+			List<LogFeed> feedByInstitute = logFeedRepository.findByCreatedByIn(userEmailsByInstitution);
 			List<FeedExpressionModel> feedByInstituteList = new ArrayList<>();
 			
 			feedByInstitute.forEach(feed -> {
@@ -666,10 +662,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				@Override
 				public void run(){
 					final String subject = "Lactation Project - Alert";
-					final String text = "A user - "+ inconsistentUser.get("name") + " (" + inconsistentUser.get("email") +"), registered with "+ 
-							inconsistentUser.get("oldInstitute") + " (" +inconsistentUser.get("oldState") + ", " + inconsistentUser.get("oldDistrict") + 
-							"), is trying to register " + "himself again with "+ inconsistentUser.get("newInstitute") + 
-							" (" + inconsistentUser.get("newState") + ", " + inconsistentUser.get("newDistrict") + ")";
+					final String text = "A user - "+ userWithDifferentInstituteId.get("name") + " (" + userWithDifferentInstituteId.get("email") +"), registered with "+ 
+							userWithDifferentInstituteId.get("oldInstitute") + " (" +userWithDifferentInstituteId.get("oldState") + ", " + userWithDifferentInstituteId.get("oldDistrict") + 
+							"), is trying to register " + "himself again with "+ userWithDifferentInstituteId.get("newInstitute") + 
+							" (" + userWithDifferentInstituteId.get("newState") + ", " + userWithDifferentInstituteId.get("newDistrict") + ")";
 					
 					emailService.sendEmail("naseem@sdrc.co.in", null, subject, text, null);
 				}

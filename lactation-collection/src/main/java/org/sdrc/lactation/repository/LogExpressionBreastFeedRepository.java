@@ -15,8 +15,6 @@ import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 public interface LogExpressionBreastFeedRepository {
 
 	void save(Iterable<LogExpressionBreastFeed> logExpressionBreastFeedList);
-	
-	List<LogExpressionBreastFeed> findByINId(List<String> uniqueIdList);
 
 	List<LogExpressionBreastFeed> findByCreatedByIn(List<String> userNameByInstitution);
 
@@ -25,5 +23,7 @@ public interface LogExpressionBreastFeedRepository {
 	List<LogExpressionBreastFeed> findAll();
 
 	List<LogExpressionBreastFeed> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
+
+	List<LogExpressionBreastFeed> findByUniqueFormIdIn(List<String> uniqueIdList);
 
 }

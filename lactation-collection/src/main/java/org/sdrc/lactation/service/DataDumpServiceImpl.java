@@ -88,6 +88,12 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	/***
+	 * The following method will make calls to patient and patient related forms and then 
+	 * write them in an excel file. Different sheets are created for different types of forms.
+	 * 
+	 * @return - String - filepath is returned.
+	 */
 	@Override
 	@Transactional
 	public String exportDataInExcel(HttpServletRequest request, HttpServletResponse response) {
@@ -667,7 +673,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	 * This method will be used to validate the user who has sent request for data dump (excel/json).
 	 * 
 	 * @param request - will be retrieving the encrypted username and password from the header.
-	 * @return {@link Boolean}
+	 * @return {@link Boolean} which will indicate whether the user is a valid one or not.
 	 */
 	private Boolean validateUserForExportApi(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -730,7 +736,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	 * 
 	 * @param admissionReason
 	 * @param typeDetailsMap
-	 * @return {@link String}
+	 * @return comma seperated nicu admission reasons.
 	 */
 	private String arrayToString(String admissionReason, Map<Integer, TypeDetails> typeDetailsMap){
 		String[] nicuAdmissionReasons = admissionReason.split(",");

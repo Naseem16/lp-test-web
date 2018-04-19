@@ -30,6 +30,7 @@ public class Area {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(length = 10)
 	private String shortName;
 
 	@Column(nullable = false)

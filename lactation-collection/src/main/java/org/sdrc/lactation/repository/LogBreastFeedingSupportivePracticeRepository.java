@@ -16,9 +16,6 @@ public interface LogBreastFeedingSupportivePracticeRepository {
 
 	void save(Iterable<LogBreastFeedingSupportivePractice> logBreastFeedingSupportivePracticeList);
 
-	List<LogBreastFeedingSupportivePractice> findByINId(
-			List<String> uniqueIdList);
-
 	List<LogBreastFeedingSupportivePractice> findByCreatedByIn(List<String> userNameByInstitution);
 
 	List<LogBreastFeedingSupportivePractice> findByUniqueFormIdIsNull();
@@ -26,4 +23,6 @@ public interface LogBreastFeedingSupportivePracticeRepository {
 	List<LogBreastFeedingSupportivePractice> findAll();
 
 	List<LogBreastFeedingSupportivePractice> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
+
+	List<LogBreastFeedingSupportivePractice> findByUniqueFormIdIn(List<String> uniqueIdList);
 }

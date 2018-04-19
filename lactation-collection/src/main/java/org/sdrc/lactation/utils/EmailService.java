@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
  *
  */
 
-@Service
+@Component
 public class EmailService {
 	
 	private static final Logger log = LogManager.getLogger(EmailService.class);

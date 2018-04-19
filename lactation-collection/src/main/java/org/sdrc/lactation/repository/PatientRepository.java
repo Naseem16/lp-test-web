@@ -18,8 +18,6 @@ public interface PatientRepository {
 	
 	Patient findByBabyCode(String babyId);
 
-	List<Patient> findByINBabyCode(List<String> babyCodeList);
-
 	List<Patient> findByBabyCodeIn(Set<String> babyCodeList);
 
 	List<Patient> findByCreatedByIn(List<String> userNameByInstitution);

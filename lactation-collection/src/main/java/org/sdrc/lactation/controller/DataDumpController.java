@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 
  * @author Naseem Akhtar (naseem@sdrc.co.in) on 5th March 2018 20:23
  * 
- * This service will be used to handle the api that we are using to dump the DB data in excel file
- * and make it downloadable.
+ * This controller will be used to handle the api that we are using to dump the DB data in excel file
+ * as well as in json format.
  *
  */
 

@@ -15,8 +15,6 @@ public interface LogFeedRepository {
 
 	void save(Iterable<LogFeed> logFeedList);
 
-	List<LogFeed> findByINId(List<String> uniqueIdList);
-
 	List<LogFeed> findByCreatedByIn(List<String> userNameByInstitution);
 
 	List<LogFeed> findByUniqueFormIdIsNull();
@@ -24,4 +22,6 @@ public interface LogFeedRepository {
 	List<LogFeed> findAll();
 
 	List<LogFeed> findByUpdatedDateBetween(Timestamp startDate, Timestamp endDate);
+
+	List<LogFeed> findByUniqueFormIdIn(List<String> uniqueIdList);
 }

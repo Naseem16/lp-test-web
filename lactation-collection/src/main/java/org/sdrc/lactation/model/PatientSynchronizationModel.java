@@ -1,4 +1,4 @@
-package org.sdrc.lactation.utils;
+package org.sdrc.lactation.model;
 
 import java.util.List;
 

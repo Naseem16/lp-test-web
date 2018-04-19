@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.sdrc</groupId>
 		<artifactId>lactation</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.2.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>lactation-collection</artifactId>
 	<packaging>war</packaging>
