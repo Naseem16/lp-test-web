@@ -703,7 +703,6 @@ public class DataDumpServiceImpl implements DataDumpService {
 				
 				//generating salt password useing md5
 				String encodedPassword = passwordEncoder.encodePassword(username, password);
-				System.out.println(encodedPassword);
 				
 				//DB call to be made here
 				ApiUser apiUser = apiUserRepository.findByUsername(username);

@@ -82,10 +82,10 @@ public class ReportServiceImpl {
 	 * 2. Babies registered on the previous day (w.r.t report generation date)
 	 * 3. Users who have synced on the previous day (w.r.t report generation date)
 	 */
-	@Scheduled(
+//	@Scheduled(
 //			cron="*/10 * * * * *"
-			cron="0 0 0 * * *"
-			)
+//			cron="0 0 0 * * *"
+//			)
 	@Transactional(readOnly = true)
 	public void generateReport(){
 		
