@@ -37,7 +37,9 @@ import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.repository.TypeDetailsRepository;
+import org.sdrc.lactation.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +83,9 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 	@Autowired
 	private ApiCallMetaRepository apiCallMetaRepository;
+	
+	@Autowired
+	ConfigurableEnvironment configurableEnvironment;
 
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 	
@@ -102,7 +107,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 
 		if(validateUserForExportApi(request, response)) {
 			
-			filePath = "/opt/lactation/data_dump/dataDump_" + sdfDateInteger.format(new Date()) + ".xlsx";
+			filePath = configurableEnvironment.getProperty(Constants.DATA_DUMP_PATH) + sdfDateInteger.format(new Date()) + ".xlsx";
 			
 			try (XSSFWorkbook workbook = new XSSFWorkbook(); FileOutputStream fileOut = new FileOutputStream(filePath);) {
 				
@@ -132,54 +137,12 @@ public class DataDumpServiceImpl implements DataDumpService {
 				int slNo = 1;
 				int rowNum = 0;
 				Row headingRow = patientSheet.createRow(rowNum++);
-				int headingCol = 0;
 	
 				headingRow.setRowStyle(cellStyle);
+				
 				// setting heading of patient sheet
-				headingRow.createCell(headingCol).setCellValue("Sl no.");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Baby Code");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Baby code hospital");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Baby of");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Baby weight");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Baby admitted to");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Admission date for outdoor patients");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Discharge date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Nicu admission reason");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Time till first expression");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("UUID");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Delivery date and time");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Gestational age in weeks");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Mother's age");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Delivert method");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Inpatient / Outpatient");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Mother's prenatal intent");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Parents knowledge on hm and lactation");
-				headingCol = 0;
+				headingRow = setHeaderForExcelFiles(headingRow, configurableEnvironment.getProperty(Constants.SHEET_PATIENT_HEADING));
+				
 	
 				// Iterating patient records and writing in the excel sheet
 				for (Patient patient : patients) {
@@ -236,30 +199,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				headingRow = bfExpressionsSheet.createRow(rowNum++);
 	
 				// setting heading of breastfeed expression sheet
-				headingRow.createCell(headingCol).setCellValue("Sl no.");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Unique form id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("UUID");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Date and time of expression");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Milk expressed from left and right breast");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Location where expression occured");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Method of expression");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Patient id");
-				headingCol = 0;
+				headingRow = setHeaderForExcelFiles(headingRow, configurableEnvironment.getProperty(Constants.SHEET_BFEXP_HEADING));
 	
 				// iterating through breastfeed expressions
 				for (LogExpressionBreastFeed bfExpression : bfExpressions) {
@@ -296,30 +236,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				headingRow = bfspSheet.createRow(rowNum++);
 	
 				// setting heading of bfsp sheet
-				headingRow.createCell(headingCol).setCellValue("Sl no.");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Unique form id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("UUID");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Bfsp duration");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Date and time of bfsp");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Bfsp performed");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Patient id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Personn who performed BFSP");
-				headingCol = 0;
+				headingRow = setHeaderForExcelFiles(headingRow, configurableEnvironment.getProperty(Constants.SHEET_BFSP_HEADING));
 	
 				// iterating through bfsp entries and writing them in excel
 				for (LogBreastFeedingSupportivePractice bfsp : bfsps) {
@@ -356,40 +273,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				headingRow = logFeedSheet.createRow(rowNum++);
 	
 				// setting heading of feed sheet
-				headingRow.createCell(headingCol).setCellValue("Sl no.");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Unique form id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("UUID");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Animal milk volume");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Date and time of feed");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("DHM volume");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Formula volume");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("OMM volume");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Other volume");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Weight of baby");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Feed method");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Location of feeding");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Patient id");
-				headingCol = 0;
+				headingRow = setHeaderForExcelFiles(headingRow, configurableEnvironment.getProperty(Constants.SHEET_LOGFEED_HEADING));
 	
 				// iterating through feed entries and writing them in excel
 				for (LogFeed feed : feeds) {
@@ -437,30 +321,8 @@ public class DataDumpServiceImpl implements DataDumpService {
 				rowNum = 0;
 				slNo = 1;
 				headingRow = bfpdSheet.createRow(rowNum++);
-	
 				// setting heading of bfpd sheet
-				headingRow.createCell(headingCol).setCellValue("Sl no.");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Unique form id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated by");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("UUID");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Created date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Date of breastfeeding");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Updated date");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Breastfeeding status");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Patient id");
-				headingCol++;
-				headingRow.createCell(headingCol).setCellValue("Time of breastfeeding");
-				headingCol = 0;
+				headingRow = setHeaderForExcelFiles(headingRow, configurableEnvironment.getProperty(Constants.SHEET_BFPD_HEADING));
 	
 				// iterating through bfpd entries and writing them in excel
 				for (LogBreastFeedingPostDischarge bfpd : bfpds) {
@@ -492,7 +354,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	
 				workbook.write(fileOut);
 			} catch (Exception e) {
-				log.error("Error - DataDumpServiceImpl - exportDataInExcel - " + e.getMessage());
+				log.error("Error - DataDumpServiceImpl - exportDataInExcel - " + e);
 			}
 		}else{
 			filePath = null;
@@ -501,6 +363,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 		return filePath;
 	}
 	
+
 	/***
 	 *@author Naseem Akhtar (naseem@sdrc.co.in) on 7th April 2018 1641.
 	 *
@@ -657,7 +520,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 				data.put("bfpds", bfpdList);
 				
 			}catch (Exception e) {
-				log.error("Error - DataDumpServiceImpl - exportDataInJson - " + e.getMessage());
+				log.error("Error - DataDumpServiceImpl - exportDataInJson - " + e);
 			}
 		}else{
 			//if user is not valid then send null
@@ -718,7 +581,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 			//saving the api info
 			apiCallMetaRepository.save(apiCallMeta);
 		}catch (Exception e) {
-			log.error("Error occured while validating the user who made the API call", e.getMessage());
+			log.error("Error occured while validating the user who made the API call", e);
 		}
 		
 		return validUser;
@@ -737,7 +600,7 @@ public class DataDumpServiceImpl implements DataDumpService {
 	 * @param typeDetailsMap
 	 * @return comma seperated nicu admission reasons.
 	 */
-	private String arrayToString(String admissionReason, Map<Integer, TypeDetails> typeDetailsMap){
+	private String arrayToString(String admissionReason, Map<Integer, TypeDetails> typeDetailsMap) {
 		String[] nicuAdmissionReasons = admissionReason.split(",");
 		StringBuilder reasonNameList = new StringBuilder();
 		for(String reason : nicuAdmissionReasons){
@@ -745,6 +608,24 @@ public class DataDumpServiceImpl implements DataDumpService {
 		}
 		return reasonNameList.substring(0, reasonNameList.length() - 1);
 	}
+	
+	
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param headingRow - the row for which we need to iterate
+	 * @param headers - Headers for the sheets with ~ seperated value. 
+	 * @return - Row - the row for which we are setting the headings.
+	 */
+	private Row setHeaderForExcelFiles(Row headingRow, String allHeader) {
+		int col = 0;
+		String[] headers = allHeader.split("~");
+		for(String header : headers){
+			headingRow.createCell(col).setCellValue(header);
+			col++;
+		}
+		return headingRow;
+	}
+	
 	
 	/** 
 	 * @author Naseem Akhtar (naseem@sdrc.co.in)

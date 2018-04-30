@@ -19,6 +19,8 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,6 +36,9 @@ public class EmailService {
 	
 	private static final Logger log = LogManager.getLogger(EmailService.class);
 	
+	@Autowired
+	ConfigurableEnvironment configurableEnvironment;
+	
 	/**
 	 * This method will send an email, use this component throughout the lactation project. 
 	 * It has been configured for multi-purpose use
@@ -48,8 +53,8 @@ public class EmailService {
 	public void sendEmail(String to, String cc, String subject, String text, String attachmentPath){
 
 		// credentials of the account through which the email will be sent
-		final String username = "lactation.medella@gmail.com";
-		final String pass = "lactation@2018";
+		final String username = configurableEnvironment.getProperty(Constants.EMAIL);
+		final String pass = configurableEnvironment.getProperty(Constants.EMAIL_PASSWORD);
 
 		// configuring the mail properties.
 		Properties props = new Properties();

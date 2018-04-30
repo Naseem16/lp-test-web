@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -27,8 +29,10 @@ import org.sdrc.lactation.repository.LogBreastFeedingSupportivePracticeRepositor
 import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
+import org.sdrc.lactation.utils.Constants;
 import org.sdrc.lactation.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReportServiceImpl {
 
+	private static final Logger log = LogManager.getLogger(ReportServiceImpl.class);
+			
 	@Autowired
 	private PatientRepository patientRepository;
 
@@ -63,6 +69,9 @@ public class ReportServiceImpl {
 	
 	@Autowired
 	private LactationUserRepository lactationUserRepository;
+	
+	@Autowired
+	ConfigurableEnvironment configurableEnvironment;
 	
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -90,7 +99,7 @@ public class ReportServiceImpl {
 	public void generateReport(){
 		
 		// setting file path
-		String filePath = "/opt/lactation/dailyReport/daily_report_"+ sdfDateInteger.format(new Date()) + ".xlsx";
+		String filePath = configurableEnvironment.getProperty(Constants.REPORT_PATH) + sdfDateInteger.format(new Date()) + ".xlsx";
 		
 		//creating a workbook using try with resources, by doing so we do not need to close the workbook manually in the finally block.
 		try(XSSFWorkbook workbook = new XSSFWorkbook(); FileOutputStream fileOut = new FileOutputStream(filePath);){
@@ -105,8 +114,8 @@ public class ReportServiceImpl {
 			Timestamp endDate = new Timestamp(sdfDateTimeWithSeconds.parse(sdfDateOnly.format(calendar.getTime()) + " 23:59:59").getTime());
 			
 			//creating two sheets in the workbook - 1. will contain baby details and 2. will contain user details.
-			XSSFSheet babyReportSheet = workbook.createSheet("baby_list");
-			XSSFSheet userReportSheet = workbook.createSheet("user_list");
+			XSSFSheet babyReportSheet = workbook.createSheet(configurableEnvironment.getProperty(Constants.REPORT_BABY_SHEET));
+			XSSFSheet userReportSheet = workbook.createSheet(configurableEnvironment.getProperty(Constants.REPORT_USER_SHEET));
 			
 			//creating cell style for this workbook
 			XSSFCellStyle style = workbook.createCellStyle();
@@ -123,14 +132,14 @@ public class ReportServiceImpl {
 	        int headingCol = 0;
 	        Row headingRow = babyReportSheet.createRow(rowNum);
 	        
-	        Cell slNoHeadingCell = headingRow.createCell(headingCol); slNoHeadingCell.setCellValue("Sl no.");
+	        Cell slNoHeadingCell = headingRow.createCell(headingCol); slNoHeadingCell.setCellValue(configurableEnvironment.getProperty(Constants.SL_NO));
 	        slNoHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
-	        Cell babyListHeadingCell = headingRow.createCell(headingCol); babyListHeadingCell.setCellValue("Cumulative list of baby code");
+	        Cell babyListHeadingCell = headingRow.createCell(headingCol); babyListHeadingCell.setCellValue(configurableEnvironment.getProperty(Constants.BABY_LIST));
 	        babyListHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
 	        Cell previousDayBabyListHeadingCell = headingRow.createCell(headingCol);
-	        previousDayBabyListHeadingCell.setCellValue("Babies created on - " + sdfDateOnly.format(calendar.getTime())); 
+	        previousDayBabyListHeadingCell.setCellValue(configurableEnvironment.getProperty(Constants.BABY_CREATED_ON) + sdfDateOnly.format(calendar.getTime())); 
 	        previousDayBabyListHeadingCell.setCellStyle(style); babyReportSheet.autoSizeColumn(headingCol); headingCol++;
 	        
 	        //finding all the babies in the DB for cumulative baby column in the excel sheet
@@ -187,13 +196,13 @@ public class ReportServiceImpl {
 			Row userSheetHeading = userReportSheet.createRow(rowNum);
 			
 			Cell slNoHeading = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
-			slNoHeading.setCellValue("Sl no."); slNoHeading.setCellStyle(style); headingCol++;
+			slNoHeading.setCellValue(configurableEnvironment.getProperty(Constants.SL_NO)); slNoHeading.setCellStyle(style); headingCol++;
 			
 			Cell cumulativeUsersHeading = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
-			cumulativeUsersHeading.setCellValue("Cumulative list of users"); cumulativeUsersHeading.setCellStyle(style); headingCol++;
+			cumulativeUsersHeading.setCellValue(configurableEnvironment.getProperty(Constants.USER_LIST)); cumulativeUsersHeading.setCellStyle(style); headingCol++;
 			
 			Cell lastDaySyncedUsersHeadingCell = userSheetHeading.createCell(headingCol); userReportSheet.autoSizeColumn(headingCol);
-			lastDaySyncedUsersHeadingCell.setCellValue("List of users who synced on - " + sdfDateOnly.format(calendar.getTime()));
+			lastDaySyncedUsersHeadingCell.setCellValue(configurableEnvironment.getProperty(Constants.USER_SYNCED_ON) + sdfDateOnly.format(calendar.getTime()));
 			lastDaySyncedUsersHeadingCell.setCellStyle(style);
 			
 			List<LactationUser> users = lactationUserRepository.findAll();
@@ -218,9 +227,10 @@ public class ReportServiceImpl {
 			
 			workbook.write(fileOut);
 			
-			emailService.sendEmail("lactationproject@sdrc.co.in", null, "Lactation Project - Daily Report", "Please find attached daily submission report", filePath);
+			emailService.sendEmail(configurableEnvironment.getProperty(Constants.EMAIL_TO), null, configurableEnvironment.getProperty(Constants.EMAIL_SUBJECT), 
+					configurableEnvironment.getProperty(Constants.EMAIL_TEXT), filePath);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("error in report service impl", e);
 		}
 	}
 }

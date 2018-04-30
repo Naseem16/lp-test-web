@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableScheduling
-@PropertySource("file:${catalina.base}/conf/lactation_application_test.properties")
+@PropertySource(value = {"file:${catalina.base}/conf/lactation_application_test.properties", "file:${catalina.base}/conf/lactation_message_test.properties"})
 public class Startup extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
