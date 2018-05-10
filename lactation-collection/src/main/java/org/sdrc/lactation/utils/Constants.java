@@ -16,6 +16,7 @@ public class Constants {
 	public static final String EMAIL_TO = "email.to";
 	public static final String EMAIL_SUBJECT = "email.subject";
 	public static final String EMAIL_TEXT = "email.text";
+	public static final String EMAIL_INVALID_USER_SUBJECT = "email.invalid.user.subject";
 	
 	//Genrated report related configuration
 	public static final String REPORT_PATH = "report.filepath";

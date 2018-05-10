@@ -39,8 +39,10 @@ import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
 import org.sdrc.lactation.repository.LogFeedRepository;
 import org.sdrc.lactation.repository.PatientRepository;
 import org.sdrc.lactation.repository.TypeDetailsRepository;
+import org.sdrc.lactation.utils.Constants;
 import org.sdrc.lactation.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +87,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	ConfigurableEnvironment configurableEnvironment;
 	
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
 	
@@ -661,13 +666,13 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 			Thread thread = new Thread(){
 				@Override
 				public void run(){
-					final String subject = "Lactation Project - Alert";
 					final String text = "A user - "+ userWithDifferentInstituteId.get("name") + " (" + userWithDifferentInstituteId.get("email") +"), registered with "+ 
 							userWithDifferentInstituteId.get("oldInstitute") + " (" +userWithDifferentInstituteId.get("oldState") + ", " + userWithDifferentInstituteId.get("oldDistrict") + 
 							"), is trying to register " + "himself again with "+ userWithDifferentInstituteId.get("newInstitute") + 
 							" (" + userWithDifferentInstituteId.get("newState") + ", " + userWithDifferentInstituteId.get("newDistrict") + ")";
 					
-					emailService.sendEmail("naseem@sdrc.co.in", null, subject, text, null);
+					emailService.sendEmail(configurableEnvironment.getProperty(Constants.EMAIL_TO), null,
+							configurableEnvironment.getProperty(Constants.EMAIL_INVALID_USER_SUBJECT), text, null);
 				}
 			};
 			
@@ -681,7 +686,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try {
 			return new Timestamp(sdf.parse(date+ " " + time).getTime());
 		} catch (ParseException e) {
-			log.error("Error in method getTimestampFromDateAndTime - " + e.getMessage());
+			log.error("Error in method getTimestampFromDateAndTime - " + e);
 			return null;
 		}
 	}
@@ -695,7 +700,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		try{
 			return new Date(sdf.parse(date).getTime());
 		} catch(ParseException e){
-			log.error("Error in method getDateFromString - " + e.getMessage());
+			log.error("Error in method getDateFromString - " + e);
 			return null;
 		}
 	}
@@ -708,6 +713,12 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		return arrayAsString.substring(0, arrayAsString.length() - 1);
 	}
 
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * 
+	 * This method will be basically used to validate and restructure the legacy records.
+	 * This code can be removed when the legacy data import is over.
+	 */
 	@Override
 	@Transactional
 	public Boolean setUniqueId() {
@@ -717,12 +728,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		List<LogExpressionBreastFeed> bfExpression = logExpressionBreastFeedRepository.findByUniqueFormIdIsNull();
 		List<LogFeed> feeds = logFeedRepository.findByUniqueFormIdIsNull();
 		
+		final String legacyData = "LegacyData";
+		
 		patients.forEach(d -> {
 			if(d.getUpdatedDate() == null)
 				d.setUpdatedDate(d.getCreatedDate());
 			
 			if(d.getUuidNumber() == null)
-				d.setUuidNumber("LegacyData");
+				d.setUuidNumber(legacyData);
 			
 			if(d.getUpdatedBy() == null)
 				d.setUpdatedBy(d.getCreatedBy());
@@ -735,7 +748,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + sdfDateInteger.format(new Date()));
 			
 			if(d.getUuidNumber() == null)
-				d.setUuidNumber("LegacyData");
+				d.setUuidNumber(legacyData);
 			
 			if(d.getCreatedDate() == null)
 				d.setCreatedDate(Timestamp.valueOf(date));
@@ -754,7 +767,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + sdfDateInteger.format(new Date()));
 			
 			if(d.getUuidNumber() == null)
-				d.setUuidNumber("LegacyData");
+				d.setUuidNumber(legacyData);
 			
 			if(d.getCreatedDate() == null)
 				d.setCreatedDate(Timestamp.valueOf(date));
@@ -773,7 +786,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + sdfDateInteger.format(new Date()));
 			
 			if(d.getUuidNumber() == null)
-				d.setUuidNumber("LegacyData");
+				d.setUuidNumber(legacyData);
 			
 			if(d.getCreatedDate() == null)
 				d.setCreatedDate(Timestamp.valueOf(date));
@@ -792,7 +805,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + sdfDateInteger.format(new Date()));
 			
 			if(d.getUuidNumber() == null)
-				d.setUuidNumber("LegacyData");
+				d.setUuidNumber(legacyData);
 			
 			if(d.getCreatedDate() == null)
 				d.setCreatedDate(Timestamp.valueOf(date));
