@@ -19,6 +19,7 @@ public class BFExpressionModel {
 	private String createdDate;
 	private String updatedDate;
 	private String uuidNumber;
+	private String methodOfExpressionOthers;
 
 	public String getId() {
 		return id;
@@ -122,6 +123,14 @@ public class BFExpressionModel {
 
 	public void setUuidNumber(String uuidNumber) {
 		this.uuidNumber = uuidNumber;
+	}
+
+	public String getMethodOfExpressionOthers() {
+		return methodOfExpressionOthers;
+	}
+
+	public void setMethodOfExpressionOthers(String methodOfExpressionOthers) {
+		this.methodOfExpressionOthers = methodOfExpressionOthers;
 	}
 
 }

@@ -92,7 +92,7 @@ public class ReportServiceImpl {
 	 * 3. Users who have synced on the previous day (w.r.t report generation date)
 	 */
 	@Scheduled(
-//			cron="*/10 * * * * *"
+//			cron="*/60 * * * * *"
 			cron="0 0 0 * * *"
 			)
 	@Transactional(readOnly = true)
@@ -221,7 +221,11 @@ public class ReportServiceImpl {
 			
 			for(String userName : lastDaySyncedUsers){
 				int colNum = 2;
+				
 				Row row = userReportSheet.getRow(rowNum);
+				log.info("Row value is :-" + row);
+				log.info("Column Num value is :-" + colNum);
+				log.info("Username is :- " + userName);
 				row.createCell(colNum).setCellValue(userName); rowNum++;
 			}
 			

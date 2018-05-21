@@ -29,7 +29,7 @@ public class LogExpressionBreastFeed {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name="patient_id", nullable = false)
+	@JoinColumn(name = "patient_id", nullable = false)
 	private Patient patientId;
 
 	private Timestamp dateAndTimeOfExpression;
@@ -55,6 +55,8 @@ public class LogExpressionBreastFeed {
 	private String uniqueFormId;
 
 	private String uuidNumber;
+
+	private String methodOfExpressionOthers;
 
 	public Patient getPatientId() {
 		return patientId;
@@ -146,6 +148,14 @@ public class LogExpressionBreastFeed {
 
 	public void setUuidNumber(String uuidNumber) {
 		this.uuidNumber = uuidNumber;
+	}
+
+	public String getMethodOfExpressionOthers() {
+		return methodOfExpressionOthers;
+	}
+
+	public void setMethodOfExpressionOthers(String methodOfExpressionOthers) {
+		this.methodOfExpressionOthers = methodOfExpressionOthers;
 	}
 
 }

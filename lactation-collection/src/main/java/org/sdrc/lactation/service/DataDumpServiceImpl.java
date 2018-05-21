@@ -228,6 +228,8 @@ public class DataDumpServiceImpl implements DataDumpService {
 					colNum++;
 					row.createCell(colNum).setCellValue(bfExpression.getMethodOfExpression() == null ? "" : bfExpression.getMethodOfExpression().getName());
 					colNum++;
+					row.createCell(colNum).setCellValue(bfExpression.getMethodOfExpressionOthers() == null ? "" : bfExpression.getMethodOfExpressionOthers());
+					colNum++;
 					row.createCell(colNum).setCellValue(bfExpression.getPatientId().getBabyCode());
 				}
 	

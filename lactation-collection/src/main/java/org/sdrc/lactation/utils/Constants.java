@@ -37,5 +37,8 @@ public class Constants {
 	public static final String SHEET_BFSP_HEADING = "sheet.bfsp";
 	public static final String SHEET_LOGFEED_HEADING = "sheet.logfeed";
 	public static final String SHEET_BFPD_HEADING = "sheet.bfpd";
+	
+	//Breastfeed expressions
+	public static final String EXPRESSION_METHOD_OTHER = "expression.method.other";
 
 }

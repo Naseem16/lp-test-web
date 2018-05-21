@@ -343,6 +343,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						existingBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 						existingBFEXpression.setUpdatedBy(bFEXpression.getUserId());
 						existingBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
+						
+						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
+							existingBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers());
+						}
 					}else{
 						LogExpressionBreastFeed newBFEXpression = new LogExpressionBreastFeed();
 						
@@ -358,6 +362,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFEXpression.setUpdatedBy(bFEXpression.getUserId());
 						newBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
 						newBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
+						
+						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
+							newBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers());
+						}
 						
 						bfExpressions.add(newBFEXpression);
 					}
@@ -578,6 +586,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				bfExpressionModel.setUpdatedDate(sdfDateTimeWithSeconds.format(bfExp.getUpdatedDate()));
 				bfExpressionModel.setUuidNumber(bfExp.getUuidNumber() == null ? null : bfExp.getUuidNumber());
 				bfExpressionModel.setUserId(bfExp.getUpdatedBy());
+				bfExpressionModel.setMethodOfExpressionOthers(bfExp.getMethodOfExpressionOthers() == null ? null : bfExp.getMethodOfExpressionOthers());
 				
 				bfExpressionByInstituteList.add(bfExpressionModel);
 			});
@@ -743,13 +752,14 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 		bfpd.forEach(d -> {
 			String date = sdfDateTimeWithSeconds.format(new Date());
+			String dateForUniqueId = sdfDateInteger.format(new Date());
 			
 			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + sdfDateInteger.format(new Date()));
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + dateForUniqueId);
 			
 			if(d.getUuidNumber() == null)
 				d.setUuidNumber(legacyData);
-			
+
 			if(d.getCreatedDate() == null)
 				d.setCreatedDate(Timestamp.valueOf(date));
 				
@@ -762,9 +772,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 		bfps.forEach(d -> {
 			String date = sdfDateTimeWithSeconds.format(new Date());
+			String dateForUniqueId = sdfDateInteger.format(new Date());
 			
 			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + sdfDateInteger.format(new Date()));
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + dateForUniqueId);
 			
 			if(d.getUuidNumber() == null)
 				d.setUuidNumber(legacyData);
@@ -781,9 +792,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 		bfExpression.forEach(d -> {
 			String date = sdfDateTimeWithSeconds.format(new Date());
+			String dateForUniqueId = sdfDateInteger.format(new Date());
 			
 			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + sdfDateInteger.format(new Date()));
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + dateForUniqueId);
 			
 			if(d.getUuidNumber() == null)
 				d.setUuidNumber(legacyData);
@@ -800,9 +812,10 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		
 		feeds.forEach(d -> {
 			String date = sdfDateTimeWithSeconds.format(new Date());
+			String dateForUniqueId = sdfDateInteger.format(new Date());
 			
 			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + sdfDateInteger.format(new Date()));
+				d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + dateForUniqueId);
 			
 			if(d.getUuidNumber() == null)
 				d.setUuidNumber(legacyData);
