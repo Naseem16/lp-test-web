@@ -345,7 +345,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						existingBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
 						
 						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
-							existingBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers());
+							existingBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : bFEXpression.getMethodOfExpressionOthers());
 						}
 					}else{
 						LogExpressionBreastFeed newBFEXpression = new LogExpressionBreastFeed();
@@ -364,7 +364,7 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 						
 						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
-							newBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers());
+							newBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : bFEXpression.getMethodOfExpressionOthers());
 						}
 						
 						bfExpressions.add(newBFEXpression);
@@ -722,6 +722,11 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 		return arrayAsString.substring(0, arrayAsString.length() - 1);
 	}
 
+	//=================================================================================================================================================================//
+	//=================================================================================================================================================================//
+	//=================================================================================================================================================================//
+	//=================================================================================================================================================================//
+	
 	/**
 	 * @author Naseem Akhtar (naseem@sdrc.co.in)
 	 * 
@@ -733,11 +738,12 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 	public Boolean setUniqueId() {
 		List<Patient> patients = patientRepository.findByUuidNumberIsNull();
 		List<LogBreastFeedingPostDischarge> bfpd = logBreastFeedingPostDischargeRepository.findByUniqueFormIdIsNull();
-		List<LogBreastFeedingSupportivePractice> bfps = logBreastFeedingSupportivePracticeRepository.findByUniqueFormIdIsNull();
+		List<LogBreastFeedingSupportivePractice> bfsp = logBreastFeedingSupportivePracticeRepository.findByUniqueFormIdIsNull();
 		List<LogExpressionBreastFeed> bfExpression = logExpressionBreastFeedRepository.findByUniqueFormIdIsNull();
 		List<LogFeed> feeds = logFeedRepository.findByUniqueFormIdIsNull();
 		
 		final String legacyData = "LegacyData";
+		final int timeInMili = 400;
 		
 		patients.forEach(d -> {
 			if(d.getUpdatedDate() == null)
@@ -750,87 +756,143 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 				d.setUpdatedBy(d.getCreatedBy());
 		});
 		
-		bfpd.forEach(d -> {
-			String date = sdfDateTimeWithSeconds.format(new Date());
-			String dateForUniqueId = sdfDateInteger.format(new Date());
-			
-			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + dateForUniqueId);
-			
-			if(d.getUuidNumber() == null)
-				d.setUuidNumber(legacyData);
-
-			if(d.getCreatedDate() == null)
-				d.setCreatedDate(Timestamp.valueOf(date));
-				
-			if(d.getUpdatedBy() == null)
-				d.setUpdatedBy(d.getCreatedBy());
-			
-			if(d.getUpdatedDate() == null)
-				d.setUpdatedDate(d.getCreatedDate());
-		});
-		
-		bfps.forEach(d -> {
-			String date = sdfDateTimeWithSeconds.format(new Date());
-			String dateForUniqueId = sdfDateInteger.format(new Date());
-			
-			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + dateForUniqueId);
-			
-			if(d.getUuidNumber() == null)
-				d.setUuidNumber(legacyData);
-			
-			if(d.getCreatedDate() == null)
-				d.setCreatedDate(Timestamp.valueOf(date));
-			
-			if(d.getUpdatedBy() == null)
-				d.setUpdatedBy(d.getCreatedBy());
-			
-			if(d.getUpdatedDate() == null)
-				d.setUpdatedDate(d.getCreatedDate());
-		});
-		
-		bfExpression.forEach(d -> {
-			String date = sdfDateTimeWithSeconds.format(new Date());
-			String dateForUniqueId = sdfDateInteger.format(new Date());
-			
-			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + dateForUniqueId);
-			
-			if(d.getUuidNumber() == null)
-				d.setUuidNumber(legacyData);
-			
-			if(d.getCreatedDate() == null)
-				d.setCreatedDate(Timestamp.valueOf(date));
-			
-			if(d.getUpdatedBy() == null)
-				d.setUpdatedBy(d.getCreatedBy());
-			
-			if(d.getUpdatedDate() == null)
-				d.setUpdatedDate(d.getCreatedDate());
-		});
-		
-		feeds.forEach(d -> {
-			String date = sdfDateTimeWithSeconds.format(new Date());
-			String dateForUniqueId = sdfDateInteger.format(new Date());
-			
-			if(d.getUniqueFormId() == null)
-				d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + dateForUniqueId);
-			
-			if(d.getUuidNumber() == null)
-				d.setUuidNumber(legacyData);
-			
-			if(d.getCreatedDate() == null)
-				d.setCreatedDate(Timestamp.valueOf(date));
-			
-			if(d.getUpdatedBy() == null)
-				d.setUpdatedBy(d.getCreatedBy());
-			
-			if(d.getUpdatedDate() == null)
-				d.setUpdatedDate(d.getCreatedDate());
-		});
+		setBfpdData(bfpd, legacyData, timeInMili);
+		setBfspData(bfsp, legacyData, timeInMili);
+		setBfExpressionData(bfExpression, legacyData, timeInMili);
+		setFeedData(feeds, legacyData, timeInMili);
 		
 		return true;
+	}
+	
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param bfpd
+	 * @throws InterruptedException
+	 */
+	private void setBfpdData(List<LogBreastFeedingPostDischarge> bfpd, String legacyData, Integer time) {
+			bfpd.forEach(d -> {
+				try {
+					Thread.sleep(time);
+					
+					String date = sdfDateTimeWithSeconds.format(new Date());
+					String dateForUniqueId = sdfDateInteger.format(new Date());
+					
+					if(d.getUniqueFormId() == null)
+						d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfpd" + dateForUniqueId);
+					
+					if(d.getUuidNumber() == null)
+						d.setUuidNumber(legacyData);
+
+					if(d.getCreatedDate() == null)
+						d.setCreatedDate(Timestamp.valueOf(date));
+						
+					if(d.getUpdatedBy() == null)
+						d.setUpdatedBy(d.getCreatedBy());
+					
+					if(d.getUpdatedDate() == null)
+						d.setUpdatedDate(d.getCreatedDate());
+					
+				} catch (InterruptedException e) {
+					log.error("BFPD - " + e);
+				}
+			});
+	}
+	
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param bfsp
+	 * @throws InterruptedException
+	 */
+	private void setBfspData(List<LogBreastFeedingSupportivePractice> bfsp, String legacyData, Integer time) {
+		bfsp.forEach(d -> {
+			try {
+				Thread.sleep(time);
+				
+				String date = sdfDateTimeWithSeconds.format(new Date());
+				String dateForUniqueId = sdfDateInteger.format(new Date());
+				
+				if(d.getUniqueFormId() == null)
+					d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfps" + dateForUniqueId);
+				
+				if(d.getUuidNumber() == null)
+					d.setUuidNumber(legacyData);
+				
+				if(d.getCreatedDate() == null)
+					d.setCreatedDate(Timestamp.valueOf(date));
+				
+				if(d.getUpdatedBy() == null)
+					d.setUpdatedBy(d.getCreatedBy());
+				
+				if(d.getUpdatedDate() == null)
+					d.setUpdatedDate(d.getCreatedDate());
+			} catch (InterruptedException e) {
+				log.error("BFSP - " + e);
+			}
+		});
+	}
+	
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param bfExpression
+	 * @throws InterruptedException
+	 */
+	private void setBfExpressionData(List<LogExpressionBreastFeed> bfExpression, String legacyData, Integer time) {
+		bfExpression.forEach(d -> {
+			try {
+				Thread.sleep(time);
+				String date = sdfDateTimeWithSeconds.format(new Date());
+				String dateForUniqueId = sdfDateInteger.format(new Date());
+				
+				if(d.getUniqueFormId() == null)
+					d.setUniqueFormId(d.getPatientId().getBabyCode() + "bfid" + dateForUniqueId);
+				
+				if(d.getUuidNumber() == null)
+					d.setUuidNumber(legacyData);
+				
+				if(d.getCreatedDate() == null)
+					d.setCreatedDate(Timestamp.valueOf(date));
+				
+				if(d.getUpdatedBy() == null)
+					d.setUpdatedBy(d.getCreatedBy());
+				
+				if(d.getUpdatedDate() == null)
+					d.setUpdatedDate(d.getCreatedDate());
+			} catch (InterruptedException e) {
+				log.error("BFExp - " + e);
+			}
+		});
+	}
+	
+	/**
+	 * @author Naseem Akhtar (naseem@sdrc.co.in)
+	 * @param feeds
+	 * @throws InterruptedException
+	 */
+	private void setFeedData(List<LogFeed> feeds, String legacyData, Integer time) {
+		feeds.forEach(d -> {
+			try {
+				Thread.sleep(time);
+				String date = sdfDateTimeWithSeconds.format(new Date());
+				String dateForUniqueId = sdfDateInteger.format(new Date());
+				
+				if(d.getUniqueFormId() == null)
+					d.setUniqueFormId(d.getPatientId().getBabyCode() + "feid" + dateForUniqueId);
+				
+				if(d.getUuidNumber() == null)
+					d.setUuidNumber(legacyData);
+				
+				if(d.getCreatedDate() == null)
+					d.setCreatedDate(Timestamp.valueOf(date));
+				
+				if(d.getUpdatedBy() == null)
+					d.setUpdatedBy(d.getCreatedBy());
+				
+				if(d.getUpdatedDate() == null)
+					d.setUpdatedDate(d.getCreatedDate());
+			} catch (InterruptedException e) {
+				log.error("Feed - " + e);
+			}
+		});
 	}
 	
 }
