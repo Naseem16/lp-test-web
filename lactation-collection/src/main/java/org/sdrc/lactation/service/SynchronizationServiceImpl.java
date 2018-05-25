@@ -345,7 +345,8 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						existingBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
 						
 						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
-							existingBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : bFEXpression.getMethodOfExpressionOthers());
+							existingBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : 
+								(bFEXpression.getMethodOfExpressionOthers().trim()).equals("")? null: bFEXpression.getMethodOfExpressionOthers());
 						}
 					}else{
 						LogExpressionBreastFeed newBFEXpression = new LogExpressionBreastFeed();
@@ -363,8 +364,9 @@ public class SynchronizationServiceImpl implements SynchronizationService {
 						newBFEXpression.setUuidNumber(bFEXpression.getUuidNumber() == null ? null : bFEXpression.getUuidNumber());
 						newBFEXpression.setUpdatedDate(getTimestampFromString((bFEXpression.getUpdatedDate())));
 						
-						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){
-							newBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : bFEXpression.getMethodOfExpressionOthers());
+						if(bFEXpression.getMethodOfExpression() != null && bFEXpression.getMethodOfExpression() == Integer.parseInt(configurableEnvironment.getProperty(Constants.EXPRESSION_METHOD_OTHER))){							
+							newBFEXpression.setMethodOfExpressionOthers(bFEXpression.getMethodOfExpressionOthers() == null ? null : 
+								(bFEXpression.getMethodOfExpressionOthers().trim()).equals("")? null: bFEXpression.getMethodOfExpressionOthers());
 						}
 						
 						bfExpressions.add(newBFEXpression);
