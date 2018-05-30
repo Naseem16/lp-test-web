@@ -22,3 +22,7 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+##custom exclusions
+lactation-collection/src/main/resources/application.properties
+lactation-collection/src/main/resources/message.properties

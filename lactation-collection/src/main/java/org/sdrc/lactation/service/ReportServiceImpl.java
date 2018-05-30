@@ -113,7 +113,7 @@ public class ReportServiceImpl {
 			Timestamp startDate = new Timestamp(sdfDateTimeWithSeconds.parse((sdfDateOnly.format(calendar.getTime()) + " 00:00:00")).getTime());
 			Timestamp endDate = new Timestamp(sdfDateTimeWithSeconds.parse(sdfDateOnly.format(calendar.getTime()) + " 23:59:59").getTime());
 			
-			//creating two sheets in the workbook - 1. will contain baby details and 2. will contain user details.
+			//creating two sheets in the workbook ---> 1st sheet will contain baby details and 2nd sheet will contain user details.
 			XSSFSheet babyReportSheet = workbook.createSheet(configurableEnvironment.getProperty(Constants.REPORT_BABY_SHEET));
 			XSSFSheet userReportSheet = workbook.createSheet(configurableEnvironment.getProperty(Constants.REPORT_USER_SHEET));
 			
@@ -210,6 +210,7 @@ public class ReportServiceImpl {
 			rowNum = 1;
 			slNo = 1;
 			
+			// iterating through the users present in the DB and writing them in the user report sheet.
 			for(LactationUser user : users){
 				int col = 0;
 				Row row = userReportSheet.createRow(rowNum);
@@ -219,6 +220,8 @@ public class ReportServiceImpl {
 				rowNum++;
 			}
 			
+			// reassigning rowNum to 1, so that the users that have synced yesterday will be printed from row 1 on 2nd column.
+			rowNum = 1;
 			for(String userName : lastDaySyncedUsers){
 				int colNum = 2;
 				
