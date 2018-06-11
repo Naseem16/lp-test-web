@@ -14,15 +14,19 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.sdrc.lactation.domain.Area;
 import org.sdrc.lactation.domain.LogBreastFeedingPostDischarge;
 import org.sdrc.lactation.domain.LogBreastFeedingSupportivePractice;
 import org.sdrc.lactation.domain.LogExpressionBreastFeed;
 import org.sdrc.lactation.domain.LogFeed;
 import org.sdrc.lactation.domain.Patient;
 import org.sdrc.lactation.domain.TypeDetails;
+import org.sdrc.lactation.repository.AreaRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingPostDischargeRepository;
 import org.sdrc.lactation.repository.LogBreastFeedingSupportivePracticeRepository;
 import org.sdrc.lactation.repository.LogExpressionBreastFeedRepository;
@@ -36,14 +40,10 @@ import org.springframework.stereotype.Service;
 public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
-	//
-	// private SimpleDateFormat sdfTimeOnly = new SimpleDateFormat("HH:mm");
-	//
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	//
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 
-	private static final String FILE_NAME = "/opt/lactation/data_dump/LactationProject_LegacyDataTemplate_r7.xlsx";
+	private static final String FILE_NAME = "/opt/lactation/data_dump/Lactation_50_Babies.xlsx";
 	private static final Logger log = LogManager.getLogger(SynchronizationServiceImpl.class);
 
 	@Autowired
@@ -63,6 +63,9 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	
 	@Autowired
 	private LogBreastFeedingPostDischargeRepository logBreastFeedingPostDischargeRepository;
+	
+	@Autowired
+	private AreaRepository areaRepository;
 
 	@Override
 	public Boolean importLegacyData() {
@@ -73,12 +76,18 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 		try (FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
 				XSSFWorkbook workbook = new XSSFWorkbook(excelFile);) {
 
+			//getting area
+			Map<String, Area> areaMap = new HashMap<>();
 			// getting type details
 			Map<String, TypeDetails> typeDetailsMapPatient = new HashMap<>();
 			Map<String, TypeDetails> typeDetailsMapBfExp = new HashMap<>();
 			Map<String, TypeDetails> typeDetailsMapBfsp = new HashMap<>();
 			Map<String, TypeDetails> typeDetailsMapLogFeed = new HashMap<>();
 			Map<String, TypeDetails> typeDetailsMapBfpd = new HashMap<>();
+			
+			areaRepository.findAll().forEach(area -> {
+				areaMap.put(area.getName(), area);
+			});
 			
 			typeDetailsRepository.findAll().forEach(typeDetails -> {
 				if(typeDetails.getTypeId().getId() < 7)
@@ -105,13 +114,13 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			XSSFSheet logFeedSheet = workbook.getSheetAt(3);
 			XSSFSheet bfpdSheet = workbook.getSheetAt(4);
 
-			importPatientData(patientSheet, typeDetailsMapPatient, username, uuid, sysOutFragment);
+			importPatientData(patientSheet, typeDetailsMapPatient, username, uuid, sysOutFragment, areaMap);
 			patientRepository.findAll().forEach(patient -> patientMap.put(patient.getBabyCode(), patient));
 			
-			importLogExpBfData(logExpressionBfSheet, typeDetailsMapBfExp, patientMap, username, uuid, sysOutFragment);
-			importBfspData(bfspSheet, typeDetailsMapBfsp, patientMap, username, uuid, sysOutFragment);
-			importLogFeedData(logFeedSheet, typeDetailsMapLogFeed, patientMap, username, uuid, sysOutFragment);
-			importBfpdData(bfpdSheet, typeDetailsMapBfpd, patientMap, username, uuid, sysOutFragment);
+			importLogExpBfData(logExpressionBfSheet, typeDetailsMapBfExp, patientMap, uuid, sysOutFragment);
+			importBfspData(bfspSheet, typeDetailsMapBfsp, patientMap, uuid, sysOutFragment);
+			importLogFeedData(logFeedSheet, typeDetailsMapLogFeed, patientMap, uuid, sysOutFragment);
+			importBfpdData(bfpdSheet, typeDetailsMapBfpd, patientMap, uuid, sysOutFragment);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,7 +131,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	}
 
 	private void importBfpdData(XSSFSheet bfpdSheet, Map<String, TypeDetails> typeDetailsMapBfpd,
-			Map<String, Patient> patientMap, String username, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
+			Map<String, Patient> patientMap, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
 		
 		List<LogBreastFeedingPostDischarge> bfpdList = new ArrayList<>();
 		
@@ -131,8 +140,6 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			System.out.println(sysOutFragment + (row+1) + " for BFPD");
 			
 			LogBreastFeedingPostDischarge bfpd = new LogBreastFeedingPostDischarge();
-			bfpd.setCreatedBy(username);
-			bfpd.setUpdatedBy(username);
 			bfpd.setUuidNumber(uuid);
 			bfpd.setUpdatedDate(new Timestamp(new Date().getTime()));
 			bfpd.setCreatedDate(new Timestamp(new Date().getTime()));
@@ -144,7 +151,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 				if (cell != null) {
 					switch (cols) {
 					case 0:
-						bfpd.setPatientId(patientMap.get(cell.getStringCellValue()));
+						Patient patient = patientMap.get(cell.getStringCellValue());
+						bfpd.setPatientId(patient);
+						bfpd.setCreatedBy(patient.getCreatedBy());
+						bfpd.setUpdatedBy(patient.getUpdatedBy());
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 1:
@@ -179,7 +189,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	}
 
 	private void importLogFeedData(XSSFSheet logFeedSheet, Map<String, TypeDetails> typeDetailsMapLogFeed,
-			Map<String, Patient> patientMap, String username, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
+			Map<String, Patient> patientMap, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
 		
 		List<LogFeed> logFeedList = new ArrayList<>();
 		
@@ -188,8 +198,6 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			System.out.println(sysOutFragment + (row+1) + " for Log Feed");
 			
 			LogFeed logFeed = new LogFeed();
-			logFeed.setCreatedBy(username);
-			logFeed.setUpdatedBy(username);
 			logFeed.setUuidNumber(uuid);
 			logFeed.setUpdatedDate(new Timestamp(new Date().getTime()));
 			logFeed.setCreatedDate(new Timestamp(new Date().getTime()));
@@ -201,7 +209,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 				if (cell != null) {
 					switch (cols) {
 					case 0:
-						logFeed.setPatientId(patientMap.get(cell.getStringCellValue()));
+						Patient patient = patientMap.get(cell.getStringCellValue());
+						logFeed.setPatientId(patient);
+						logFeed.setCreatedBy(patient.getCreatedBy());
+						logFeed.setUpdatedBy(patient.getCreatedBy());
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 3:
@@ -260,7 +271,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	}
 
 	private void importBfspData(XSSFSheet bfspSheet, Map<String, TypeDetails> typeDetailsMap,
-			Map<String, Patient> patientMap, String username, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
+			Map<String, Patient> patientMap, String uuid, String sysOutFragment) throws InterruptedException, ParseException {
 		
 		List<LogBreastFeedingSupportivePractice> bfspList = new ArrayList<>();
 		
@@ -269,8 +280,6 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			System.out.println(sysOutFragment + (row+1) + " for BFSP");
 			
 			LogBreastFeedingSupportivePractice bfsp = new LogBreastFeedingSupportivePractice();
-			bfsp.setCreatedBy(username);
-			bfsp.setUpdatedBy(username);
 			bfsp.setUuidNumber(uuid);
 			bfsp.setUpdatedDate(new Timestamp(new Date().getTime()));
 			bfsp.setCreatedDate(new Timestamp(new Date().getTime()));
@@ -282,7 +291,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 				if (cell != null) {
 					switch (cols) {
 					case 0:
-						bfsp.setPatientId(patientMap.get(cell.getStringCellValue()));
+						Patient patient = patientMap.get(cell.getStringCellValue());
+						bfsp.setPatientId(patient);
+						bfsp.setCreatedBy(patient.getCreatedBy());
+						bfsp.setUpdatedBy(patient.getCreatedBy());
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 3:
@@ -320,14 +332,12 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	}
 
 	private void importLogExpBfData(XSSFSheet logExpressionBfSheet, Map<String, TypeDetails> typeDetailsMap,
-			Map<String, Patient> patientMap, String username, String uuid, String sysOutFragment) throws ParseException, InterruptedException {
+			Map<String, Patient> patientMap, String uuid, String sysOutFragment) throws ParseException, InterruptedException {
 		List<LogExpressionBreastFeed> bfExps = new ArrayList<>();
 		for (int row = 1; row <= logExpressionBfSheet.getLastRowNum(); row++) {
 			Thread.sleep(100);
 			System.out.println(sysOutFragment + (row+1) + " for BF Expressions");
 			LogExpressionBreastFeed bfExp = new LogExpressionBreastFeed();
-			bfExp.setCreatedBy(username);
-			bfExp.setUpdatedBy(username);
 			bfExp.setUuidNumber(uuid);
 			bfExp.setUpdatedDate(new Timestamp(new Date().getTime()));
 			bfExp.setCreatedDate(new Timestamp(new Date().getTime()));
@@ -339,7 +349,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 				if (cell != null) {
 					switch (cols) {
 					case 0:
-						bfExp.setPatientId(patientMap.get(cell.getStringCellValue()));
+						Patient patient = patientMap.get(cell.getStringCellValue());
+						bfExp.setPatientId(patient);
+						bfExp.setCreatedBy(patient.getCreatedBy());
+						bfExp.setUpdatedBy(patient.getCreatedBy());
 						System.out.println(sysOutFragment + (row+1) + " column --> patient id");
 						break;
 					case 3:
@@ -378,7 +391,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			logExpressionBreastFeedRepository.save(bfExps);
 	}
 
-	private void importPatientData(XSSFSheet patientSheet, Map<String, TypeDetails> typeDetailsMap, String username, String uuid, String sysOutFragment)
+	private void importPatientData(XSSFSheet patientSheet, Map<String, TypeDetails> typeDetailsMap, String username, String uuid, String sysOutFragment, Map<String, Area> areaMap)
 			throws ParseException {
 		List<Patient> patientList = new ArrayList<>();
 		for (int row = 1; row <= patientSheet.getLastRowNum(); row++) {
@@ -395,81 +408,98 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 
 			for (int cols = 0; cols < xssfRow.getLastCellNum(); cols++) {
 				Cell cell = xssfRow.getCell(cols);
+				String userName = null;
 
 				if (cell != null) {
 					switch (cols) {
 					case 1:
-						patient.setCreatedDate(getTimestampFromString(cell.getStringCellValue()));
+						Date date = cell.getDateCellValue();
+//						String cellStringValue = dataFormatter.formatCellValue(cell);
+						patient.setCreatedDate(getTimestampFromString(sdfDateOnly.format(date)));
 						System.out.println(sysOutFragment + (row+1) + " column --> created date");
 						break;
-					case 6:
+					case 4:
+						userName = generateUserNameForLegacyDataImport(areaMap.get(cell.getStringCellValue()));
+						patient.setCreatedBy(userName);
+						patient.setUpdatedBy(userName);
+						System.out.println("Fetching the hospital to which the baby belongs");
+						break;
+					case 5:
 						patient.setBabyCode(cell.getStringCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby code");
 						break;
-					case 7:
-						patient.setBabyCodeHospital(String.valueOf((int) cell.getNumericCellValue()));
+					case 6:
+						if(cell.getCellType() == 0)
+							patient.setBabyCodeHospital(String.valueOf((int)cell.getNumericCellValue()));
+						else if(cell.getCellType() == 1)
+							patient.setBabyCode(cell.getStringCellValue());
+						 
 						System.out.println(sysOutFragment + (row+1) + " column --> baby code hospital");
 						break;
-					case 8:
+					case 7:
 						patient.setBabyOf(cell.getStringCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby of");
 						break;
-					case 9:
+					case 8:
 						patient.setMothersAge((int) cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> mothers age");
 						break;
-					case 12:
-						patient.setDeliveryDateAndTime(getTimestampFromString(cell.getStringCellValue()));
+					case 11:
+						patient.setDeliveryDateAndTime(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> deilvery date and time");
 						break;
-					case 13:
+					case 12:
 						patient.setDeliveryMethod(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> deilvery method");
 						break;
-					case 14:
+					case 13:
 						patient.setBabyWeight(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby weight");
 						break;
-					case 15:
+					case 14:
 						patient.setGestationalAgeInWeek((int) cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> gestational age in weeks");
 						break;
-					case 16:
+					case 15:
 						patient.setMothersPrenatalIntent(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> mothers prenatal intent");
 						break;
-					case 17:
+					case 16:
 						patient.setParentsKnowledgeOnHmAndLactation(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(
 								sysOutFragment + (row+1) + " column --> Parents Knowledge On Hm And Lactation");
 						break;
-					case 18:
+					case 17:
 						patient.setTimeTillFirstExpression(String.valueOf(cell.getNumericCellValue()));
 						System.out.println(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> Time till first expression");
 						break;
-					case 19:
+					case 18:
 						patient.setInpatientOrOutPatient(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> Inpatient or outpatient");
 						break;
-					case 20:
-						if (patient.getInpatientOrOutPatient().getId() == 13) {
-							patient.setAdmissionDateForOutdoorPatients(
-									getTimestampFromString(cell.getStringCellValue()));
-							System.out.println(
-									sysOutFragment + (row+1) + " column --> admission date for outdoor patients");
+					case 19:
+						if (patient != null && patient.getInpatientOrOutPatient() != null && patient.getInpatientOrOutPatient().getId() == 13) {
+							Date admissionDate = cell.getDateCellValue();
+							patient.setAdmissionDateForOutdoorPatients(getTimestampFromString(sdfDateOnly.format(admissionDate)));
+							System.out.println(sysOutFragment + (row+1) + " column --> admission date for outdoor patients");
 						}
 						break;
-					case 21:
+					case 20:
 						patient.setBabyAdmittedTo(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> baby admitted to");
 						break;
-					case 22:
+					case 21:
 						patient.setNicuAdmissionReason(reasonsToIds(cell.getStringCellValue(), typeDetailsMap));
 						System.out.println(sysOutFragment + (row+1) + " column --> nicu admission reason");
 						break;
-					case 23:
-						patient.setDischargeDate(getTimestampFromString(cell.getStringCellValue()));
+					case 22:
+						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+							Date dischargeDate = cell.getDateCellValue();
+							patient.setDischargeDate(getTimestampFromString(sdfDateOnly.format(dischargeDate)));
+						}else if(cell.getCellType() == Cell.CELL_TYPE_STRING)
+							patient.setDischargeDate(getTimestampFromString(cell.getStringCellValue()));
+							
 						System.out.println(sysOutFragment + (row+1) + " column --> discharge date");
 						break;
 					default:
@@ -486,16 +516,34 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 		System.out.println("Add patient import completed");
 	}
 
+	private String generateUserNameForLegacyDataImport(Area area) {
+		String userName;
+		if(area != null) {
+			if(area.getShortName() != null)
+				userName = "lactation_" + area.getShortName().toLowerCase() + "@medela.co.in";
+			else
+				userName = "lactation_" + area.getName().toLowerCase().substring(0, 3) + "@medela.co.in";
+		}else
+			userName = "lactation_legacy@medela.co.in";
+			
+		
+		return userName;
+	}
+
 	private Timestamp getTimestampFromString(String date) throws ParseException {
 		return new Timestamp(sdfDateOnly.parse(date).getTime());
 	}
-
+	
+	private Timestamp getTimestampFromStringWithDateAndTime(String date) throws ParseException {
+		return new Timestamp(sdfDateTimeWithSeconds.parse(date).getTime());
+	}
+	
 	private String reasonsToIds(String reasons, Map<String, TypeDetails> typeDetailsMap) {
 		StringBuilder arrayAsString = new StringBuilder();
 		String[] reasonArray = reasons.split(",");
 
 		for (int i = 0; i < reasonArray.length; i++) {
-			arrayAsString.append(typeDetailsMap.get(reasonArray[i]).getId() + ",");
+			arrayAsString.append(typeDetailsMap.get(reasonArray[i].trim()).getId() + ",");
 		}
 		return arrayAsString.substring(0, arrayAsString.length() - 1);
 	}
