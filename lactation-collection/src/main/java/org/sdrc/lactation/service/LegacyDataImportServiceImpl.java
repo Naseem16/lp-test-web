@@ -43,7 +43,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
 
-	private static final String FILE_NAME = "/opt/lactation/data_dump/Lactation_50_Babies.xlsx";
+	private static final String FILE_NAME = "/opt/lactation/data_dump/Rechecked_102Babies_r1.xlsx";
 	private static final Logger log = LogManager.getLogger(SynchronizationServiceImpl.class);
 
 	@Autowired
@@ -158,7 +158,12 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 1:
-						bfpd.setDateOfBreastFeeding(getTimestampFromString(cell.getStringCellValue()));
+						if(cell.getCellType() == Cell.CELL_TYPE_STRING)
+							bfpd.setDateOfBreastFeeding(getTimestampFromString(cell.getStringCellValue()));
+						else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+							Date date = cell.getDateCellValue();
+							bfpd.setDateOfBreastFeeding(getTimestampFromString(sdfDateOnly.format(date)));
+						}
 						System.out.println(sysOutFragment + (row+1) + " column --> DateOfBreastFeeding");
 						break;
 					case 2:
@@ -209,10 +214,13 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 				if (cell != null) {
 					switch (cols) {
 					case 0:
-						Patient patient = patientMap.get(cell.getStringCellValue());
+						Patient patient = cell.getStringCellValue() == null ? null : patientMap.get(cell.getStringCellValue());
 						logFeed.setPatientId(patient);
-						logFeed.setCreatedBy(patient.getCreatedBy());
-						logFeed.setUpdatedBy(patient.getCreatedBy());
+						
+						if(patient != null) {
+							logFeed.setCreatedBy(patient.getCreatedBy());
+							logFeed.setUpdatedBy(patient.getCreatedBy());
+						}
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 3:
@@ -224,23 +232,43 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> feed method");
 						break;
 					case 5:
-						logFeed.setOmmVolume(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setOmmVolume(null);
+						else
+							logFeed.setOmmVolume(cell.getNumericCellValue());
+						
 						System.out.println(sysOutFragment + (row+1) + " column --> omm volume");
 						break;
 					case 6:
-						logFeed.setDhmVolume(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setDhmVolume(null);
+						else
+							logFeed.setDhmVolume(cell.getNumericCellValue());
+						
 						System.out.println(sysOutFragment + (row+1) + " column --> dhm volume");
 						break;
 					case 7:
-						logFeed.setFormulaVolume(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setFormulaVolume(null);
+						else
+							logFeed.setFormulaVolume(cell.getNumericCellValue());
+						
 						System.out.println(sysOutFragment + (row+1) + " column --> formula volume");
 						break;
 					case 8:
-						logFeed.setAnimalMilkVolume(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setAnimalMilkVolume(null);
+						else
+							logFeed.setAnimalMilkVolume(cell.getNumericCellValue());
+						
 						System.out.println(sysOutFragment + (row+1) + " column --> animal milk volume");
 						break;
 					case 9:
-						logFeed.setOtherVolume(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setOtherVolume(null);
+						else
+							logFeed.setOtherVolume(cell.getNumericCellValue());
+						
 						System.out.println(sysOutFragment + (row+1) + " column --> other volume");
 						break;
 					case 10:
@@ -364,7 +392,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpression");
 						break;
 					case 5:
-						bfExp.setMethodOfExpressionOthers(cell.getStringCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							bfExp.setMethodOfExpressionOthers(null);
+						else
+							bfExp.setMethodOfExpressionOthers(cell.getStringCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpressionOthers");
 						break;
 					case 6:
@@ -372,7 +403,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> ExpressionOccuredLocation");
 						break;
 					case 7:
-						bfExp.setMilkExpressedFromLeftAndRightBreast(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							bfExp.setMilkExpressedFromLeftAndRightBreast(null);
+						else
+							bfExp.setMilkExpressedFromLeftAndRightBreast(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> MilkExpressedFromLeftAndRightBreast");
 						break;
 					}
@@ -424,76 +458,76 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						patient.setUpdatedBy(userName);
 						System.out.println("Fetching the hospital to which the baby belongs");
 						break;
-					case 5:
+					case 6:
 						patient.setBabyCode(cell.getStringCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby code");
 						break;
-					case 6:
+					case 7:
 						if(cell.getCellType() == 0)
 							patient.setBabyCodeHospital(String.valueOf((int)cell.getNumericCellValue()));
 						else if(cell.getCellType() == 1)
-							patient.setBabyCode(cell.getStringCellValue());
+							patient.setBabyCodeHospital(cell.getStringCellValue());
 						 
 						System.out.println(sysOutFragment + (row+1) + " column --> baby code hospital");
 						break;
-					case 7:
+					case 8:
 						patient.setBabyOf(cell.getStringCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby of");
 						break;
-					case 8:
+					case 9:
 						patient.setMothersAge((int) cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> mothers age");
 						break;
-					case 11:
+					case 12:
 						patient.setDeliveryDateAndTime(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> deilvery date and time");
 						break;
-					case 12:
+					case 13:
 						patient.setDeliveryMethod(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> deilvery method");
 						break;
-					case 13:
+					case 14:
 						patient.setBabyWeight(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> baby weight");
 						break;
-					case 14:
+					case 15:
 						patient.setGestationalAgeInWeek((int) cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> gestational age in weeks");
 						break;
-					case 15:
+					case 16:
 						patient.setMothersPrenatalIntent(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> mothers prenatal intent");
 						break;
-					case 16:
+					case 17:
 						patient.setParentsKnowledgeOnHmAndLactation(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(
 								sysOutFragment + (row+1) + " column --> Parents Knowledge On Hm And Lactation");
 						break;
-					case 17:
+					case 18:
 						patient.setTimeTillFirstExpression(String.valueOf(cell.getNumericCellValue()));
 						System.out.println(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> Time till first expression");
 						break;
-					case 18:
+					case 19:
 						patient.setInpatientOrOutPatient(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> Inpatient or outpatient");
 						break;
-					case 19:
+					case 20:
 						if (patient != null && patient.getInpatientOrOutPatient() != null && patient.getInpatientOrOutPatient().getId() == 13) {
 							Date admissionDate = cell.getDateCellValue();
 							patient.setAdmissionDateForOutdoorPatients(getTimestampFromString(sdfDateOnly.format(admissionDate)));
 							System.out.println(sysOutFragment + (row+1) + " column --> admission date for outdoor patients");
 						}
 						break;
-					case 20:
+					case 21:
 						patient.setBabyAdmittedTo(typeDetailsMap.get(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> baby admitted to");
 						break;
-					case 21:
+					case 22:
 						patient.setNicuAdmissionReason(reasonsToIds(cell.getStringCellValue(), typeDetailsMap));
 						System.out.println(sysOutFragment + (row+1) + " column --> nicu admission reason");
 						break;
-					case 22:
+					case 23:
 						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
 							Date dischargeDate = cell.getDateCellValue();
 							patient.setDischargeDate(getTimestampFromString(sdfDateOnly.format(dischargeDate)));
@@ -507,8 +541,9 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 					}
 				}
 			}
-
-			patientList.add(patient);
+			
+			if(patient.getBabyCode() != null)
+				patientList.add(patient);
 		}
 
 		if(patientList != null && !patientList.isEmpty())
