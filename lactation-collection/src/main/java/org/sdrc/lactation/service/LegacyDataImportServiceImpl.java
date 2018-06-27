@@ -276,7 +276,10 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> location of feeding");
 						break;
 					case 11:
-						logFeed.setWeightOfBaby(cell.getNumericCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+							logFeed.setWeightOfBaby(null);
+						else
+							logFeed.setWeightOfBaby(cell.getNumericCellValue());
 						System.out.println(sysOutFragment + (row+1) + " column --> weight of baby");
 						break;
 					default:
@@ -384,7 +387,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> patient id");
 						break;
 					case 3:
-						bfExp.setDateAndTimeOfExpression(getTimestampFromString(cell.getStringCellValue()));
+						bfExp.setDateAndTimeOfExpression(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> DateAndTimeOfExpression");
 						break;
 					case 4:
