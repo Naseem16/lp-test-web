@@ -42,6 +42,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	private SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
 	private SimpleDateFormat sdfDateTimeWithSeconds = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private SimpleDateFormat sdfDateInteger = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
+	private SimpleDateFormat sdfDateTimeDDFirst = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	private static final String FILE_NAME = "/opt/lactation/data_dump/Rechecked_102Babies_r1.xlsx";
 	private static final Logger log = LogManager.getLogger(SynchronizationServiceImpl.class);
@@ -224,7 +225,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 3:
-						logFeed.setDateAndTimeOfFeed(getTimestampFromString(cell.getStringCellValue()));
+						logFeed.setDateAndTimeOfFeed(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> Date and time");
 						break;
 					case 4:
@@ -329,7 +330,7 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 						System.out.println(sysOutFragment + (row+1) + " column --> PatientId");
 						break;
 					case 3:
-						bfsp.setDateAndTimeOfBFSP(getTimestampFromString(cell.getStringCellValue()));
+						bfsp.setDateAndTimeOfBFSP(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
 						System.out.println(sysOutFragment + (row+1) + " column --> DateAndTimeOfBFSP");
 						break;
 					case 4:
@@ -374,53 +375,55 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 			bfExp.setCreatedDate(new Timestamp(new Date().getTime()));
 			XSSFRow xssfRow = logExpressionBfSheet.getRow(row);
 
-			for (int cols = 0; cols < xssfRow.getLastCellNum(); cols++) {
-				Cell cell = xssfRow.getCell(cols);
-
-				if (cell != null) {
-					switch (cols) {
-					case 0:
-						Patient patient = patientMap.get(cell.getStringCellValue());
-						bfExp.setPatientId(patient);
-						bfExp.setCreatedBy(patient.getCreatedBy());
-						bfExp.setUpdatedBy(patient.getCreatedBy());
-						System.out.println(sysOutFragment + (row+1) + " column --> patient id");
-						break;
-					case 3:
-						bfExp.setDateAndTimeOfExpression(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
-						System.out.println(sysOutFragment + (row+1) + " column --> DateAndTimeOfExpression");
-						break;
-					case 4:
-						bfExp.setMethodOfExpression(typeDetailsMap.get(cell.getStringCellValue()));
-						System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpression");
-						break;
-					case 5:
-						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
-							bfExp.setMethodOfExpressionOthers(null);
-						else
-							bfExp.setMethodOfExpressionOthers(cell.getStringCellValue());
-						System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpressionOthers");
-						break;
-					case 6:
-						bfExp.setExpressionOccuredLocation(typeDetailsMap.get(cell.getStringCellValue()));
-						System.out.println(sysOutFragment + (row+1) + " column --> ExpressionOccuredLocation");
-						break;
-					case 7:
-						if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
-							bfExp.setMilkExpressedFromLeftAndRightBreast(null);
-						else
-							bfExp.setMilkExpressedFromLeftAndRightBreast(cell.getNumericCellValue());
-						System.out.println(sysOutFragment + (row+1) + " column --> MilkExpressedFromLeftAndRightBreast");
-						break;
+			if(xssfRow != null) {
+				for (int cols = 0; cols < xssfRow.getLastCellNum(); cols++) {
+					Cell cell = xssfRow.getCell(cols);
+	
+					if (cell != null) {
+						switch (cols) {
+						case 0:
+							Patient patient = patientMap.get(cell.getStringCellValue());
+							bfExp.setPatientId(patient);
+							bfExp.setCreatedBy(patient.getCreatedBy());
+							bfExp.setUpdatedBy(patient.getCreatedBy());
+							System.out.println(sysOutFragment + (row+1) + " column --> patient id");
+							break;
+						case 3:
+							bfExp.setDateAndTimeOfExpression(getTimestampFromStringWithDateAndTime(cell.getStringCellValue()));
+							System.out.println(sysOutFragment + (row+1) + " column --> DateAndTimeOfExpression");
+							break;
+						case 4:
+							bfExp.setMethodOfExpression(typeDetailsMap.get(cell.getStringCellValue()));
+							System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpression");
+							break;
+						case 5:
+							if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+								bfExp.setMethodOfExpressionOthers(null);
+							else
+								bfExp.setMethodOfExpressionOthers(cell.getStringCellValue());
+							System.out.println(sysOutFragment + (row+1) + " column --> MethodOfExpressionOthers");
+							break;
+						case 6:
+							bfExp.setExpressionOccuredLocation(typeDetailsMap.get(cell.getStringCellValue()));
+							System.out.println(sysOutFragment + (row+1) + " column --> ExpressionOccuredLocation");
+							break;
+						case 7:
+							if(cell.getCellType() == Cell.CELL_TYPE_BLANK)
+								bfExp.setMilkExpressedFromLeftAndRightBreast(null);
+							else
+								bfExp.setMilkExpressedFromLeftAndRightBreast(cell.getNumericCellValue());
+							System.out.println(sysOutFragment + (row+1) + " column --> MilkExpressedFromLeftAndRightBreast");
+							break;
+						}
 					}
 				}
-			}
 
-			if (bfExp.getPatientId() != null && bfExp.getDateAndTimeOfExpression() != null) {
-				bfExp.setUniqueFormId(bfExp.getPatientId().getBabyCode() + "bfid" + sdfDateInteger.format(new Date()));
-				bfExps.add(bfExp);
-			} else {
-				log.warn("BFExpression: patient id or date and time of exp is missing or incorrect for row no --->>>" + (row+1));
+				if (bfExp.getPatientId() != null && bfExp.getDateAndTimeOfExpression() != null) {
+					bfExp.setUniqueFormId(bfExp.getPatientId().getBabyCode() + "bfid" + sdfDateInteger.format(new Date()));
+					bfExps.add(bfExp);
+				} else {
+					log.warn("BFExpression: patient id or date and time of exp is missing or incorrect for row no --->>>" + (row+1));
+				}
 			}
 		}
 
@@ -573,7 +576,8 @@ public class LegacyDataImportServiceImpl implements LegacyDataImportService {
 	}
 	
 	private Timestamp getTimestampFromStringWithDateAndTime(String date) throws ParseException {
-		return new Timestamp(sdfDateTimeWithSeconds.parse(date).getTime());
+		return new Timestamp(sdfDateTimeWithSeconds.parse(sdfDateTimeWithSeconds.format(sdfDateTimeDDFirst.parse(date))).getTime());
+//		return new Timestamp(sdfDateTimeWithSeconds.parse(date).getTime());
 	}
 	
 	private String reasonsToIds(String reasons, Map<String, TypeDetails> typeDetailsMap) {
